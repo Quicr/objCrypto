@@ -1,0 +1,1 @@
+gcc -I../contrib/boringssl/include test1.cc -L../contrib/boringssl/build/crypto -lcrypto  
