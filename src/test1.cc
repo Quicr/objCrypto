@@ -1,4 +1,6 @@
 
+#include <iostream>
+
 #include <openssl/cipher.h>
 
 /* 
@@ -12,6 +14,7 @@ A non positive return value from EVP_DecryptFinal_ex should be considered as a f
 */
 
 void handleErrors() {
+  assert(0);
 }
 
 
@@ -35,7 +38,7 @@ int gcm_encrypt(unsigned char *plaintext, int plaintext_len,
         handleErrors();
 
     /* Initialise the encryption operation. */
-    if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
+    if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL))
         handleErrors();
 
     /*
@@ -100,7 +103,7 @@ int gcm_decrypt(unsigned char *ciphertext, int ciphertext_len,
         handleErrors();
 
     /* Initialise the decryption operation. */
-    if(!EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
+    if(!EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL))
         handleErrors();
 
     /* Set IV length. Not necessary if this is 12 bytes (96 bits) */
@@ -150,5 +153,51 @@ int gcm_decrypt(unsigned char *ciphertext, int ciphertext_len,
 }
 
 int main( int argc, char* argv[] ) {
+
+  unsigned char plaintextIn[5] = { 42,0x2,0x3,0x4,0x5};
+  int plaintextIn_len = sizeof(plaintextIn);
+ 
+  unsigned char aad[3] = { 0x5,0x6,0x7 };
+  int aad_len = sizeof( aad );
+  
+  unsigned char key[32] = { 0x9,0x9 };
+  
+  unsigned char iv[16] = { 0xA, 0xB };
+  int iv_len = sizeof(iv );
+  
+  unsigned char ciphertext[1024];
+  unsigned char tag[32];
+
+  int cipherLen = gcm_encrypt(plaintextIn,  plaintextIn_len,
+                              aad,  aad_len,
+                              key,
+                              iv,  iv_len,
+                              ciphertext,
+                              tag);
+    
+  
+  std::cerr << "cipherLen=" << cipherLen << std::endl;
+
+  unsigned char plaintextOut[1024];
+  int plaintextOut_len = 0;
+
+  //tag[0]=0;
+  //aad[0]=0;
+  
+  plaintextOut_len = gcm_decrypt(ciphertext,  cipherLen,
+                                 aad,  aad_len,
+                                 tag,
+                                 key,
+                                 iv,iv_len,
+                                 plaintextOut);
+
+  if ( plaintextOut_len < 0 ) {
+    std::cerr << "Decrypt failed" << std::endl;
+  } else {
+    std::cerr << "Decrypt plainTextLen=" << plaintextOut_len << std::endl;
+    std::cerr << "Decrypt plainText[0]=" << (int)plaintextOut[0] << std::endl;
+  }
+    
+    
   return 0;
 }
