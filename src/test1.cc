@@ -197,7 +197,12 @@ int main( int argc, char* argv[] ) {
     std::cerr << "Decrypt plainTextLen=" << plaintextOut_len << std::endl;
     std::cerr << "Decrypt plainText[0]=" << (int)plaintextOut[0] << std::endl;
   }
-    
+
+  assert(  plaintextOut_len ==  plaintextIn_len );
+  assert( plaintextOut[0] == plaintextIn[0] );
+  assert( plaintextOut[1] == plaintextIn[1] );
+  assert( plaintextOut[2] == plaintextIn[2] );
+  
     
   return 0;
 }
