@@ -10,7 +10,7 @@ void handleErrors() {
 
 
 
-int gcm_encrypt(unsigned char *plaintext, int plaintext_len,
+int ctr_encrypt(unsigned char *plaintext, int plaintext_len,
                 unsigned char *aad, int aad_len,
                 unsigned char *key,
                 unsigned char *iv, int iv_len,
@@ -19,32 +19,21 @@ int gcm_encrypt(unsigned char *plaintext, int plaintext_len,
 {
   size_t ciphertext_len=0;
   CCCryptorStatus status;
-
-  /*
-  status =  CCCrypt( kCCEncrypt, // CCOperation op,
-                     kCCAlgorithmAES128, //CCAlgorithm alg,
-                     kCCOptionPKCS7Padding, //CCOptions options,
-                     key, 128/8, // const void *key, size_t keyLength,
-                     iv, // const void *iv,
-                     plaintext, plaintext_len, // const void *dataIn, size_t dataInLength,
-                     ciphertext, // void *dataOut,
-                     1024, // size_t dataOutAvailable,
-                     &ciphertext_len // size_t *dataOutMoved
-                     );
-  
-  assert( status == kCCSuccess );
-  */
-  
   CCCryptorRef cryptorRef;
-  
-  status = CCCryptorCreate( kCCEncrypt, //CCOperation op,
-                            kCCAlgorithmAES128, //CCAlgorithm alg,
-                            kCCOptionPKCS7Padding, //CCOptions options,
-                            key, 128/8, //const void *key, size_t keyLength,
-                            iv, // const void *iv,
-                            &cryptorRef);
-  
+    
+  status = CCCryptorCreateWithMode( kCCEncrypt, //CCOperation op,
+                                    kCCModeCTR,   // CCMode                      mode, 
+                                    kCCAlgorithmAES128, //CCAlgorithm alg,
+                                    ccNoPadding, //CCPadding           padding,
+                                    iv, // const void *iv,
+                                    key, 128/8, //const void *key, size_t keyLength,
+                                    0,  //const void          *tweak,  
+                                    0,      //size_t                      tweakLength,
+                                    0,      //int                         numRounds,
+                                    kCCModeOptionCTR_BE, // CCModeOptions       options,
+                                    &cryptorRef);
   assert( status == kCCSuccess );
+  
   status = CCCryptorUpdate( cryptorRef,
                             plaintext, plaintext_len,// const void *dataIn, size_t dataInLength,
                             ciphertext, // void *dataOut,
@@ -70,7 +59,7 @@ int gcm_encrypt(unsigned char *plaintext, int plaintext_len,
 
 
 
-int gcm_decrypt(unsigned char *ciphertext, int ciphertext_len,
+int ctr_decrypt(unsigned char *ciphertext, int ciphertext_len,
                 unsigned char *aad, int aad_len,
                 unsigned char *tag,
                 unsigned char *key,
@@ -79,33 +68,21 @@ int gcm_decrypt(unsigned char *ciphertext, int ciphertext_len,
 {
   size_t plaintext_len=0;
   CCCryptorStatus status;
-    
-    /*
-                  status =  CCCrypt( kCCDecrypt, // CCOperation op,
-                                     kCCAlgorithmAES128, //CCAlgorithm alg,
-                                     kCCOptionPKCS7Padding, //CCOptions options,
-                                     key, 128/8, // const void *key, size_t keyLength,
-                                     iv, // const void *iv,
-                                     ciphertext, ciphertext_len, // const void *dataIn, size_t dataInLength,
-                                     plaintext, // void *dataOut,
-                                     1024, // size_t dataOutAvailable,
-                                     &plaintext_len // size_t *dataOutMoved
-                                     );
-
-     assert( status == kCCSuccess );
-    */
-
-    
   CCCryptorRef cryptorRef;
-  
-  status = CCCryptorCreate( kCCDecrypt, //CCOperation op,
-                            kCCAlgorithmAES128, //CCAlgorithm alg,
-                            kCCOptionPKCS7Padding, //CCOptions options,
-                            key, 128/8, //const void *key, size_t keyLength,
-                            iv, // const void *iv,
-                            &cryptorRef);
-  
+
+  status = CCCryptorCreateWithMode( kCCEncrypt, //CCOperation op,
+                                    kCCModeCTR,   // CCMode                      mode, 
+                                    kCCAlgorithmAES128, //CCAlgorithm alg,
+                                    ccNoPadding, //CCPadding           padding,
+                                    iv, // const void *iv,
+                                    key, 128/8, //const void *key, size_t keyLength,
+                                    0,  //const void          *tweak,  
+                                    0,      //size_t                      tweakLength,
+                                    0,      //int                         numRounds,
+                                    kCCModeOptionCTR_BE, // CCModeOptions       options,
+                                    &cryptorRef);
   assert( status == kCCSuccess );
+    
   status = CCCryptorUpdate( cryptorRef,
                             ciphertext, ciphertext_len,// const void *dataIn, size_t dataInLength,
                             plaintext, // void *dataOut,
@@ -145,7 +122,7 @@ int main( int argc, char* argv[] ) {
   unsigned char ciphertext[1024];
   unsigned char tag[32];
 
-  int cipherLen = gcm_encrypt(plaintextIn,  plaintextIn_len,
+  int cipherLen = ctr_encrypt(plaintextIn,  plaintextIn_len,
                               aad,  aad_len,
                               key,
                               iv,  iv_len,
@@ -161,7 +138,7 @@ int main( int argc, char* argv[] ) {
   //tag[0]=0;
   //aad[0]=0;
   
-  plaintextOut_len = gcm_decrypt(ciphertext,  cipherLen,
+  plaintextOut_len = ctr_decrypt(ciphertext,  cipherLen,
                                  aad,  aad_len,
                                  tag,
                                  key,
