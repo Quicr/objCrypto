@@ -12,5 +12,6 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 
 add_subdirectory( contrib )
-add_subdirectory( src )
+add_subdirectory( src ) 
+add_subdirectory( test ) 
 

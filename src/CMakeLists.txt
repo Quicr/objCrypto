@@ -7,11 +7,13 @@ include_directories(../contrib/boringssl/src/include)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-common -fno-exceptions -fno-rtti")
 
 add_library(
-  cWrap
+  objCrypto
   SHARED
-  cryptoWrap.cc
+  objCrypto.cc
 ) 
-target_link_libraries( cWrap PRIVATE crypto )
+target_link_libraries( objCrypto PRIVATE crypto )
+
+
 
 
 add_executable( test1 
@@ -42,8 +44,3 @@ add_executable( test5
     test5.cc
 )
 target_link_libraries( test5 PRIVATE crypto )
-
-add_executable( testWrap
-    testWrap.cc
-)
-target_link_libraries( testWrap PRIVATE cWrap )
