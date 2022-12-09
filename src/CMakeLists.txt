@@ -28,3 +28,19 @@ add_executable( test3
 target_link_libraries( test3 PRIVATE system )
 
 
+
+add_executable( test4
+    test4.cc
+)
+
+target_link_libraries( test4 PRIVATE crypto )
+
+
+
+
+add_executable( test5 
+    test5.cc
+)
+
+target_link_libraries( test5 PRIVATE crypto )
+

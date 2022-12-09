@@ -131,7 +131,10 @@ int main( int argc, char* argv[] ) {
     
   
   std::cerr << "cipherLen=" << cipherLen << std::endl;
-
+  std::cerr << " cipherText[0]=" << (int)ciphertext[0]
+            << " cipherText[1]=" << (int)ciphertext[1]
+            << std::endl;
+  
   unsigned char plaintextOut[1024];
   int plaintextOut_len = 0;
 
