@@ -14,29 +14,33 @@ namespace ObjCrypto {
     ObjCryptor( );
     ~ObjCryptor( );
    
-    bool addKey( const int keyID, const char key[] , const ObjCryptoAlg alg );
+    bool addKey( const int keyID,
+                 const unsigned char key[] , int keySizeInBits, const ObjCryptoAlg alg );
+
     bool removeKey( int keyID );
 
+    bool haveKey( int keyID );
+
     bool seal(   int keyID,
-                 char nonce[13],
+                 unsigned char nonce[13],
                  char* plainText, int textLen,
-                 char* cipherText );
+                 unsigned char* cipherText );
     bool unseal( int keyID,
-                 char nonce[13],
-                 char* cipherText, int textLen,
+                 unsigned char nonce[13],
+                 unsigned char* cipherText, int textLen,
                  char* plainText );
     
     bool seal(   int keyID,
                  char nonce[13],
                  char* authData, int authDataLen, 
                  char* plainText, int textLen,
-                 char* tagData, int tagDataLen,
-                 char* cipherText );
+                 unsigned char* tagData, int tagDataLen,
+                unsigned  char* cipherText );
     bool unseal( int keyID,
                  char nonce[13],
                  char* authData, int authDataLen, 
-                 char* cipherText, int textLen,
-                 char* tagData, int tagDataLen,
+                 unsigned char* cipherText, int textLen,
+                 unsigned char* tagData, int tagDataLen,
                  char* plainText );
       
   };
