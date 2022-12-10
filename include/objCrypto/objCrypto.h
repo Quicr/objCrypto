@@ -1,5 +1,5 @@
 
-namespace "ObjCrypto" {
+namespace ObjCrypto {
 
   typedef enum {
     invalid=0,
@@ -10,37 +10,34 @@ namespace "ObjCrypto" {
   } ObjCryptoAlg;
   
   class ObjCryptor {
-    public;
-    Cyptor( );
-
+  public:
+    ObjCryptor( );
+    ~ObjCryptor( );
    
-    bool addKey( int keyID, char[16] key );
-    bool addKey( int keyID, char[32] key );
+    bool addKey( const int keyID, const char key[] , const ObjCryptoAlg alg );
     bool removeKey( int keyID );
 
     bool seal(   int keyID,
-                 char[13] nonce,
+                 char nonce[13],
                  char* plainText, int textLen,
                  char* cipherText );
     bool unseal( int keyID,
-                 char[13] nonce,
+                 char nonce[13],
                  char* cipherText, int textLen,
                  char* plainText );
     
     bool seal(   int keyID,
-                 char[13] nonce,
+                 char nonce[13],
                  char* authData, int authDataLen, 
                  char* plainText, int textLen,
                  char* tagData, int tagDataLen,
-                 char* cipherText,
-                 );
+                 char* cipherText );
     bool unseal( int keyID,
-                 char[13] nonce,
+                 char nonce[13],
                  char* authData, int authDataLen, 
                  char* cipherText, int textLen,
                  char* tagData, int tagDataLen,
-                 char* plainText,
-                 );
+                 char* plainText );
       
   };
 
