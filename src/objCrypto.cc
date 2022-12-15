@@ -1,8 +1,11 @@
 
 #include <objCrypto/objCrypto.h>
 
-
 #include <openssl/cipher.h>
+
+#include "aes-ctr.h"
+
+using namespace ObjCrypto;
 
 // __declspec(dllimport)
 
@@ -74,12 +77,23 @@ ObjCryptoErr ObjCryptor::seal( KeyID keyID,
                                const std::vector<char>& plainText,
                                std::vector<uint8_t>& cipherText  ){
   assert( haveKey( keyID ) );
-
   const Key& key = keyMap.at( keyID );
 
+  assert( plainText.size() == cipherText.size() );
+  
   switch (key.first) {
   case ObjCryptoAlg::AES128_CTR: {
     assert(  std::holds_alternative<Key128>( key.second ) );
+    Key128 key128 = std::get<Key128>(  key.second );
+     assert( sizeof(key128) == 128/8 );
+     
+    IV iv = {0,0};
+    assert( sizeof( iv ) > sizeof( nonce ) );
+    std::memcpy( iv.data(), nonce.data(), sizeof( nonce ) );
+    assert( sizeof(iv) == 128/8 );
+    
+    aes128_ctr_encrypt( plainText, key128, iv,  cipherText);
+    
     break;
   }
   case ObjCryptoAlg::AES128_GCM:
@@ -98,6 +112,33 @@ ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
                                  const Nonce& nonce,
                                  const std::vector<uint8_t>& cipherText, 
                                  std::vector<char>& plainText ){
+   assert( haveKey( keyID ) );
+  const Key& key = keyMap.at( keyID );
+
+  assert( cipherText.size() ==  plainText.size());
+  
+  switch (key.first) {
+  case ObjCryptoAlg::AES128_CTR: {
+    assert(  std::holds_alternative<Key128>( key.second ) );
+    Key128 key128 = std::get<Key128>(  key.second );
+    assert( sizeof(key128) == 128/8 );
+     
+    IV iv = {0,0};
+    assert( sizeof( iv ) > sizeof( nonce ) );
+    std::memcpy( iv.data(), nonce.data(), sizeof( nonce ) );
+    assert( sizeof(iv) == 128/8 );
+ 
+    aes128_ctr_decrypt( cipherText, key128, iv, plainText );
+    break;
+  }
+  case ObjCryptoAlg::AES128_GCM:
+  case ObjCryptoAlg::AES256_GCM:
+  case ObjCryptoAlg::AES256_CTR: 
+  default:
+    assert(0);
+    break;
+  }
+   
   return ObjCryptoErr::None;
 }
 

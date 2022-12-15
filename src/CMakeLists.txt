@@ -10,6 +10,7 @@ add_library(
   objCrypto
   SHARED
   objCrypto.cc
+  aes-ctr.cc
 ) 
 target_link_libraries( objCrypto PRIVATE crypto )
 target_include_directories( objCrypto PUBLIC ${PROJECT_SOURCE_DIR}/include )

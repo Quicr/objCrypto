@@ -1,3 +1,4 @@
+#pragma once
 
 #include <cstdint>
 #include <variant>
@@ -24,6 +25,7 @@ namespace ObjCrypto {
   typedef uint32_t KeyID;
   
   typedef std::array<uint8_t,13> Nonce;
+  typedef std::array<uint64_t,2> IV;
     
   enum class ObjCryptoErr:uint8_t {
     None=0

@@ -15,8 +15,8 @@ int main( int argc, char* argv[]) {
   KeyID keyId=1;
   
   std::vector<char> plaintextIn = { 42,0x2,0x3,0x4,0x5};
- std::vector<uint8_t> ciphertext;
-   std::vector<char>  plaintextOut;
+  std::vector<uint8_t> ciphertext( plaintextIn.size() ) ;
+  std::vector<char>  plaintextOut( plaintextIn.size() ) ;
   unsigned char aad[3] = { 0x5,0x6,0x7 };
   Key128 key128 = { 0x9,0x9 };
   Key key(  ObjCryptoAlg::AES128_CTR, key128 );
@@ -46,6 +46,5 @@ int main( int argc, char* argv[]) {
     std::cerr << "Decrypt plainText[0]=" << (int)plaintextOut[0] << std::endl;
   }
   
-
   return 0;
 }
