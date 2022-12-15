@@ -28,6 +28,23 @@ ObjCryptor::~ObjCryptor( ){
 }
 
 __attribute__((visibility("default")))
+ObjCryptoErr ObjCryptor::removeKey( KeyID keyID ){
+   assert( haveKey( keyID ) );
+
+   keyMap.erase( keyID );
+   
+   return ObjCryptoErr::None;
+}
+
+__attribute__((visibility("default")))
+bool ObjCryptor::haveKey( KeyID keyID ){
+  if (keyMap.find(keyID) != keyMap.end()) {
+    return true;
+  }
+  return false;
+}
+
+__attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::addKey( const KeyID keyID,
              const Key& key ){
   
@@ -42,10 +59,9 @@ ObjCryptoErr ObjCryptor::addKey( const KeyID keyID,
     assert(  std::holds_alternative<Key256>( key.second ) );
     break;
   }
-  default: {
+  default:
     assert(0);
     break;
-  }
   }
   
   keyMap.insert( std::make_pair( keyID , key) );
@@ -54,18 +70,34 @@ ObjCryptoErr ObjCryptor::addKey( const KeyID keyID,
 
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::seal( KeyID keyID,
-                     const Nonce& nonce,
-                     char* plainText, int textLen,
-                     unsigned char* cipherText ){
-  
+                               const Nonce& nonce,
+                               const std::vector<char>& plainText,
+                               std::vector<uint8_t>& cipherText  ){
+  assert( haveKey( keyID ) );
+
+  const Key& key = keyMap.at( keyID );
+
+  switch (key.first) {
+  case ObjCryptoAlg::AES128_CTR: {
+    assert(  std::holds_alternative<Key128>( key.second ) );
+    break;
+  }
+  case ObjCryptoAlg::AES128_GCM:
+  case ObjCryptoAlg::AES256_GCM:
+  case ObjCryptoAlg::AES256_CTR: 
+  default:
+    assert(0);
+    break;
+  }
+   
   return ObjCryptoErr::None;
 }
 
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
-                     const Nonce& nonce,
-                     unsigned char* cipherText, int textLen,
-                     char* plainText ){
+                                 const Nonce& nonce,
+                                 const std::vector<uint8_t>& cipherText, 
+                                 std::vector<char>& plainText ){
   return ObjCryptoErr::None;
 }
 

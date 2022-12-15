@@ -4,6 +4,7 @@
 #include <array>
 #include <map>
 #include <utility>
+#include <vector>
  
 
 namespace ObjCrypto {
@@ -40,16 +41,16 @@ namespace ObjCrypto {
 
     ObjCryptoErr removeKey( KeyID keyID );
 
-    ObjCryptoErr haveKey( KeyID keyID );
+    bool haveKey( KeyID keyID );
 
     ObjCryptoErr seal(   KeyID keyID,
-                 const Nonce& nonce,
-                 char* plainText, int textLen,
-                 unsigned char* cipherText );
+                         const Nonce& nonce,
+                         const std::vector<char>& plainText,
+                         std::vector<uint8_t>& cipherText );
     ObjCryptoErr unseal( KeyID keyID,
-                 const Nonce& nonce,
-                 unsigned char* cipherText, int textLen,
-                 char* plainText );
+                         const Nonce& nonce,
+                         const std::vector<uint8_t>& cipherText, 
+                         std::vector<char>& plainText );
     
     ObjCryptoErr seal(   KeyID keyID,
                  const Nonce& nonce,

@@ -14,9 +14,9 @@ int main( int argc, char* argv[]) {
   ObjCryptor cryptor;
   KeyID keyId=1;
   
-  char plaintextIn[5] = { 42,0x2,0x3,0x4,0x5};
-  unsigned char ciphertext[5];
-  char plaintextOut[5];
+  std::vector<char> plaintextIn = { 42,0x2,0x3,0x4,0x5};
+ std::vector<uint8_t> ciphertext;
+   std::vector<char>  plaintextOut;
   unsigned char aad[3] = { 0x5,0x6,0x7 };
   Key128 key128 = { 0x9,0x9 };
   Key key(  ObjCryptoAlg::AES128_CTR, key128 );
@@ -30,14 +30,14 @@ int main( int argc, char* argv[]) {
   err = cryptor.addKey( keyId, key );
   assert( err == ObjCryptoErr::None );
   
-  err = cryptor.seal( keyId, nonce, (char*)plaintextIn, sizeof( plaintextIn ), (unsigned char*)ciphertext );
+  err = cryptor.seal( keyId, nonce, plaintextIn, ciphertext );
   assert( err == ObjCryptoErr::None);
   
   std::cerr << " cipherText[0]=" << (int)ciphertext[0]
             << " cipherText[1]=" << (int)ciphertext[1]
             << std::endl;
   
-  err = cryptor.unseal( keyId, nonce, (unsigned char*)ciphertext, sizeof( ciphertext ),(char*) plaintextOut );
+  err = cryptor.unseal( keyId, nonce, ciphertext, plaintextOut );
   
   
   if ( err != ObjCryptoErr::None ) {
