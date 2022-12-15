@@ -18,14 +18,16 @@ int main( int argc, char* argv[]) {
   unsigned char ciphertext[5];
   char plaintextOut[5];
   unsigned char aad[3] = { 0x5,0x6,0x7 };
-  Key128 key = { 0x9,0x9 };
+  Key128 key128 = { 0x9,0x9 };
+  Key key(  ObjCryptoAlg::AES128_CTR, key128 );
+  
   Nonce nonce = { 0xA, 0xB };
   unsigned char tag[32];
   
   assert( sizeof(ciphertext) == sizeof(plaintextIn) );
   assert( sizeof(ciphertext) == sizeof(plaintextOut) );
   
-  err = cryptor.addKey( keyId, key, ObjCryptoAlg::AES128_CTR );
+  err = cryptor.addKey( keyId, key );
   assert( err == ObjCryptoErr::None );
   
   err = cryptor.seal( keyId, nonce, (char*)plaintextIn, sizeof( plaintextIn ), (unsigned char*)ciphertext );

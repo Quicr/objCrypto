@@ -24,20 +24,40 @@ ObjCryptor::ObjCryptor( ){
 
 __attribute__((visibility("default")))
 ObjCryptor::~ObjCryptor( ){
+  keyMap.clear();
 }
 
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::addKey( const KeyID keyID,
-             const Key& key,
-             const ObjCryptoAlg alg ){
+             const Key& key ){
+  
+  switch (key.first) {
+  case ObjCryptoAlg::AES128_GCM:
+  case ObjCryptoAlg::AES128_CTR: {
+    assert(  std::holds_alternative<Key128>( key.second ) );
+    break;
+  }
+  case ObjCryptoAlg::AES256_GCM:
+  case ObjCryptoAlg::AES256_CTR: {
+    assert(  std::holds_alternative<Key256>( key.second ) );
+    break;
+  }
+  default: {
+    assert(0);
+    break;
+  }
+  }
+  
+  keyMap.insert( std::make_pair( keyID , key) );
   return ObjCryptoErr::None;
 }
 
 __attribute__((visibility("default")))
-ObjCryptoErr ObjCryptor::seal(   KeyID keyID,
+ObjCryptoErr ObjCryptor::seal( KeyID keyID,
                      const Nonce& nonce,
                      char* plainText, int textLen,
                      unsigned char* cipherText ){
+  
   return ObjCryptoErr::None;
 }
 
