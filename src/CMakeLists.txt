@@ -4,7 +4,7 @@
 include_directories(../contrib/boringssl/src/include  )
 
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOPENSSL")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOBJ_CRYPTO_USE_BORINGSSL")
 endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-common -fno-exceptions -fno-rtti")
