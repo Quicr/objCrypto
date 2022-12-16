@@ -20,7 +20,7 @@ namespace ObjCrypto {
  
   typedef std::array<uint64_t,2> Key128;
   typedef std::array<uint64_t,4> Key256;
-  typedef std::pair<ObjCryptoAlg, std::variant<Key128,Key256> > Key;
+  typedef std::pair<ObjCryptoAlg, std::variant<Key128,Key256> > KeyInfo;
 
   typedef uint32_t KeyID;
   
@@ -33,14 +33,14 @@ namespace ObjCrypto {
   
   class ObjCryptor {
   private:
-    std::map<KeyID,const Key> keyMap;
+    std::map<KeyID,const KeyInfo> keyInfoMap;
   public:
     ObjCryptor( );
     
     ~ObjCryptor( );
    
     ObjCryptoErr addKey( const KeyID keyID,
-                 const Key& key );
+                 const KeyInfo& key );
 
     ObjCryptoErr removeKey( KeyID keyID );
 

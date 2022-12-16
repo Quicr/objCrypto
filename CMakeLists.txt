@@ -10,7 +10,7 @@ set( CMAKE_C_STANDARD 17 )
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-if ( {APPLE} )
+if ( ${APPLE} )
    set( OBJ_CRYPTO_USE_BORINGSSL False CACHE BOOL "use boring SSL for crypto"  )
 else ()
    set( OBJ_CRYPTO_USE_BORINGSSL True CACHE BOOL "use boring SSL for crypto"  )

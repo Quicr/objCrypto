@@ -15,7 +15,7 @@ ObjCryptor::ObjCryptor( ){
 
 __attribute__((visibility("default")))
 ObjCryptor::~ObjCryptor( ){
-  keyMap.clear();
+  keyInfoMap.clear();
 }
 
 
@@ -23,7 +23,7 @@ __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::removeKey( KeyID keyID ){
    assert( haveKey( keyID ) );
 
-   keyMap.erase( keyID );
+   keyInfoMap.erase( keyID );
    
    return ObjCryptoErr::None;
 }
@@ -31,7 +31,7 @@ ObjCryptoErr ObjCryptor::removeKey( KeyID keyID ){
 
 __attribute__((visibility("default")))
 bool ObjCryptor::haveKey( KeyID keyID ){
-  if (keyMap.find(keyID) != keyMap.end()) {
+  if (keyInfoMap.find(keyID) != keyInfoMap.end()) {
     return true;
   }
   return false;
@@ -40,17 +40,17 @@ bool ObjCryptor::haveKey( KeyID keyID ){
 
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::addKey( const KeyID keyID,
-             const Key& key ){
+             const KeyInfo& keyInfo ){
   
-  switch (key.first) {
+  switch (keyInfo.first) {
   case ObjCryptoAlg::AES128_GCM:
   case ObjCryptoAlg::AES128_CTR: {
-    assert(  std::holds_alternative<Key128>( key.second ) );
+    assert(  std::holds_alternative<Key128>( keyInfo.second ) );
     break;
   }
   case ObjCryptoAlg::AES256_GCM:
   case ObjCryptoAlg::AES256_CTR: {
-    assert(  std::holds_alternative<Key256>( key.second ) );
+    assert(  std::holds_alternative<Key256>( keyInfo.second ) );
     break;
   }
   default:
@@ -58,7 +58,7 @@ ObjCryptoErr ObjCryptor::addKey( const KeyID keyID,
     break;
   }
   
-  keyMap.insert( std::make_pair( keyID , key) );
+  keyInfoMap.insert( std::make_pair( keyID , keyInfo ) );
   return ObjCryptoErr::None;
 }
 
@@ -69,22 +69,22 @@ ObjCryptoErr ObjCryptor::seal( KeyID keyID,
                                const std::vector<char>& plainText,
                                std::vector<uint8_t>& cipherText  ){
   assert( haveKey( keyID ) );
-  const Key& key = keyMap.at( keyID );
+  const KeyInfo& keyInfo = keyInfoMap.at( keyID );
 
   assert( plainText.size() == cipherText.size() );
-  
-  switch (key.first) {
+           
+  switch (keyInfo.first) {
   case ObjCryptoAlg::AES128_CTR: {
-    assert(  std::holds_alternative<Key128>( key.second ) );
-    Key128 key128 = std::get<Key128>(  key.second );
-     assert( sizeof(key128) == 128/8 );
+    assert(  std::holds_alternative<Key128>( keyInfo.second ) );
+    Key128 key = std::get<Key128>(  keyInfo.second );
      
     IV iv = {0,0};
     assert( sizeof( iv ) > sizeof( nonce ) );
     std::memcpy( iv.data(), nonce.data(), sizeof( nonce ) );
-    assert( sizeof(iv) == 128/8 );
-    
-    aes128_ctr_encrypt( plainText, key128, iv,  cipherText);
+    assert( sizeof(iv) == sizeof(key) );
+    assert( plainText.size() <= ( sizeof(key) * (1<<24) ) );
+
+    aes128_ctr_encrypt( plainText, key, iv,  cipherText);
     
     break;
   }
@@ -106,14 +106,14 @@ ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
                                  const std::vector<uint8_t>& cipherText, 
                                  std::vector<char>& plainText ){
    assert( haveKey( keyID ) );
-  const Key& key = keyMap.at( keyID );
+  const KeyInfo& keyInfo = keyInfoMap.at( keyID );
 
   assert( cipherText.size() ==  plainText.size());
   
-  switch (key.first) {
+  switch (keyInfo.first) {
   case ObjCryptoAlg::AES128_CTR: {
-    assert(  std::holds_alternative<Key128>( key.second ) );
-    Key128 key128 = std::get<Key128>(  key.second );
+    assert(  std::holds_alternative<Key128>( keyInfo.second ) );
+    Key128 key128 = std::get<Key128>(  keyInfo.second );
     assert( sizeof(key128) == 128/8 );
      
     IV iv = {0,0};

@@ -19,7 +19,7 @@ int main( int argc, char* argv[]) {
   std::vector<char>  plaintextOut( plaintextIn.size() ) ;
   unsigned char aad[3] = { 0x5,0x6,0x7 };
   Key128 key128 = { 0x9,0x9 };
-  Key key(  ObjCryptoAlg::AES128_CTR, key128 );
+  KeyInfo keyInfo(  ObjCryptoAlg::AES128_CTR, key128 );
   
   Nonce nonce = { 0xA, 0xB };
   unsigned char tag[32];
@@ -27,7 +27,7 @@ int main( int argc, char* argv[]) {
   assert( sizeof(ciphertext) == sizeof(plaintextIn) );
   assert( sizeof(ciphertext) == sizeof(plaintextOut) );
   
-  err = cryptor.addKey( keyId, key );
+  err = cryptor.addKey( keyId, keyInfo );
   assert( err == ObjCryptoErr::None );
   
   err = cryptor.seal( keyId, nonce, plaintextIn, ciphertext );
