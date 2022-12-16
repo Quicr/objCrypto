@@ -1,9 +1,12 @@
 
 all: build
 
+.PHONY: build docker
+
 build:
 	cmake -B build
 	cmake --build build
+	cmake --build build -t test 
 
 docker:
 	- docker build -t obj-crypto-dev .

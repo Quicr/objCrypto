@@ -18,6 +18,8 @@ endif ()
 
 message( "OBJ_CRYPTO_USE_BORINGSSL is set to ${OBJ_CRYPTO_USE_BORINGSSL} " )
 
+include(CTest)
+
 add_subdirectory( contrib )
 add_subdirectory( src ) 
 add_subdirectory( test ) 
