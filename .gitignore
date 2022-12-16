@@ -32,5 +32,6 @@
 *.app
 
 build
+build-linux
 .DS_Store
 

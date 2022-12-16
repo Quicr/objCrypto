@@ -1,4 +1,7 @@
 
+#include <cassert>
+#include <cstring>
+ 
 #include <objCrypto/objCrypto.h>
 
 #include <openssl/cipher.h>
