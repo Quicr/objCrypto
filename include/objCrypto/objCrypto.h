@@ -36,6 +36,7 @@ namespace ObjCrypto {
     std::map<KeyID,const Key> keyMap;
   public:
     ObjCryptor( );
+    
     ~ObjCryptor( );
    
     ObjCryptoErr addKey( const KeyID keyID,
@@ -49,6 +50,7 @@ namespace ObjCrypto {
                          const Nonce& nonce,
                          const std::vector<char>& plainText,
                          std::vector<uint8_t>& cipherText );
+    
     ObjCryptoErr unseal( KeyID keyID,
                          const Nonce& nonce,
                          const std::vector<uint8_t>& cipherText, 
@@ -60,6 +62,7 @@ namespace ObjCrypto {
                  char* plainText, int textLen,
                  unsigned char* tagData, int tagDataLen,
                 unsigned  char* cipherText );
+    
     ObjCryptoErr unseal( KeyID keyID,
                  const Nonce& nonce,
                  char* authData, int authDataLen, 

@@ -7,28 +7,17 @@
 
 using namespace ObjCrypto;
 
-// __declspec(dllimport)
-
- __attribute__((visibility("default")))  int callTheWrap( int a, int b ) {
-
-    EVP_CIPHER_CTX *ctx;
-    ctx = EVP_CIPHER_CTX_new();
-    if ( !ctx ) { assert(0); }
-
-  return a+b;
-}
-
-
-using namespace ObjCrypto;
 
 __attribute__((visibility("default")))
 ObjCryptor::ObjCryptor( ){
 }
 
+
 __attribute__((visibility("default")))
 ObjCryptor::~ObjCryptor( ){
   keyMap.clear();
 }
+
 
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::removeKey( KeyID keyID ){
@@ -39,6 +28,7 @@ ObjCryptoErr ObjCryptor::removeKey( KeyID keyID ){
    return ObjCryptoErr::None;
 }
 
+
 __attribute__((visibility("default")))
 bool ObjCryptor::haveKey( KeyID keyID ){
   if (keyMap.find(keyID) != keyMap.end()) {
@@ -46,6 +36,7 @@ bool ObjCryptor::haveKey( KeyID keyID ){
   }
   return false;
 }
+
 
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::addKey( const KeyID keyID,
@@ -70,6 +61,7 @@ ObjCryptoErr ObjCryptor::addKey( const KeyID keyID,
   keyMap.insert( std::make_pair( keyID , key) );
   return ObjCryptoErr::None;
 }
+
 
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::seal( KeyID keyID,
@@ -106,6 +98,7 @@ ObjCryptoErr ObjCryptor::seal( KeyID keyID,
    
   return ObjCryptoErr::None;
 }
+
 
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
