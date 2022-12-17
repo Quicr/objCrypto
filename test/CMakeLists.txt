@@ -17,3 +17,11 @@ add_test( NAME testTest1b
                COMMAND testTest1 1 2 )
 
 set_tests_properties( testTest1b PROPERTIES WILL_FAIL TRUE)
+
+
+add_executable ( testAES128CTR
+    testAES128CTR.cc
+)
+target_link_libraries( testAES128CTR PRIVATE objCrypto )
+add_test( NAME testAES128CTR
+               COMMAND testAES128CTR  )

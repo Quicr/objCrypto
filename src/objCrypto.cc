@@ -68,8 +68,8 @@ ObjCryptoErr ObjCryptor::addKey( const KeyID keyID,
 
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::seal( KeyID keyID,
-                               const Nonce& nonce,
-                               const std::vector<char>& plainText,
+                               const std::variant< Nonce, IV>& nonceOrIV, //const Nonce& nonce,
+                               const std::vector<uint8_t>& plainText,
                                std::vector<uint8_t>& cipherText  ){
   assert( haveKey( keyID ) );
   const KeyInfo& keyInfo = keyInfoMap.at( keyID );
@@ -80,10 +80,16 @@ ObjCryptoErr ObjCryptor::seal( KeyID keyID,
   case ObjCryptoAlg::AES128_CTR: {
     assert(  std::holds_alternative<Key128>( keyInfo.second ) );
     Key128 key = std::get<Key128>(  keyInfo.second );
-     
+
     IV iv = {0,0};
-    assert( sizeof( iv ) > sizeof( nonce ) );
-    std::memcpy( iv.data(), nonce.data(), sizeof( nonce ) );
+    if ( std::holds_alternative<IV>( nonceOrIV) ) {
+      iv = std::get<IV>( nonceOrIV );
+    } else {
+      Nonce nonce = std::get<Nonce>( nonceOrIV );
+      assert( sizeof( iv ) > sizeof( nonce ) );
+      std::memcpy( iv.data(), nonce.data(), sizeof( nonce ) );
+    }
+    
     assert( sizeof(iv) == sizeof(key) );
     assert( plainText.size() <= ( sizeof(key) * (1<<24) ) );
 
@@ -107,7 +113,7 @@ __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
                                  const Nonce& nonce,
                                  const std::vector<uint8_t>& cipherText, 
-                                 std::vector<char>& plainText ){
+                                 std::vector<uint8_t>& plainText ){
    assert( haveKey( keyID ) );
   const KeyInfo& keyInfo = keyInfoMap.at( keyID );
 

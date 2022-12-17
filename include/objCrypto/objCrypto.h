@@ -47,29 +47,29 @@ namespace ObjCrypto {
     bool haveKey( KeyID keyID );
 
     ObjCryptoErr seal(   KeyID keyID,
-                         const Nonce& nonce,
-                         const std::vector<char>& plainText,
+                         const std::variant<Nonce,IV>& nonceOrIV,
+                         const std::vector<uint8_t>& plainText,
                          std::vector<uint8_t>& cipherText );
     
     ObjCryptoErr unseal( KeyID keyID,
                          const Nonce& nonce,
                          const std::vector<uint8_t>& cipherText, 
-                         std::vector<char>& plainText );
-    
+                         std::vector<uint8_t>& plainText );
+    /*
     ObjCryptoErr seal(   KeyID keyID,
-                 const Nonce& nonce,
-                 char* authData, int authDataLen, 
-                 char* plainText, int textLen,
-                 unsigned char* tagData, int tagDataLen,
-                unsigned  char* cipherText );
+                         const Nonce& nonce,
+                         uint8_t* authData, int authDataLen, 
+                         uint8_t* plainText, int textLen,
+                         uint8_t* tagData, int tagDataLen,
+                         uint8_t* cipherText );
     
     ObjCryptoErr unseal( KeyID keyID,
-                 const Nonce& nonce,
-                 char* authData, int authDataLen, 
-                 unsigned char* cipherText, int textLen,
-                 unsigned char* tagData, int tagDataLen,
-                 char* plainText );
-      
+                         const Nonce& nonce,
+                         uint8_t* authData, int authDataLen, 
+                         uint8_t* cipherText, int textLen,
+                         uint8_t* tagData, int tagDataLen,
+                         uint8_t* plainText );
+    */  
   };
 
 };

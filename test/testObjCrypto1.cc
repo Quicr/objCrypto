@@ -14,15 +14,13 @@ int main( int argc, char* argv[]) {
   ObjCryptor cryptor;
   KeyID keyId=1;
   
-  std::vector<char> plaintextIn = { 42,0x2,0x3,0x4,0x5};
+  std::vector<uint8_t> plaintextIn = { 42,0x2,0x3,0x4,0x5};
   std::vector<uint8_t> ciphertext( plaintextIn.size() ) ;
-  std::vector<char>  plaintextOut( plaintextIn.size() ) ;
-  unsigned char aad[3] = { 0x5,0x6,0x7 };
+  std::vector<uint8_t>  plaintextOut( plaintextIn.size() ) ;
   Key128 key128 = { 0x9,0x9 };
   KeyInfo keyInfo(  ObjCryptoAlg::AES128_CTR, key128 );
   
   Nonce nonce = { 0xA, 0xB };
-  unsigned char tag[32];
   
   assert( sizeof(ciphertext) == sizeof(plaintextIn) );
   assert( sizeof(ciphertext) == sizeof(plaintextOut) );

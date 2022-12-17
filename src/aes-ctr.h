@@ -4,7 +4,7 @@
 
 namespace ObjCrypto {
   
-  ObjCryptoErr aes128_ctr_encrypt(const std::vector<char>& plainText,
+  ObjCryptoErr aes128_ctr_encrypt(const std::vector<uint8_t>& plainText,
                                   const Key128& key,
                                   const IV& iv, 
                                   std::vector<uint8_t>& cipherText);
@@ -12,7 +12,7 @@ namespace ObjCrypto {
   ObjCryptoErr aes128_ctr_decrypt( const std::vector<uint8_t>& cipherText,
                                    const Key128& key,
                                    const IV& iv ,
-                                   std::vector<char>& plainText );
+                                   std::vector<uint8_t>& plainText );
   
 };
 
