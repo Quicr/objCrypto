@@ -1,6 +1,4 @@
 
-#include <iostream>
-
 
 #include <cassert>
 #include <cstring>
@@ -81,17 +79,8 @@ static void formIV( const std::variant< Nonce, IV>& nonceOrIV, IV& iv ){
       assert( sizeof( nonce ) == 13 );
       iv[13] = 0;
       iv[14] = 0;
-      iv[15] = 1;
+      iv[15] = 1; // This 1 is specified in RFC 3686
     }
-
-    uint8_t* ptr = (uint8_t*)(iv.data());
-    int size = sizeof( iv );
-    
-    std::cout << " " << "IV" << ": ";
-    for ( int i=0; i< size; i++ ) {
-      std::cout << "_" << std::hex << (int)(ptr[i]);
-    }
-    std::cout << std::endl;
 }
 
 

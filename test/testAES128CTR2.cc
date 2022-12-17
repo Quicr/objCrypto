@@ -21,19 +21,6 @@ void printHex( const char* name , void* data, int size ) {
   std::cout << std::endl;
 }
 
-void rev(  void* data, const int size ) {
-  uint8_t* ptr = (uint8_t*)data;
-  uint8_t tmp[size];
-
-  for ( int i=0; i< size; i++ ) {
-    tmp[i] = ptr[15-i];
-  }
-  for ( int i=0; i< size; i++ ) {
-    ptr[i] = tmp[i];
-  }
-
-}
-
 
 int main( int argc, char* argv[]) {
   ObjCryptoErr err;
@@ -49,21 +36,13 @@ int main( int argc, char* argv[]) {
   std::vector<uint8_t> cipherText( plainTextIn.size() ) ;
   std::vector<uint8_t> plainTextOut( plainTextIn.size() ) ;
 
-  uint8_t keyData[16] = {  0x7E, 0x24, 0x06, 0x78, 0x17, 0xFA, 0xE0, 0xD7,
-                           0x43, 0xD6, 0xCE, 0x1F, 0x32, 0x53, 0x91, 0x63 };
-  Key128 key128;
-  assert( sizeof( keyData ) == sizeof( key128 ) );
-  memcpy( key128.data() , keyData, sizeof( key128 ) );
-   
-  
+  Key128 key128 = {  0x7E, 0x24, 0x06, 0x78, 0x17, 0xFA, 0xE0, 0xD7,
+                           0x43, 0xD6, 0xCE, 0x1F, 0x32, 0x53, 0x91, 0x63 };  
   KeyInfo keyInfo(  ObjCryptoAlg::AES128_CTR, key128 );
 
-  uint8_t nonceData[13] = { 0x00, 0x6C, 0xB6, 0xDB, 0xC0, 0x54, 0x3B, 0x59,
+  Nonce  nonce = { 0x00, 0x6C, 0xB6, 0xDB, 0xC0, 0x54, 0x3B, 0x59,
                             0xDA, 0x48, 0xD9, 0x0B, 0x00};
-  Nonce  nonce;
-  assert( sizeof( nonceData ) == sizeof( nonce ) );
-  memcpy( nonce.data() , nonceData, sizeof( nonce ) );
-    
+ 
   err = cryptor.addKey( keyId, keyInfo );
   assert( err == ObjCryptoErr::None );
   
