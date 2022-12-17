@@ -8,9 +8,7 @@
 using namespace ObjCrypto;
 
 /*
- * Test vectors are from 
- * https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf
- * Section 5.1 of NIST 800-38A, 2001 Edition 
+ * Test vectors are from RFC3686 Test Vector #2
  */
 
 void printHex( const char* name , void* data, int size ) {
@@ -43,39 +41,47 @@ int main( int argc, char* argv[]) {
   ObjCryptor cryptor;
   KeyID keyId=1;
   
-  std::vector<uint8_t> plainTextIn = { 0x6b,0xc1,0xbe,0xe2,0x2e,0x40,0x9f,0x96,
-                                       0xe9,0x3d,0x7e,0x11,0x73,0x93,0x17,0x2a,
-                                       0xae,0x2d,0x8a,0x57  };
+  std::vector<uint8_t> plainTextIn = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                                       0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+                                       0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+                                       0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F  };
 
   std::vector<uint8_t> cipherText( plainTextIn.size() ) ;
   std::vector<uint8_t> plainTextOut( plainTextIn.size() ) ;
 
-  Key128 key128 = {    0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 
-                       0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
+  uint8_t keyData[16] = {  0x7E, 0x24, 0x06, 0x78, 0x17, 0xFA, 0xE0, 0xD7,
+                           0x43, 0xD6, 0xCE, 0x1F, 0x32, 0x53, 0x91, 0x63 };
+  Key128 key128;
+  assert( sizeof( keyData ) == sizeof( key128 ) );
+  memcpy( key128.data() , keyData, sizeof( key128 ) );
    
+  
   KeyInfo keyInfo(  ObjCryptoAlg::AES128_CTR, key128 );
 
-  IV iv = {  0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 
-             0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff  };
- 
+  uint8_t nonceData[13] = { 0x00, 0x6C, 0xB6, 0xDB, 0xC0, 0x54, 0x3B, 0x59,
+                            0xDA, 0x48, 0xD9, 0x0B, 0x00};
+  Nonce  nonce;
+  assert( sizeof( nonceData ) == sizeof( nonce ) );
+  memcpy( nonce.data() , nonceData, sizeof( nonce ) );
     
   err = cryptor.addKey( keyId, keyInfo );
   assert( err == ObjCryptoErr::None );
   
-  err = cryptor.seal( keyId, iv, plainTextIn, cipherText );
+  err = cryptor.seal( keyId, nonce, plainTextIn, cipherText );
   assert( err == ObjCryptoErr::None);
 
-  err = cryptor.unseal( keyId, iv, cipherText, plainTextOut );
+  err = cryptor.unseal( keyId, nonce, cipherText, plainTextOut );
   assert( err == ObjCryptoErr::None);
 
-  std::vector<uint8_t> correct = { 0x87,0x4d,0x61,0x91,0xb6,0x20,0xe3,0x26,
-                                   0x1b,0xef,0x68,0x64,0x99,0x0d,0xb6,0xce,
-                                   0x98,0x06,0xf6,0x6b };
+  std::vector<uint8_t> correct = {0x51, 0x04, 0xA1, 0x06, 0x16, 0x8A, 0x72, 0xD9,
+                                  0x79, 0x0D, 0x41, 0xEE, 0x8E, 0xDA, 0xD3, 0x88,
+                                  0xEB, 0x2E, 0x1E, 0xFC, 0x46, 0xDA, 0x57, 0xC8,
+                                  0xFC, 0xE6, 0x30, 0xDF, 0x91, 0x41, 0xBE, 0x28 };
     
   printHex( "plainTextIn " , plainTextIn.data() , plainTextIn.size() );
   printHex( "plainTextOut" , plainTextOut.data() , plainTextOut.size() );
   printHex( "key128" , key128.data() , sizeof(key128) );
-  printHex( "iv" , iv.data() , sizeof(iv) );
+  printHex( "nonce" , nonce.data() , sizeof(nonce) );
   printHex( " cipherText" , cipherText.data() , cipherText.size() );
   printHex( "correctText" , correct.data() , correct.size() );
 

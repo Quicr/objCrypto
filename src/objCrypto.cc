@@ -1,4 +1,7 @@
 
+#include <iostream>
+
+
 #include <cassert>
 #include <cstring>
  
@@ -66,9 +69,35 @@ ObjCryptoErr ObjCryptor::addKey( const KeyID keyID,
 }
 
 
+static void formIV( const std::variant< Nonce, IV>& nonceOrIV, IV& iv ){
+    if ( std::holds_alternative<IV>( nonceOrIV) ) {
+      iv = std::get<IV>( nonceOrIV );
+    } else {
+      Nonce nonce = std::get<Nonce>( nonceOrIV );
+      assert( sizeof( iv ) > sizeof( nonce ) );
+      std::memcpy( iv.data(), nonce.data(), sizeof( nonce ) );
+      assert( sizeof(iv) == 16 );
+      assert( iv.size() == 16 );
+      assert( sizeof( nonce ) == 13 );
+      iv[13] = 0;
+      iv[14] = 0;
+      iv[15] = 1;
+    }
+
+    uint8_t* ptr = (uint8_t*)(iv.data());
+    int size = sizeof( iv );
+    
+    std::cout << " " << "IV" << ": ";
+    for ( int i=0; i< size; i++ ) {
+      std::cout << "_" << std::hex << (int)(ptr[i]);
+    }
+    std::cout << std::endl;
+}
+
+
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::seal( KeyID keyID,
-                               const std::variant< Nonce, IV>& nonceOrIV, //const Nonce& nonce,
+                               const std::variant< Nonce, IV>& nonceOrIV,
                                const std::vector<uint8_t>& plainText,
                                std::vector<uint8_t>& cipherText  ){
   assert( haveKey( keyID ) );
@@ -81,14 +110,8 @@ ObjCryptoErr ObjCryptor::seal( KeyID keyID,
     assert(  std::holds_alternative<Key128>( keyInfo.second ) );
     Key128 key = std::get<Key128>(  keyInfo.second );
 
-    IV iv = {0,0};
-    if ( std::holds_alternative<IV>( nonceOrIV) ) {
-      iv = std::get<IV>( nonceOrIV );
-    } else {
-      Nonce nonce = std::get<Nonce>( nonceOrIV );
-      assert( sizeof( iv ) > sizeof( nonce ) );
-      std::memcpy( iv.data(), nonce.data(), sizeof( nonce ) );
-    }
+    IV iv;
+    formIV( nonceOrIV, iv );
     
     assert( sizeof(iv) == sizeof(key) );
     assert( plainText.size() <= ( sizeof(key) * (1<<24) ) );
@@ -125,15 +148,8 @@ ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
     Key128 key128 = std::get<Key128>(  keyInfo.second );
     assert( sizeof(key128) == 128/8 );
 
-    IV iv = {0,0};
-    if ( std::holds_alternative<IV>( nonceOrIV) ) {
-      iv = std::get<IV>( nonceOrIV );
-    } else {
-      Nonce nonce = std::get<Nonce>( nonceOrIV );
-      assert( sizeof( iv ) > sizeof( nonce ) );
-      std::memcpy( iv.data(), nonce.data(), sizeof( nonce ) );
-    }
-    assert( sizeof(iv) == 128/8 );
+    IV iv;
+    formIV( nonceOrIV, iv );
  
     aes128_ctr_decrypt( cipherText, key128, iv, plainText );
     break;

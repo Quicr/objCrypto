@@ -25,3 +25,13 @@ add_executable ( testAES128CTR
 target_link_libraries( testAES128CTR PRIVATE objCrypto )
 add_test( NAME testAES128CTR
                COMMAND testAES128CTR  )
+
+
+
+
+add_executable ( testAES128CTR2
+    testAES128CTR2.cc
+)
+target_link_libraries( testAES128CTR2 PRIVATE objCrypto )
+add_test( NAME testAES128CTR2
+               COMMAND testAES128CTR2  )

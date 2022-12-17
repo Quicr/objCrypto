@@ -18,14 +18,14 @@ namespace ObjCrypto {
     AES256_CTR=2+(2<<3)
   };
  
-  typedef std::array<uint64_t,2> Key128;
-  typedef std::array<uint64_t,4> Key256;
+  typedef std::array<uint8_t,16> Key128;
+  typedef std::array<uint8_t,32> Key256;
   typedef std::pair<ObjCryptoAlg, std::variant<Key128,Key256> > KeyInfo;
 
   typedef uint32_t KeyID;
   
   typedef std::array<uint8_t,13> Nonce;
-  typedef std::array<uint64_t,2> IV;
+  typedef std::array<uint8_t,16> IV;
     
   enum class ObjCryptoErr:uint8_t {
     None=0
