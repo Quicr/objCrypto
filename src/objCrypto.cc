@@ -111,7 +111,7 @@ ObjCryptoErr ObjCryptor::seal( KeyID keyID,
 
 __attribute__((visibility("default")))
 ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
-                                 const Nonce& nonce,
+                                const std::variant<Nonce,IV>& nonceOrIV,
                                  const std::vector<uint8_t>& cipherText, 
                                  std::vector<uint8_t>& plainText ){
    assert( haveKey( keyID ) );
@@ -124,10 +124,15 @@ ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
     assert(  std::holds_alternative<Key128>( keyInfo.second ) );
     Key128 key128 = std::get<Key128>(  keyInfo.second );
     assert( sizeof(key128) == 128/8 );
-     
+
     IV iv = {0,0};
-    assert( sizeof( iv ) > sizeof( nonce ) );
-    std::memcpy( iv.data(), nonce.data(), sizeof( nonce ) );
+    if ( std::holds_alternative<IV>( nonceOrIV) ) {
+      iv = std::get<IV>( nonceOrIV );
+    } else {
+      Nonce nonce = std::get<Nonce>( nonceOrIV );
+      assert( sizeof( iv ) > sizeof( nonce ) );
+      std::memcpy( iv.data(), nonce.data(), sizeof( nonce ) );
+    }
     assert( sizeof(iv) == 128/8 );
  
     aes128_ctr_decrypt( cipherText, key128, iv, plainText );

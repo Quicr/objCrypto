@@ -52,7 +52,7 @@ namespace ObjCrypto {
                          std::vector<uint8_t>& cipherText );
     
     ObjCryptoErr unseal( KeyID keyID,
-                         const Nonce& nonce,
+                         const std::variant<Nonce,IV>& nonceOrIV,
                          const std::vector<uint8_t>& cipherText, 
                          std::vector<uint8_t>& plainText );
     /*
