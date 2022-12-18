@@ -36,3 +36,16 @@ add_executable ( testAes128GcmIv
 target_link_libraries( testAes128GcmIv PRIVATE objCrypto )
 add_test( NAME testAes128GcmIv
                COMMAND testAes128GcmIv  )
+
+
+add_executable ( testSpeedCtr
+    testSpeedCtr.cc
+)
+target_link_libraries( testSpeedCtr PRIVATE objCrypto )
+
+
+add_executable ( testSpeedGcm
+    testSpeedGcm.cc
+)
+target_link_libraries( testSpeedGcm PRIVATE objCrypto )
+

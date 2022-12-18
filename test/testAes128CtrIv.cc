@@ -23,19 +23,6 @@ void printHex( const char* name , void* data, int size ) {
   std::cout << std::endl;
 }
 
-void rev(  void* data, const int size ) {
-  uint8_t* ptr = (uint8_t*)data;
-  uint8_t tmp[size];
-
-  for ( int i=0; i< size; i++ ) {
-    tmp[i] = ptr[15-i];
-  }
-  for ( int i=0; i< size; i++ ) {
-    ptr[i] = tmp[i];
-  }
-
-}
-
 
 int main( int argc, char* argv[]) {
   ObjCryptoErr err;
