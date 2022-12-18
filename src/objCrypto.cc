@@ -212,6 +212,7 @@ ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
 
   assert( plainText.size() == cipherText.size() );
            
+
   switch (keyInfo.first) {
   case ObjCryptoAlg::AES128_CTR:
     assert(0);

@@ -1,4 +1,4 @@
-#include <iostream> // TODO REMOVE
+//#include <iostream> // TODO REMOVE
 
 #include <cassert>
 #include <cstring>
@@ -12,20 +12,6 @@
 
 
 extern "C" {
-CCCryptorStatus CCCryptorGCM(
-	CCOperation 	op,				/* kCCEncrypt, kCCDecrypt */
-	CCAlgorithm		alg,
-	const void 		*key,			/* raw key material */
-	size_t 			keyLength,	
-	const void 		*iv,
-	size_t 			ivLen,
-	const void 		*aData,
-	size_t 			aDataLen,
-	const void 		*dataIn,
-	size_t 			dataInLength,
-  	void 			*dataOut,
-	const void 		*tag,
-	size_t 			*tagLength);
 
 // See https://opensource.apple.com/source/CommonCrypto/CommonCrypto-60165/include/Private/CommonCryptorSPI.h
 
@@ -43,7 +29,7 @@ CCCryptorStatus CCCryptorGCMOneshotDecrypt(CCAlgorithm alg, const void  *key,   
                                        const void  *dataIn, size_t dataInLength,
                                        void 	   *dataOut,
                                        const void  *tagIn,  size_t tagLength) __attribute__((__warn_unused_result__))
-    API_AVAILABLE(macos(10.13), ios(11.0));
+  API_AVAILABLE(macos(10.13), ios(11.0));
 }
 
 #endif
@@ -84,7 +70,7 @@ ObjCryptoErr ObjCrypto::aes128_gcm_encrypt( const Key128& key,
                                 cipherText.data(), 
                                 tag.data(), tag.size() );
   
-  std::cout << "CCCrypto status = " <<  status << std::endl;
+  //std::cout << "CCCrypto status = " <<  status << std::endl;
   
   assert( status != kCCParamError );
   assert( status == kCCSuccess );
@@ -121,7 +107,7 @@ ObjCryptoErr ObjCrypto::aes128_gcm_decrypt( const Key128& key,
                                 plainText.data(), 
                                 tag.data(), tag.size() );
 
-  std::cout << "CCCrypto decrypt status = " <<  status << std::endl;
+  //std::cout << "CCCrypto decrypt status = " <<  status << std::endl;
   if ( status == kCCUnspecifiedError ) {
     return ObjCryptoErr::DecryptAuthFail;
   }
