@@ -60,14 +60,14 @@ namespace ObjCrypto {
                          const std::variant<Nonce,IV>& nonceOrIV,
                          const std::vector<uint8_t>& plainText, 
                          const std::vector<uint8_t>& authData, 
-                         const std::vector<uint8_t>& tagData, 
+                         std::vector<uint8_t>& tag, 
                          std::vector<uint8_t>& cipherText );
     
     ObjCryptoErr unseal( KeyID keyID,
                          const std::variant<Nonce,IV>& nonceOrIV,
                          const std::vector<uint8_t>& cipherText, 
                          const std::vector<uint8_t>& authData,
-                         const std::vector<uint8_t>& tagData, 
+                         const std::vector<uint8_t>& tag, 
                          std::vector<uint8_t>& plainText );
     
   };

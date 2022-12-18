@@ -8,6 +8,7 @@
 #include <openssl/cipher.h>
 
 #include "aes-ctr.h"
+#include "aes-gcm.h"
 
 using namespace ObjCrypto;
 
@@ -154,4 +155,89 @@ ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
   return ObjCryptoErr::None;
 }
 
+__attribute__((visibility("default")))
+ObjCryptoErr ObjCryptor::seal(   KeyID keyID,
+                                 const std::variant<Nonce,IV>& nonceOrIV,
+                                 const std::vector<uint8_t>& plainText, 
+                                 const std::vector<uint8_t>& authData, 
+                                 std::vector<uint8_t>& tag, 
+                                 std::vector<uint8_t>& cipherText )
+{
+  assert( haveKey( keyID ) );
+  const KeyInfo& keyInfo = keyInfoMap.at( keyID );
 
+  assert( plainText.size() == cipherText.size() );
+           
+  switch (keyInfo.first) {
+  case ObjCryptoAlg::AES128_CTR:
+    assert(0);
+    break;
+    
+  case ObjCryptoAlg::AES128_GCM: {
+    assert(  std::holds_alternative<Key128>( keyInfo.second ) );
+    Key128 key = std::get<Key128>(  keyInfo.second );
+
+    IV iv;
+    formIV( nonceOrIV, iv );
+    
+    assert( sizeof(iv) == sizeof(key) );
+    assert( plainText.size() <= ( sizeof(key) * (1<<24) ) );
+
+    aes128_gcm_encrypt( key, iv,  plainText, authData, tag, cipherText);
+    
+    break;
+  }
+  
+  case ObjCryptoAlg::AES256_GCM:
+  case ObjCryptoAlg::AES256_CTR: 
+  default:
+    assert(0);
+    break;
+  }
+
+  
+  return ObjCryptoErr::None;
+}
+
+__attribute__((visibility("default")))
+ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
+                                 const std::variant<Nonce,IV>& nonceOrIV,
+                                 const std::vector<uint8_t>& cipherText, 
+                                 const std::vector<uint8_t>& authData,
+                                 const std::vector<uint8_t>& tag, 
+                                 std::vector<uint8_t>& plainText )
+{
+   assert( haveKey( keyID ) );
+  const KeyInfo& keyInfo = keyInfoMap.at( keyID );
+
+  assert( plainText.size() == cipherText.size() );
+           
+  switch (keyInfo.first) {
+  case ObjCryptoAlg::AES128_CTR:
+    assert(0);
+    break;
+    
+  case ObjCryptoAlg::AES128_GCM: {
+    assert(  std::holds_alternative<Key128>( keyInfo.second ) );
+    Key128 key = std::get<Key128>(  keyInfo.second );
+
+    IV iv;
+    formIV( nonceOrIV, iv );
+    
+    assert( sizeof(iv) == sizeof(key) );
+    assert( plainText.size() <= ( sizeof(key) * (1<<24) ) );
+
+    aes128_gcm_decrypt( key, iv, cipherText, authData, tag, plainText);
+    
+    break;
+  }
+  
+  case ObjCryptoAlg::AES256_GCM:
+  case ObjCryptoAlg::AES256_CTR: 
+  default:
+    assert(0);
+    break;
+  }
+  
+  return ObjCryptoErr::None;
+}

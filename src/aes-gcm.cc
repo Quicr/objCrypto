@@ -1,3 +1,5 @@
+#include <iostream> // TODO REMOVE
+
 #include <cassert>
 #include <cstring>
 
@@ -7,6 +9,24 @@
 
 #if defined( __APPLE__ )
 #include <CommonCrypto/CommonCryptor.h>
+
+
+extern "C" {
+CCCryptorStatus CCCryptorGCM(
+	CCOperation 	op,				/* kCCEncrypt, kCCDecrypt */
+	CCAlgorithm		alg,
+	const void 		*key,			/* raw key material */
+	size_t 			keyLength,	
+	const void 		*iv,
+	size_t 			ivLen,
+	const void 		*aData,
+	size_t 			aDataLen,
+	const void 		*dataIn,
+	size_t 			dataInLength,
+  	void 			*dataOut,
+	const void 		*tag,
+	size_t 			*tagLength);
+}
 #endif
 
 #include <objCrypto/objCrypto.h>
@@ -21,55 +41,41 @@ ObjCryptoErr ObjCrypto::aes128_gcm_encrypt( const Key128& key,
                                  const IV& iv,
                                  const std::vector<uint8_t>& plainText,
                                  const std::vector<uint8_t>& authData,
-                                 const std::vector<uint8_t>& tagData, 
+                                 std::vector<uint8_t>& tag, 
                                  std::vector<uint8_t>& cipherText )
 {
-  /*
   CCCryptorRef cryptorRef;
 
   assert( plainText.size() == cipherText.size() );
   assert( sizeof( iv )  == sizeof( key )  );
   assert( sizeof( key)  == 128/8 );
-  
-  CCCryptorStatus status;
-  status = CCCryptorCreateWithMode( kCCEncrypt,         // CCOperation
-                                    kCCModeGCM,         // CCMode 
-                                    kCCAlgorithmAES128, // CCAlgorithm
-                                    ccNoPadding,        // CCPadding 
-                                    iv.data(),          // const void *iv,
-                                    key.data(),sizeof(key),// const void *key, size_t keyLength
-                                    0,                  // const void *tweak,  
-                                    0,                  // size_t tweakLength,
-                                    0,                  // int numRounds,
-                                    kCCModeOptionGCM_BE,// CCModeOptions 
-                                    &cryptorRef);
-  assert( status == kCCSuccess );
 
-  size_t cipherTextLen=0;
-  size_t moved=0;
+  assert( plainText.size() > 0 ); // apple gives error if it is zero size
   
-  status = CCCryptorUpdate( cryptorRef,
-                            plainText.data(), plainText.size(),// const void *dataIn, size_t dataInLength,
-                            cipherText.data(), // void *dataOut,
-                            cipherText.size(), // size_t dataOutAvailable,
-                            &moved // size_t *dataOutMoved
-                            );
-  assert( status == kCCSuccess );
-  cipherTextLen += moved;
+  assert( tag.size() >= 128/8 );
  
-  status = CCCryptorFinal( cryptorRef,
-                           &cipherText[cipherTextLen], // void *dataOut,
-                           cipherText.size()-cipherTextLen, // size_t dataOutAvailable,
-                           &moved // size_t *dataOutMoved
-                           );
-  assert( status == kCCSuccess );
-  cipherTextLen += moved;
+  size_t tagLen=tag.size();
+  std::cout << "tag sizde encrypt in = "<< tagLen << std::endl;
 
-  assert( cipherTextLen == cipherText.size() );
-  
-  status = CCCryptorRelease( cryptorRef);
+  CCCryptorStatus status =  CCCryptorGCM( kCCEncrypt, // CCOperation op,
+                                          kCCAlgorithmAES128, //CCAlgorithm alg,
+                                          key.data(), key.size(), // const void *key, size_t keyLength,
+                                          iv.data(), iv.size() , // const void *iv,  size_t 			ivLen,
+                                          authData.data(), authData.size(), //const void  	*aData,//size_t 	aDataLen,
+                                          plainText.data(), plainText.size(), // const void *dataIn, size_t dataInLength,
+                                          cipherText.data(), // void *dataOut,
+                                          tag.data(),  //   const void 		*tag,
+                                          &tagLen // size_t 			*tagLength)
+                                          );
+
+  std::cout << "CCCrypto status = " <<  status << std::endl;
+
+  assert( status != kCCParamError );
   assert( status == kCCSuccess );
-  */
+
+  std::cout << "tag sizde encrypt out = "<< tagLen << std::endl;
+  
+  assert( tagLen <= 128/8 );
   
   return ObjCryptoErr::None;
 }
@@ -81,53 +87,33 @@ ObjCryptoErr ObjCrypto::aes128_gcm_decrypt( const Key128& key,
                                    const IV& iv,
                                    const std::vector<uint8_t>& cipherText,
                                    const std::vector<uint8_t>& authData,
-                                   const std::vector<uint8_t>& tagData, 
+                                   const std::vector<uint8_t>& tag, 
                                    std::vector<uint8_t>& plainText )
 {
-  /*
-  CCCryptorRef cryptorRef;
+ CCCryptorRef cryptorRef;
 
   assert( plainText.size() == cipherText.size() );
-  assert( sizeof( iv )  ==sizeof( key )  );
+  assert( sizeof( iv )  == sizeof( key )  );
+  assert( sizeof( key)  == 128/8 );
 
-  CCCryptorStatus status;
-  status = CCCryptorCreateWithMode( kCCDecrypt,         // CCOperation
-                                    kCCModeGCM,         // CCMode 
-                                    kCCAlgorithmAES128, // CCAlgorithm
-                                    ccNoPadding,        // CCPadding 
-                                    iv.data(),                 // const void *iv,
-                                    key.data(), sizeof(key),         // const void *key, size_t keyLength
-                                    0,                  // const void *tweak,  
-                                    0,                  // size_t tweakLength,
-                                    0,                  // int numRounds,
-                                    kCCModeOptionGCM_BE,// CCModeOptions 
-                                    &cryptorRef);
-  assert( status == kCCSuccess );
-
-  size_t plainTextLen=0;
-  size_t moved=0;
-  status = CCCryptorUpdate( cryptorRef,
-                            cipherText.data(), cipherText.size(),// const void *dataIn, size_t dataInLength,
-                            plainText.data(), // void *dataOut,
-                            plainText.size(), // size_t dataOutAvailable,
-                            &moved // size_t *dataOutMoved
-                            );
-  assert( status == kCCSuccess );
-  plainTextLen += moved;
- 
-  status = CCCryptorFinal( cryptorRef,
-                           &plainText[plainTextLen], // void *dataOut,
-                           plainText.size()-plainTextLen, // size_t dataOutAvailable,
-                           &moved // size_t *dataOutMoved
-                           );
-  assert( status == kCCSuccess );
-  plainTextLen += moved;
-
-  assert( plainTextLen == plainText.size() );
+  assert( tag.size() >= 128/8 );
   
-  status = CCCryptorRelease( cryptorRef);
+  size_t tagLen=tag.size();
+  CCCryptorStatus status =  CCCryptorGCM( kCCDecrypt, // CCOperation op,
+                                          kCCAlgorithmAES128, //CCAlgorithm alg,
+                                          key.data(), key.size(), // const void *key, size_t keyLength,
+                                          iv.data(), iv.size() , // const void *iv,  size_t 			ivLen,
+                                          cipherText.data(), cipherText.size(), // const void *dataIn, size_t dataInLength,
+                                          authData.data(), authData.size(), //const void  	*aData,//size_t 	aDataLen,
+                                          plainText.data(), // void *dataOut,
+                                          tag.data(),  //   const void 		*tag,
+                                          &tagLen // size_t 			*tagLength)
+                                          );
+  
   assert( status == kCCSuccess );
-  */
+
+  assert( tagLen <= 128/8 );
+  
   
   return ObjCryptoErr::None;
 }
@@ -140,7 +126,7 @@ ObjCryptoErr ObjCrypto::aes128_gcm_encrypt(const Key128& key,
                                    const IV& iv,
                                    const std::vector<uint8_t>& plainText,
                                    const std::vector<uint8_t>& authData,
-                                   const std::vector<uint8_t>& tagData, 
+                                   std::vector<uint8_t>& tagData, 
                                    std::vector<uint8_t>& cipherText)
 {
   /*
