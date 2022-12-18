@@ -126,45 +126,48 @@ ObjCryptoErr ObjCrypto::aes128_gcm_encrypt(const Key128& key,
                                    const IV& iv,
                                    const std::vector<uint8_t>& plainText,
                                    const std::vector<uint8_t>& authData,
-                                   std::vector<uint8_t>& tagData, 
+                                   std::vector<uint8_t>& tag, 
                                    std::vector<uint8_t>& cipherText)
 {
-  /*
   EVP_CIPHER_CTX *ctx;
-  
-  assert( sizeof( key ) == 128/8 );
-  assert( sizeof( iv ) == 128/8 );
-  assert( plainText.size() == cipherText.size() );
-  
+
+  int moved=0;
+  int cipherTextLen=0;
+
   ctx = EVP_CIPHER_CTX_new();
   assert( ctx );
   
-  int status;
-  status = EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
-  assert( status == 1 );
+  int ret;
+  ret = EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
+  assert( ret == 1 );
   
-  status = EVP_EncryptInit_ex(ctx, NULL, NULL,
-                              (const uint8_t*)key.data(),
-                              (const uint8_t*)iv.data());
-  assert( status == 1 );
-  
-  int moved=0;
-  int cipherTextLen=0;
-  status = EVP_EncryptUpdate(ctx,
-                             (uint8_t*)cipherText.data(), &moved,
-                             (const uint8_t *)plainText.data(), plainText.size());
-  assert( status == 1 );
+  // set IV length ( default is 96 ) 
+  ret =  EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv.size(), NULL);
+  assert( ret == 1 );
+
+  ret = EVP_EncryptInit_ex(ctx, NULL, NULL, key.data(), iv.data());
+  assert( ret == 1 );
+
+  // do the AAD Data 
+  ret = EVP_EncryptUpdate(ctx, NULL, &moved, authData.data(), authData.size()); // what is moved here 
+  assert( ret == 1 );
+  //assert( moved == 0 ); 
+
+  ret = EVP_EncryptUpdate(ctx, cipherText.data(), &moved, plainText.data(), plainText.size() );
+  assert( ret == 1 );
   cipherTextLen += moved;
-  
-  status = EVP_EncryptFinal_ex(ctx, (uint8_t *)&cipherText[cipherTextLen], &moved);
-  assert( status == 1 );
+
+  ret = EVP_EncryptFinal_ex(ctx, &cipherText[cipherTextLen], &moved);
+  assert( ret == 1 );
   cipherTextLen += moved;
-  
+
   assert( cipherTextLen == cipherText.size() );
   
+  ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, tag.size(), tag.data() ); // TODO - check tag.size is what needed
+  assert( ret == 1 );
+
   EVP_CIPHER_CTX_free(ctx);
-  */
-  
+ 
   return ObjCryptoErr::None;
 }
 #endif
@@ -175,44 +178,56 @@ ObjCryptoErr ObjCrypto::aes128_gcm_decrypt(const Key128& key,
                                    const IV& iv,
                                    const std::vector<uint8_t>& cipherText,
                                    const std::vector<uint8_t>& authData,
-                                   const std::vector<uint8_t>& tagData, 
+                                   const std::vector<uint8_t>& tag, 
                                    std::vector<uint8_t>& plainText )
 {
-  /*
   EVP_CIPHER_CTX *ctx;
 
-  assert( sizeof( key ) == 128/8 );
-  assert( sizeof( iv ) == 128/8 );
-  assert( plainText.size() == cipherText.size() );
-  
+  int moved=0;
+  int plainTextLen=0;
+
   ctx = EVP_CIPHER_CTX_new();
   assert( ctx );
   
-  int status;
-  status = EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
-  assert( status == 1 );
+  int ret;
+  ret = EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
+  assert( ret == 1 );
   
-  status = EVP_DecryptInit_ex(ctx, NULL, NULL,
-                              (const uint8_t*)key.data(),
-                              (const uint8_t*)iv.data());
-  assert( status == 1 );
-  
-  int moved=0;
-  int plainTextLen=0;
-  status = EVP_DecryptUpdate(ctx,
-                             (uint8_t*)plainText.data(), &moved,
-                             (const uint8_t *)cipherText.data(), cipherText.size());
-  assert( status == 1 );
+  // set IV length ( default is 96 ) 
+  ret =  EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv.size(), NULL);
+  assert( ret == 1 );
+
+  ret = EVP_DecryptInit_ex(ctx, NULL, NULL, key.data(), iv.data());
+  assert( ret == 1 );
+
+  // do the AAD Data 
+  ret = EVP_DecryptUpdate(ctx, NULL, &moved, authData.data(), authData.size()); // what is moved here 
+  assert( ret == 1 );
+  //assert( moved == 0 ); 
+
+  ret = EVP_DecryptUpdate(ctx, plainText.data(), &moved, cipherText.data(), cipherText.size() );
+  assert( ret == 1 );
   plainTextLen += moved;
+
+  // do tag 
+  ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag.size(), (void*) tag.data()); // TODO check tag size 
+  assert( ret == 1 );
+      
   
-  status = EVP_DecryptFinal_ex(ctx, (uint8_t *)&plainText[plainTextLen], &moved);
-  assert( status == 1 );
-  plainTextLen += moved;
-  
-  assert( plainTextLen == plainText.size() );
+  ret = EVP_DecryptFinal_ex(ctx, &plainText[plainTextLen], &moved);
   
   EVP_CIPHER_CTX_free(ctx);
-  */
+
+  if ( ret == 0 ) {
+    return ObjCryptoErr::DecryptAuthFail;
+    plainText.clear();
+  }
+  
+  assert( ret == 1 );
+  plainTextLen += moved;
+
+  assert( plainTextLen == plainText.size() );
+    
   return ObjCryptoErr::None;
 }
 #endif

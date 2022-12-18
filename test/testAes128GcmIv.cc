@@ -123,7 +123,10 @@ int test2() {
   err = cryptor.seal( keyId, iv, plainTextIn, authData, tag, cipherText );
   assert( err == ObjCryptoErr::None);
 
-  err = cryptor.unseal( keyId, iv, cipherText, authData, tag ,plainTextOut );
+  //tag[0]=0; tag[1]=0; // break tag 
+  
+  err = cryptor.unseal( keyId, iv, cipherText, authData, tag, plainTextOut );
+  assert( err != ObjCryptoErr::DecryptAuthFail);
   assert( err == ObjCryptoErr::None);
 
   std::vector<uint8_t> correct = { 0x03, 0x88, 0xda, 0xce, 0x60, 0xb6, 0xa3, 0x92, 0xf3,

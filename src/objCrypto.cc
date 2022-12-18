@@ -227,7 +227,7 @@ ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
     assert( sizeof(iv) == sizeof(key) );
     assert( plainText.size() <= ( sizeof(key) * (1<<24) ) );
 
-    aes128_gcm_decrypt( key, iv, cipherText, authData, tag, plainText);
+    return aes128_gcm_decrypt( key, iv, cipherText, authData, tag, plainText);
     
     break;
   }

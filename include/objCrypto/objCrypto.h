@@ -28,7 +28,8 @@ namespace ObjCrypto {
   typedef std::array<uint8_t,16> IV;
     
   enum class ObjCryptoErr:uint8_t {
-    None=0
+    None=0,
+      DecryptAuthFail
       };
   
   class ObjCryptor {
