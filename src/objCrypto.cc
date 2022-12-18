@@ -105,7 +105,7 @@ ObjCryptoErr ObjCryptor::seal( KeyID keyID,
     assert( sizeof(iv) == sizeof(key) );
     assert( plainText.size() <= ( sizeof(key) * (1<<24) ) );
 
-    aes128_ctr_encrypt( plainText, key, iv,  cipherText);
+    aes128_ctr_encrypt( key, iv,  plainText, cipherText);
     
     break;
   }
@@ -140,7 +140,7 @@ ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
     IV iv;
     formIV( nonceOrIV, iv );
  
-    aes128_ctr_decrypt( cipherText, key128, iv, plainText );
+    aes128_ctr_decrypt( key128, iv, cipherText, plainText );
     break;
   }
   case ObjCryptoAlg::AES128_GCM:

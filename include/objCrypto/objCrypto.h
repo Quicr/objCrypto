@@ -55,21 +55,21 @@ namespace ObjCrypto {
                          const std::variant<Nonce,IV>& nonceOrIV,
                          const std::vector<uint8_t>& cipherText, 
                          std::vector<uint8_t>& plainText );
-    /*
+ 
     ObjCryptoErr seal(   KeyID keyID,
-                         const Nonce& nonce,
-                         uint8_t* authData, int authDataLen, 
-                         uint8_t* plainText, int textLen,
-                         uint8_t* tagData, int tagDataLen,
-                         uint8_t* cipherText );
+                         const std::variant<Nonce,IV>& nonceOrIV,
+                         const std::vector<uint8_t>& plainText, 
+                         const std::vector<uint8_t>& authData, 
+                         const std::vector<uint8_t>& tagData, 
+                         std::vector<uint8_t>& cipherText );
     
     ObjCryptoErr unseal( KeyID keyID,
-                         const Nonce& nonce,
-                         uint8_t* authData, int authDataLen, 
-                         uint8_t* cipherText, int textLen,
-                         uint8_t* tagData, int tagDataLen,
-                         uint8_t* plainText );
-    */  
+                         const std::variant<Nonce,IV>& nonceOrIV,
+                         const std::vector<uint8_t>& cipherText, 
+                         const std::vector<uint8_t>& authData,
+                         const std::vector<uint8_t>& tagData, 
+                         std::vector<uint8_t>& plainText );
+    
   };
 
 };

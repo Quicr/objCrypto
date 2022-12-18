@@ -11,17 +11,20 @@
 
 #include <objCrypto/objCrypto.h>
 
-#include "aes-ctr.h"
+#include "aes-gcm.h"
 
 using namespace ObjCrypto;
 
 
 #if defined( __APPLE__ ) && !defined( OBJ_CRYPTO_USE_BORINGSSL )
-ObjCryptoErr ObjCrypto::aes128_ctr_encrypt( const Key128& key,
-                                            const IV& iv,
-                                            const std::vector<uint8_t>& plainText,
-                                            std::vector<uint8_t>& cipherText)
+ObjCryptoErr ObjCrypto::aes128_gcm_encrypt( const Key128& key,
+                                 const IV& iv,
+                                 const std::vector<uint8_t>& plainText,
+                                 const std::vector<uint8_t>& authData,
+                                 const std::vector<uint8_t>& tagData, 
+                                 std::vector<uint8_t>& cipherText )
 {
+  /*
   CCCryptorRef cryptorRef;
 
   assert( plainText.size() == cipherText.size() );
@@ -30,7 +33,7 @@ ObjCryptoErr ObjCrypto::aes128_ctr_encrypt( const Key128& key,
   
   CCCryptorStatus status;
   status = CCCryptorCreateWithMode( kCCEncrypt,         // CCOperation
-                                    kCCModeCTR,         // CCMode 
+                                    kCCModeGCM,         // CCMode 
                                     kCCAlgorithmAES128, // CCAlgorithm
                                     ccNoPadding,        // CCPadding 
                                     iv.data(),          // const void *iv,
@@ -38,7 +41,7 @@ ObjCryptoErr ObjCrypto::aes128_ctr_encrypt( const Key128& key,
                                     0,                  // const void *tweak,  
                                     0,                  // size_t tweakLength,
                                     0,                  // int numRounds,
-                                    kCCModeOptionCTR_BE,// CCModeOptions 
+                                    kCCModeOptionGCM_BE,// CCModeOptions 
                                     &cryptorRef);
   assert( status == kCCSuccess );
 
@@ -66,6 +69,7 @@ ObjCryptoErr ObjCrypto::aes128_ctr_encrypt( const Key128& key,
   
   status = CCCryptorRelease( cryptorRef);
   assert( status == kCCSuccess );
+  */
   
   return ObjCryptoErr::None;
 }
@@ -73,11 +77,14 @@ ObjCryptoErr ObjCrypto::aes128_ctr_encrypt( const Key128& key,
 
     
 #if defined( __APPLE__ ) && !defined( OBJ_CRYPTO_USE_BORINGSSL )
-ObjCryptoErr ObjCrypto::aes128_ctr_decrypt( const Key128& key,
-                                            const IV& iv ,
-                                            const std::vector<uint8_t>& cipherText,
-                                            std::vector<uint8_t>& plainText )
+ObjCryptoErr ObjCrypto::aes128_gcm_decrypt( const Key128& key,
+                                   const IV& iv,
+                                   const std::vector<uint8_t>& cipherText,
+                                   const std::vector<uint8_t>& authData,
+                                   const std::vector<uint8_t>& tagData, 
+                                   std::vector<uint8_t>& plainText )
 {
+  /*
   CCCryptorRef cryptorRef;
 
   assert( plainText.size() == cipherText.size() );
@@ -85,7 +92,7 @@ ObjCryptoErr ObjCrypto::aes128_ctr_decrypt( const Key128& key,
 
   CCCryptorStatus status;
   status = CCCryptorCreateWithMode( kCCDecrypt,         // CCOperation
-                                    kCCModeCTR,         // CCMode 
+                                    kCCModeGCM,         // CCMode 
                                     kCCAlgorithmAES128, // CCAlgorithm
                                     ccNoPadding,        // CCPadding 
                                     iv.data(),                 // const void *iv,
@@ -93,7 +100,7 @@ ObjCryptoErr ObjCrypto::aes128_ctr_decrypt( const Key128& key,
                                     0,                  // const void *tweak,  
                                     0,                  // size_t tweakLength,
                                     0,                  // int numRounds,
-                                    kCCModeOptionCTR_BE,// CCModeOptions 
+                                    kCCModeOptionGCM_BE,// CCModeOptions 
                                     &cryptorRef);
   assert( status == kCCSuccess );
 
@@ -120,6 +127,7 @@ ObjCryptoErr ObjCrypto::aes128_ctr_decrypt( const Key128& key,
   
   status = CCCryptorRelease( cryptorRef);
   assert( status == kCCSuccess );
+  */
   
   return ObjCryptoErr::None;
 }
@@ -128,11 +136,14 @@ ObjCryptoErr ObjCrypto::aes128_ctr_decrypt( const Key128& key,
 
 
 #if defined( OBJ_CRYPTO_USE_BORINGSSL )
-ObjCryptoErr ObjCrypto::aes128_ctr_encrypt( const Key128& key,
-                                            const IV& iv,
-                                            const std::vector<uint8_t>& plainText,
-                                            std::vector<uint8_t>& cipherText)
+ObjCryptoErr ObjCrypto::aes128_gcm_encrypt(const Key128& key,
+                                   const IV& iv,
+                                   const std::vector<uint8_t>& plainText,
+                                   const std::vector<uint8_t>& authData,
+                                   const std::vector<uint8_t>& tagData, 
+                                   std::vector<uint8_t>& cipherText)
 {
+  /*
   EVP_CIPHER_CTX *ctx;
   
   assert( sizeof( key ) == 128/8 );
@@ -143,7 +154,7 @@ ObjCryptoErr ObjCrypto::aes128_ctr_encrypt( const Key128& key,
   assert( ctx );
   
   int status;
-  status = EVP_EncryptInit_ex(ctx, EVP_aes_128_ctr(), NULL, NULL, NULL);
+  status = EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
   assert( status == 1 );
   
   status = EVP_EncryptInit_ex(ctx, NULL, NULL,
@@ -165,8 +176,8 @@ ObjCryptoErr ObjCrypto::aes128_ctr_encrypt( const Key128& key,
   
   assert( cipherTextLen == cipherText.size() );
   
-  /* Clean up */
   EVP_CIPHER_CTX_free(ctx);
+  */
   
   return ObjCryptoErr::None;
 }
@@ -174,11 +185,14 @@ ObjCryptoErr ObjCrypto::aes128_ctr_encrypt( const Key128& key,
 
 
 #if defined( OBJ_CRYPTO_USE_BORINGSSL )
-ObjCryptoErr ObjCrypto::aes128_ctr_decrypt( const Key128& key,
-                                            const IV& iv,
-                                            const std::vector<uint8_t>& cipherText,
-                                            std::vector<uint8_t>& plainText )
+ObjCryptoErr ObjCrypto::aes128_gcm_decrypt(const Key128& key,
+                                   const IV& iv,
+                                   const std::vector<uint8_t>& cipherText,
+                                   const std::vector<uint8_t>& authData,
+                                   const std::vector<uint8_t>& tagData, 
+                                   std::vector<uint8_t>& plainText )
 {
+  /*
   EVP_CIPHER_CTX *ctx;
 
   assert( sizeof( key ) == 128/8 );
@@ -189,7 +203,7 @@ ObjCryptoErr ObjCrypto::aes128_ctr_decrypt( const Key128& key,
   assert( ctx );
   
   int status;
-  status = EVP_DecryptInit_ex(ctx, EVP_aes_128_ctr(), NULL, NULL, NULL);
+  status = EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
   assert( status == 1 );
   
   status = EVP_DecryptInit_ex(ctx, NULL, NULL,
@@ -211,9 +225,8 @@ ObjCryptoErr ObjCrypto::aes128_ctr_decrypt( const Key128& key,
   
   assert( plainTextLen == plainText.size() );
   
-  /* Clean up */
   EVP_CIPHER_CTX_free(ctx);
-  
+  */
   return ObjCryptoErr::None;
 }
 #endif

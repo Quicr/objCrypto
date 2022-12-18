@@ -13,7 +13,8 @@ add_library(
   objCrypto
   SHARED
   objCrypto.cc
-  aes-ctr.cc
+  aes-ctr.cc 
+  aes-gcm.cc 
 )
 
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
