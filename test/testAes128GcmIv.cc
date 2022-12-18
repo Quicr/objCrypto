@@ -1,7 +1,8 @@
 /* 
  * test vectors from "The Galois/Counter Mode of Operation (GCM)" 
  * by David A. McGrew and John Viega
- * Test Case 1 fails on apply Crypto lib
+ * Test Case 1 fails on apply Crypto lib ( no plain text ) 
+ * Test case 2 failed on boringssl crypt ( no auth data ) 
  */
 #include <cassert>
 #include <iostream>
@@ -103,7 +104,7 @@ int test2() {
   
   std::vector<uint8_t> plainTextIn = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00   };
-  std::vector<uint8_t> authData = {  };
+  std::vector<uint8_t> authData = { };
   std::vector<uint8_t> correct = { 0x03, 0x88, 0xda, 0xce, 0x60, 0xb6, 0xa3, 0x92,
                                    0xf3, 0x28, 0xc2, 0xb9, 0x71, 0xb2, 0xfe, 0x78 };
   std::vector<uint8_t> correctTag = { 0xab, 0x6e, 0x47, 0xd4, 0x2c, 0xec, 0x13, 0xbd,
@@ -168,9 +169,80 @@ int test2() {
 }
 
 
+int test3() {
+  ObjCryptoErr err;
+  
+  ObjCryptor cryptor;
+  KeyID keyId=1;
+
+  // These test vectors are not valid - I just make them TODO 
+  std::vector<uint8_t> plainTextIn = { 0x0A, 0x0B, 0x0C, 0x0D   };
+  std::vector<uint8_t> authData = { 0x01, 0x02, 0x03  };
+  std::vector<uint8_t> correct = { 0xa9, 0xb9, 0x27, 0x89 };
+  std::vector<uint8_t> correctTag = { 0x5c, 0xb7, 0x2d, 0x5a, 0xbc, 0x2b, 0xa2, 0xde,
+                                      0x93, 0xd4, 0x30, 0x39, 0x90, 0xf7, 0xc9, 0xa8 };
+  
+  std::vector<uint8_t> cipherText( plainTextIn.size() ) ;
+  std::vector<uint8_t> plainTextOut( plainTextIn.size() ) ;
+
+  Key128 key128 = {   0 };
+   
+  KeyInfo keyInfo(  ObjCryptoAlg::AES128_GCM, key128 );
+
+  IV iv = {  0  };
+ 
+  std::vector<uint8_t> tag( 128/8 );
+  assert( tag.size() == 128/8 ); 
+  
+  err = cryptor.addKey( keyId, keyInfo );
+  assert( err == ObjCryptoErr::None );
+  
+  err = cryptor.seal( keyId, iv, plainTextIn, authData, tag, cipherText );
+  assert( err == ObjCryptoErr::None);
+
+  //tag[0]=0; tag[1]=0; // break tag 
+  
+  err = cryptor.unseal( keyId, iv, cipherText, authData, tag, plainTextOut );
+  assert( err != ObjCryptoErr::DecryptAuthFail);
+  assert( err == ObjCryptoErr::None);
+ 
+  printHex( "plainTextIn  " , plainTextIn.data() , plainTextIn.size() );
+  printHex( " plainTextOut" , plainTextOut.data() , plainTextOut.size() );
+  printHex( "key128" , key128.data() , key128.size() );
+  printHex( "iv" , iv.data() , iv.size() );
+  printHex( "tag        " , tag.data() , tag.size() );
+  printHex( " correctTag" , correctTag.data() , correctTag.size() );
+  printHex( "cipherText  " , cipherText.data() , cipherText.size() );
+  printHex( " correctText" , correct.data() , correct.size() );
+
+  assert( correct.size()  == cipherText.size() );
+  for ( int i=0; i< correct.size() ; i++ ) {
+    if ( correct[i] != cipherText[i] ) {
+      return 1; // fail
+    }
+  }
+
+   assert( correctTag.size()  == tag.size() );
+  for ( int i=0; i< correctTag.size() ; i++ ) {
+    if ( correctTag[i] != tag[i] ) {
+      return 1; // fail
+    }
+  }
+  
+  assert( plainTextIn.size()  == plainTextOut.size() );
+  for ( int i=0; i< plainTextIn.size() ; i++ ) {
+    if ( plainTextIn[i] != plainTextOut[i] ) {
+      return 1; // fail
+    }
+  }
+  return 0;
+}
+
+
 
 int main( int argc, char* argv[]) {
-  // if ( test1() != 0 ) { return 1; } // TODO 
-  if ( test2() != 0 ) { return 1; }
+  // if ( test1() != 0 ) { return 1; } // TODO - fail apple no data 
+  //if ( test2() != 0 ) { return 1; } // TODO - fails booring no auth data 
+  if ( test3() != 0 ) { return 1; }
   return 0;
 }
