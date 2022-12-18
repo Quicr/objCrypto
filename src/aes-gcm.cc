@@ -87,7 +87,7 @@ ObjCryptoErr ObjCrypto::aes128_gcm_decrypt( const Key128& key,
                                    const IV& iv,
                                    const std::vector<uint8_t>& cipherText,
                                    const std::vector<uint8_t>& authData,
-                                   const std::vector<uint8_t>& tag, 
+                                   const std::vector<uint8_t>& tagIn, 
                                    std::vector<uint8_t>& plainText )
 {
  CCCryptorRef cryptorRef;
@@ -96,6 +96,7 @@ ObjCryptoErr ObjCrypto::aes128_gcm_decrypt( const Key128& key,
   assert( sizeof( iv )  == sizeof( key )  );
   assert( sizeof( key)  == 128/8 );
 
+  std::vector<uint8_t> tag(  tagIn.size() );
   assert( tag.size() >= 128/8 );
   
   size_t tagLen=tag.size();
@@ -112,8 +113,14 @@ ObjCryptoErr ObjCrypto::aes128_gcm_decrypt( const Key128& key,
   
   assert( status == kCCSuccess );
 
-  assert( tagLen <= 128/8 );
-  
+  assert( tagLen <= tag.size() );
+
+  assert( tag.size() == tagIn.size() );
+  for ( int i=0; i < tag.size(); i++ ) {
+    if ( tagIn[i] != tag[i] ) {
+      return ObjCryptoErr::DecryptAuthFail;
+    }
+  }
   
   return ObjCryptoErr::None;
 }

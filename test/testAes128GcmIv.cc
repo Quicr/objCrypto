@@ -176,7 +176,7 @@ int test3() {
   KeyID keyId=1;
 
   // These test vectors are not valid - I just make them TODO 
-  std::vector<uint8_t> plainTextIn = { 0x0A, 0x0B, 0x0C, 0x0D   };
+  std::vector<uint8_t> plainTextIn = { 0x0A, 0x0B, 0x0C, 0x0D  };
   std::vector<uint8_t> authData = { 0x01, 0x02, 0x03  };
   std::vector<uint8_t> correct = { 0xa9, 0xb9, 0x27, 0x89 };
   std::vector<uint8_t> correctTag = { 0x5c, 0xb7, 0x2d, 0x5a, 0xbc, 0x2b, 0xa2, 0xde,
