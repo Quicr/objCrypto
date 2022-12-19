@@ -30,14 +30,21 @@ int main( int argc, char* argv[]) {
   err = cryptor.addKey( keyId, keyInfo );
   assert( err == ObjCryptoErr::None );
 
+   auto startTime = std::chrono::high_resolution_clock::now();
+  
   const long loops = 1*1000*1000;
   for ( int i=0; i<loops; i++ ) {
     err = cryptor.seal( keyId, iv, plainTextIn, cipherText );
     assert( err == ObjCryptoErr::None);
   }
-  float seconds = 0.830; // TODO 
-  const long bits = loops * plainTextIn.size() * 8;
-  std::cout << "mbps of AES128-CTR: " << (float)(bits)/seconds/1.0e6 << std::endl;
+
+   auto endTime = std::chrono::high_resolution_clock::now();
+  auto elapsedMS = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+  float seconds = (float)(elapsedMS.count()) * 1e-6;
+  
+  const long bytesProcessed = loops * plainTextIn.size();
+  std::cout << "mbps of AES128-CTR: " << (float)(bytesProcessed)*8.0/seconds/1.0e6 << std::endl;
+   std::cout << "Kbytes of AES128-CTR: " << (float)(bytesProcessed)/seconds/1.0e3 << std::endl;
   
   //err = cryptor.unseal( keyId, iv, cipherText, plainTextOut );
   //assert( err == ObjCryptoErr::None);

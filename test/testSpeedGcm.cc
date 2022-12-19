@@ -1,6 +1,8 @@
 
 #include <cassert>
 #include <iostream>
+#include <chrono>
+
 
 #include <objCrypto/objCrypto.h>
 
@@ -33,14 +35,20 @@ int test3() {
   err = cryptor.addKey( keyId, keyInfo );
   assert( err == ObjCryptoErr::None );
 
+  auto startTime = std::chrono::high_resolution_clock::now();
+    
   const long loops = 1*1000*1000;
   for ( int i=0; i<loops; i++ ) {
     err = cryptor.seal( keyId, iv, plainTextIn, authData, tag, cipherText );
     assert( err == ObjCryptoErr::None);
   }
-  float seconds = 0.881; // TODO 
-  const long bits = loops * plainTextIn.size() * 8;
-  std::cout << "mbps of AES128-GCM: " << (float)(bits)/seconds/1.0e6 << std::endl;
+
+  auto endTime = std::chrono::high_resolution_clock::now();
+  auto elapsedMS = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+  float seconds = (float)(elapsedMS.count()) * 1e-6; 
+  const long bytesProcessed = loops * plainTextIn.size() ;
+  std::cout << "mbps of AES128-GCM: " << (float)(bytesProcessed)*8.0/seconds/1.0e6 << std::endl;
+  std::cout << "Kbytes of AES128-GCM: " << (float)(bytesProcessed)/seconds/1.0e3 << std::endl;
   
   // err = cryptor.unseal( keyId, iv, cipherText, authData, tag, plainTextOut );
   //assert( err == ObjCryptoErr::None);
