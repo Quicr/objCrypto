@@ -44,7 +44,7 @@ int main( int argc, char* argv[]) {
   
   const long bytesProcessed = loops * plainTextIn.size();
   std::cout << "mbps of AES128-CTR: " << (float)(bytesProcessed)*8.0/seconds/1.0e6 << std::endl;
-   std::cout << "Kbytes of AES128-CTR: " << (float)(bytesProcessed)/seconds/1.0e3 << std::endl;
+  std::cout << "Kbytes of AES128-CTR: " << (float)(bytesProcessed)/seconds/1.0e3 << std::endl;
   
   //err = cryptor.unseal( keyId, iv, cipherText, plainTextOut );
   //assert( err == ObjCryptoErr::None);
