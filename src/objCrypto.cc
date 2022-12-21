@@ -147,28 +147,57 @@ ObjCryptoErr ObjCryptor::seal(   KeyID keyID,
                                  std::vector<uint8_t>& tag,
                                  std::vector<uint8_t>& cipherText ) const
 {
+  // check have key
   assert( haveKey( keyID ) );
   const KeyInfo& keyInfo = keyInfoMap.at( keyID );
 
-  assert( plainText.size() == cipherText.size() );
-           
+  // check key matches alogrithm
   switch (keyInfo.first) {
-  case ObjCryptoAlg::AES_128_CTR_0:
-    assert(0);
-    break;
-    
-  case ObjCryptoAlg::AES_128_GCM_128: {
-    assert(  std::holds_alternative<Key128>( keyInfo.second ) );
-    Key128 key = std::get<Key128>(  keyInfo.second );
+    case ObjCryptoAlg::AES_128_CTR_0:
+    case ObjCryptoAlg::AES_128_GCM_64:
+    case ObjCryptoAlg::AES_128_GCM_128:
+    {
+      assert(std::holds_alternative<Key128>(keyInfo.second));
+    }
+      break;
+    default:
+      assert( 0 /* key size does not match algorithm */ );
+  }
+  Key128 key = std::get<Key128>(  keyInfo.second );
 
-    IV iv;
-    formIV( nonceOrIV, iv );
-    
-    assert( sizeof(iv) == sizeof(key) );
-    assert( plainText.size() <= ( sizeof(key) * (1<<24) ) );
+  // check tag size correct
+  switch (keyInfo.first) {
+    case ObjCryptoAlg::AES_128_CTR_0:
+      assert(tag.size() == 0);
+      break;
+    case ObjCryptoAlg::AES_128_GCM_64:
+      assert(tag.size() == 64/8);
+      break;
+    case ObjCryptoAlg::AES_128_GCM_128:
+      assert(tag.size() == 128/8);
+      break;
+      default:
+      assert(0);
+  }
+
+  // check output data size correct
+  assert( plainText.size() <= ( sizeof(key) * (1<<24) ) );
+
+  assert(  cipherText.size() == plainText.size());
+
+  IV iv;
+  formIV( nonceOrIV, iv );
+
+  switch (keyInfo.first) {
+    case ObjCryptoAlg::AES_128_CTR_0: {
+      {
+        aes128_ctr_encrypt(key, iv, plainText, cipherText);
+      } break;
+      case ObjCryptoAlg::AES_128_GCM_64:
+  case ObjCryptoAlg::AES_128_GCM_128: {
 
     aes128_gcm_encrypt( key, iv,  plainText, authData, tag, cipherText);
-    
+  }
     break;
   }
 
@@ -187,7 +216,7 @@ ObjCryptoErr ObjCryptor::unseal( KeyID keyID,
                                  const std::vector<uint8_t>& cipherText, 
                                  const std::vector<uint8_t>& authData,
                                  const std::vector<uint8_t>& tag,
-                                 std::vector<uint8_t>& plainText ) const 
+                                 std::vector<uint8_t>& plainText ) const
 {
    assert( haveKey( keyID ) );
   const KeyInfo& keyInfo = keyInfoMap.at( keyID );
