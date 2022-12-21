@@ -3,20 +3,15 @@
 #include <objCrypto/objCrypto.h>
 
 namespace ObjCrypto {
-  
-  ObjCryptoErr aes128_gcm_encrypt( const Key128& key,
-                                   const IV& iv,
-                                   const std::vector<uint8_t>& plainText,
-                                   const std::vector<uint8_t>& authData,
-                                   std::vector<uint8_t>& tag, 
-                                   std::vector<uint8_t>& cipherText );
-  
-  ObjCryptoErr aes128_gcm_decrypt( const Key128& key,
-                                   const IV& iv,
-                                   const std::vector<uint8_t>& cipherText,
-                                   const std::vector<uint8_t>& authData,
-                                   const std::vector<uint8_t>& tag, 
-                                   std::vector<uint8_t>& plainText );
-  
-};
 
+ObjCryptoErr aes128_gcm_encrypt(const Key128 &key, const IV &iv,
+                                const std::vector<uint8_t> &plainText,
+                                const std::vector<uint8_t> &authData, std::vector<uint8_t> &tag,
+                                std::vector<uint8_t> &cipherText);
+
+ObjCryptoErr aes128_gcm_decrypt(const Key128 &key, const IV &iv,
+                                const std::vector<uint8_t> &cipherText,
+                                const std::vector<uint8_t> &authData,
+                                const std::vector<uint8_t> &tag, std::vector<uint8_t> &plainText);
+
+}; // namespace ObjCrypto

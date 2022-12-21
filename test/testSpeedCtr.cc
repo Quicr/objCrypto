@@ -5,50 +5,48 @@
 
 using namespace ObjCrypto;
 
+int main(int argc, char *argv[]) {
+    ObjCryptoErr err;
 
-int main( int argc, char* argv[]) {
-  ObjCryptoErr err;
-  
-  ObjCryptor cryptor;
-  KeyID keyId=1;
-  
-  std::vector<uint8_t> plainTextIn = { 0x6b,0xc1,0xbe,0xe2,0x2e,0x40,0x9f,0x96,
-                                       0xe9,0x3d,0x7e,0x11,0x73,0x93,0x17,0x2a  };
+    ObjCryptor cryptor;
+    KeyID keyId = 1;
 
-  std::vector<uint8_t> cipherText( plainTextIn.size() ) ;
-  std::vector<uint8_t> plainTextOut( plainTextIn.size() ) ;
+    std::vector<uint8_t> plainTextIn = {0x6b, 0xc1, 0xbe, 0xe2, 0x2e, 0x40, 0x9f, 0x96,
+                                        0xe9, 0x3d, 0x7e, 0x11, 0x73, 0x93, 0x17, 0x2a};
 
-  Key128 key128 = {    0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 
-                       0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
-   
-  KeyInfo keyInfo(  ObjCryptoAlg::AES_128_CTR_0, key128 );
+    std::vector<uint8_t> cipherText(plainTextIn.size());
+    std::vector<uint8_t> plainTextOut(plainTextIn.size());
 
-  IV iv = {  0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 
-             0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff  };
- 
-    
-  err = cryptor.addKey( keyId, keyInfo );
-  assert( err == ObjCryptoErr::None );
+    Key128 key128 = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
+                     0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c};
 
-   auto startTime = std::chrono::high_resolution_clock::now();
-  
-  const long loops = 1*1000*1000;
-  for ( int i=0; i<loops; i++ ) {
-    err = cryptor.seal( keyId, iv, plainTextIn, cipherText );
-    assert( err == ObjCryptoErr::None);
-  }
+    KeyInfo keyInfo(ObjCryptoAlg::AES_128_CTR_0, key128);
 
-   auto endTime = std::chrono::high_resolution_clock::now();
-  auto elapsedMS = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-  float seconds = (float)(elapsedMS.count()) * 1e-6;
-  
-  const long bytesProcessed = loops * plainTextIn.size();
-  std::cout << "mbps of AES128-CTR: " << (float)(bytesProcessed)*8.0/seconds/1.0e6 << std::endl;
-  std::cout << "Kbytes of AES128-CTR: " << (float)(bytesProcessed)/seconds/1.0e3 << std::endl;
-  
-  //err = cryptor.unseal( keyId, iv, cipherText, plainTextOut );
-  //assert( err == ObjCryptoErr::None);
+    IV iv = {0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7,
+             0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff};
 
- 
-  return 0;
+    err = cryptor.addKey(keyId, keyInfo);
+    assert(err == ObjCryptoErr::None);
+
+    auto startTime = std::chrono::high_resolution_clock::now();
+
+    const long loops = 1 * 1000 * 1000;
+    for (int i = 0; i < loops; i++) {
+        err = cryptor.seal(keyId, iv, plainTextIn, cipherText);
+        assert(err == ObjCryptoErr::None);
+    }
+
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto elapsedMS = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+    float seconds = (float)(elapsedMS.count()) * 1e-6;
+
+    const long bytesProcessed = loops * plainTextIn.size();
+    std::cout << "mbps of AES128-CTR: " << (float)(bytesProcessed)*8.0 / seconds / 1.0e6
+              << std::endl;
+    std::cout << "Kbytes of AES128-CTR: " << (float)(bytesProcessed) / seconds / 1.0e3 << std::endl;
+
+    // err = cryptor.unseal( keyId, iv, cipherText, plainTextOut );
+    // assert( err == ObjCryptoErr::None);
+
+    return 0;
 }
