@@ -25,7 +25,7 @@ int test3() {
 
   Key128 key128 = {   0 };
    
-  KeyInfo keyInfo(  ObjCryptoAlg::AES128_GCM, key128 );
+  KeyInfo keyInfo(  ObjCryptoAlg::AES_128_GCM_128, key128 );
 
   IV iv = {  0  };
  

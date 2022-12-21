@@ -56,7 +56,7 @@ ObjCryptoErr ObjCrypto::aes128_gcm_encrypt( const Key128& key,
   assert( sizeof( key)  == 128/8 );
 
   assert( plainText.size() > 0 ); // apple gives error if it is zero size
-  
+
   assert( tag.size() >= 8 );
   assert( tag.size() <= 16 );
 
