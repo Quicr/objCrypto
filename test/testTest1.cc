@@ -1,7 +1,6 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
 
-int main(int argc, char *argv[]) {
-    if (argc == 2) {
-        return 0;
-    }
-    return 1;
+TEST_CASE("tsting that test framework is in place ") {
+    CHECK( 1+1 == 2 );
 }

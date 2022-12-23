@@ -5,11 +5,9 @@
 add_executable( testTest1
     testTest1.cc
 )
+target_link_libraries( testTest1 PRIVATE doctest )
 add_test( NAME testTest1a
-               COMMAND testTest1 0 )
-add_test( NAME testTest1b
-               COMMAND testTest1 1 2 )
-set_tests_properties( testTest1b PROPERTIES WILL_FAIL TRUE)
+               COMMAND testTest1 )
 
 
 
