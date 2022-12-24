@@ -1,0 +1,8 @@
+#pragma once
+
+namespace ObjCrypto {
+
+  static const float objCryptoVersion =  @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@;
+
+}
+

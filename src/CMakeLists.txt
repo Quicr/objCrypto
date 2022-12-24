@@ -9,15 +9,20 @@ endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-common -fno-exceptions -fno-rtti")
 
+configure_file (
+    "${PROJECT_SOURCE_DIR}/include/objCrypto/objCryptoVersion.h.in"
+    "${PROJECT_SOURCE_DIR}/include/objCrypto/objCryptoVersion.h"
+)
+
 add_library(
   objCrypto
-  STATIC
+  SHARED
   objCrypto.cc
   aes-ctr.cc 
   aes-gcm.cc 
 )
 
-set_property(TARGET objCrypto PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_target_properties( objCrypto PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
    target_link_libraries( objCrypto PRIVATE crypto )

@@ -12,10 +12,19 @@ add_test( NAME testTest1a
 
 
 
+add_executable( testVersion
+    testVersion.cc
+)
+target_link_libraries( testVersion PRIVATE objCrypto doctest::doctest ) 
+add_test( NAME testVersion
+               COMMAND testVersion )
+
+
+
 add_executable ( testAes128CtrIv
     testAes128CtrIv.cc
 )
-target_link_libraries( testAes128CtrIv PRIVATE objCrypto doctest::doctest )
+target_link_libraries( testAes128CtrIv PRIVATE objCrypto doctest::doctest )  
 add_test( NAME testAes128CtrIv
                COMMAND testAes128CtrIv  )
 
