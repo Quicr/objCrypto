@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.13..3.25 )
 
-project( playCrypto
+project( objCrypto
             VERSION 0.1.1
             DESCRIPTION "C++ Libraary to encrypt and decrypt objects"
             HOMEPAGE_URL "https://github.com/fluffy/objCrypto"
@@ -41,7 +41,7 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     endif()
 endif()
 
-
+configure_file(objCrypto.pc.in objCrypto.pc @ONLY)
 
 add_subdirectory( contrib )
 add_subdirectory( src )
@@ -49,3 +49,10 @@ add_subdirectory( src )
 if( BUILD_TESTS )
     add_subdirectory( test ) 
 endif()
+
+include(GNUInstallDirs)
+
+install(FILES ${CMAKE_BINARY_DIR}/objCrypto.pc
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+
+
