@@ -19,7 +19,7 @@ jobs:
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     strategy:
       matrix:
-        os: [windows-latest] # [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest,  macos-latest] # [ubuntu-latest, macos-latest, windows-latest]
         
     runs-on: ${{ matrix.os }}
 
@@ -31,8 +31,8 @@ jobs:
     - name: Install Missing things
       run: |
          if [ "$RUNNER_OS" == "Windows" ]; then
-              choco install yasm
-              vcpkg install openssl 
+              #choco install yasm
+              #vcpkg install openssl 
          fi
       shell: bash 
          
