@@ -8,6 +8,8 @@ cmake_minimum_required(VERSION 3.5)
 
 project(BoringSSL LANGUAGES C CXX)
 
+set( BUILD_SHARED_LIB TRUE )
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(CLANG 1)
 endif()

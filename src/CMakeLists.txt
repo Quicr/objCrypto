@@ -26,6 +26,8 @@ set_target_properties( objCrypto PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties( objCrypto PROPERTIES SOVERSION 0)
 set_target_properties( objCrypto PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
    target_link_libraries( objCrypto PRIVATE crypto )
 endif ()
