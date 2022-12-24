@@ -11,7 +11,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-common -fno-exc
 
 add_library(
   objCrypto
-  SHARED
+  STATIC
   objCrypto.cc
   aes-ctr.cc 
   aes-gcm.cc 
