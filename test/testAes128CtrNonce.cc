@@ -1,8 +1,14 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
 
 #include <cassert>
 #include <iostream>
 
 #include <objCrypto/objCrypto.h>
+
+
+#include "testHelper.h"
+
 
 using namespace ObjCrypto;
 
@@ -10,17 +16,9 @@ using namespace ObjCrypto;
  * Test vectors are from RFC3686 Test Vector #2
  */
 
-void printHex(const char *name, void *data, int size) {
-    uint8_t *ptr = (uint8_t *)data;
 
-    std::cout << " " << name << ": ";
-    for (int i = 0; i < size; i++) {
-        std::cout << "_" << std::hex << (int)(ptr[i]);
-    }
-    std::cout << std::endl;
-}
 
-int main(int argc, char *argv[]) {
+TEST_CASE("test AES128 Ctr Nonce Mode") {
     ObjCryptoErr err;
 
     ObjCryptor cryptor;
@@ -61,18 +59,13 @@ int main(int argc, char *argv[]) {
     printHex(" cipherText", cipherText.data(), cipherText.size());
     printHex("correctText", correct.data(), correct.size());
 
-    assert(correct.size() == cipherText.size());
+    CHECK(correct.size() == cipherText.size());
     for (int i = 0; i < correct.size(); i++) {
-        if (correct[i] != cipherText[i]) {
-            return 1; // fail
-        }
+      CHECK (correct[i] == cipherText[i]);
     }
 
-    assert(plainTextIn.size() == plainTextOut.size());
+    CHECK(plainTextIn.size() == plainTextOut.size());
     for (int i = 0; i < plainTextIn.size(); i++) {
-        if (plainTextIn[i] != plainTextOut[i]) {
-            return 1; // fail
-        }
+      CHECK (plainTextIn[i] == plainTextOut[i]); 
     }
-    return 0;
 }
