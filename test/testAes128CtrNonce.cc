@@ -6,21 +6,17 @@
 
 #include <objCrypto/objCrypto.h>
 
+
+#include "testHelper.h"
+
+
 using namespace ObjCrypto;
 
 /*
  * Test vectors are from RFC3686 Test Vector #2
  */
 
-void printHex(const char *name, void *data, int size) {
-    uint8_t *ptr = (uint8_t *)data;
 
-    std::cout << " " << name << ": ";
-    for (int i = 0; i < size; i++) {
-        std::cout << "_" << std::hex << (int)(ptr[i]);
-    }
-    std::cout << std::endl;
-}
 
 TEST_CASE("test AES128 Ctr Nonce Mode") {
     ObjCryptoErr err;
