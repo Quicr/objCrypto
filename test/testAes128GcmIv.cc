@@ -27,7 +27,8 @@ void printHex(const char *name, void *data, int size) {
 
     std::cout << " " << name << ": ";
     for (int i = 0; i < size; i++) {
-        std::cout << "_" << std::hex << (int)(ptr[i]);
+      if (( (i%4) == 0 ) && ( i>0) ) std::cout << "_" ;
+      std::cout << std::setw(2) << std::setfill('0') << std::hex << (int)(ptr[i]);
     }
     std::cout << std::endl;
 }
@@ -197,12 +198,12 @@ TEST_CASE("test 3 AES128 GCM IV Mode") {
 
     printHex("plainTextIn  ", plainTextIn.data(), plainTextIn.size());
     printHex(" plainTextOut", plainTextOut.data(), plainTextOut.size());
-    printHex("key128", key128.data(), key128.size());
-    printHex("iv", iv.data(), iv.size());
-    printHex("tag        ", tag.data(), tag.size());
-    printHex(" correctTag", correctTag.data(), correctTag.size());
-    printHex("cipherText  ", cipherText.data(), cipherText.size());
-    printHex(" correctText", correct.data(), correct.size());
+    printHex("       key128", key128.data(), key128.size());
+    printHex("           iv", iv.data(), iv.size());
+    printHex("tag          ", tag.data(), tag.size());
+    printHex(" correctTag  ", correctTag.data(), correctTag.size());
+    printHex("cipherText   ", cipherText.data(), cipherText.size());
+    printHex(" correctText ", correct.data(), correct.size());
 
      CHECK(correct.size() == cipherText.size());
     for (int i = 0; i < correct.size(); i++) {
