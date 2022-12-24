@@ -1,7 +1,11 @@
 
 cmake_minimum_required( VERSION 3.20 )
 
-project( playCrypto C CXX)
+project( playCrypto
+         VERSION 0.1.1
+         DESCRIPTION "C++ Libraary to encrypt and decrypt objects"
+         HOMEPAGE_URL "https://github.com/fluffy/TODO"
+                 LANGUAGES C CXX)
 
 
 if ( ${APPLE} )
