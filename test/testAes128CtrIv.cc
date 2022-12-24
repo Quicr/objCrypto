@@ -1,3 +1,5 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
 
 #include <cassert>
 #include <iostream>
@@ -22,7 +24,7 @@ void printHex(const char *name, void *data, int size) {
     std::cout << std::endl;
 }
 
-int main(int argc, char *argv[]) {
+TEST_CASE("test AES128 CTR IV Mode") {
     ObjCryptoErr err;
 
     ObjCryptor cryptor;
@@ -63,16 +65,11 @@ int main(int argc, char *argv[]) {
 
     assert(correct.size() == cipherText.size());
     for (int i = 0; i < correct.size(); i++) {
-        if (correct[i] != cipherText[i]) {
-            return 1; // fail
-        }
+      CHECK( correct[i] == cipherText[i] );
     }
 
     assert(plainTextIn.size() == plainTextOut.size());
     for (int i = 0; i < plainTextIn.size(); i++) {
-        if (plainTextIn[i] != plainTextOut[i]) {
-            return 1; // fail
-        }
+      CHECK( plainTextIn[i] == plainTextOut[i] );
     }
-    return 0;
 }

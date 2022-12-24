@@ -4,6 +4,11 @@
  * Test Case 1 fails on apply Crypto lib ( no plain text )
  * Test case 2 failed on boringssl crypt ( no auth data )
  */
+
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
+
+
 #include <cassert>
 #include <iostream>
 
@@ -27,7 +32,8 @@ void printHex(const char *name, void *data, int size) {
     std::cout << std::endl;
 }
 
-int test1() {
+/*
+TEST_CASE("test 1 AES128 GCM IV Mode") {
     ObjCryptoErr err;
 
     ObjCryptor cryptor;
@@ -70,30 +76,25 @@ int test1() {
     printHex("cipherText  ", cipherText.data(), cipherText.size());
     printHex(" correctText", correct.data(), correct.size());
 
-    assert(correct.size() == cipherText.size());
+    CHECK(correct.size() == cipherText.size());
     for (int i = 0; i < correct.size(); i++) {
-        if (correct[i] != cipherText[i]) {
-            return 1; // fail
-        }
+      CHECK (correct[i] == cipherText[i]);
     }
 
-    assert(correctTag.size() == tag.size());
+    CHECK(correctTag.size() == tag.size());
     for (int i = 0; i < correctTag.size(); i++) {
-        if (correctTag[i] != tag[i]) {
-            return 1; // fail
-        }
+      CHECK (correctTag[i] == tag[i]);
     }
 
-    assert(plainTextIn.size() == plainTextOut.size());
+    CHECK(plainTextIn.size() == plainTextOut.size());
     for (int i = 0; i < plainTextIn.size(); i++) {
-        if (plainTextIn[i] != plainTextOut[i]) {
-            return 1; // fail
-        }
+      CHECK (plainTextIn[i] == plainTextOut[i]); 
     }
-    return 0;
 }
+*/
 
-int test2() {
+/*
+TEST_CASE("test 2 AES128 GCM IV Mode")  {
     ObjCryptoErr err;
 
     ObjCryptor cryptor;
@@ -140,30 +141,24 @@ int test2() {
     printHex("cipherText  ", cipherText.data(), cipherText.size());
     printHex(" correctText", correct.data(), correct.size());
 
-    assert(correct.size() == cipherText.size());
+     CHECK(correct.size() == cipherText.size());
     for (int i = 0; i < correct.size(); i++) {
-        if (correct[i] != cipherText[i]) {
-            return 1; // fail
-        }
+      CHECK (correct[i] == cipherText[i]);
     }
 
-    assert(correctTag.size() == tag.size());
+    CHECK(correctTag.size() == tag.size());
     for (int i = 0; i < correctTag.size(); i++) {
-        if (correctTag[i] != tag[i]) {
-            return 1; // fail
-        }
+      CHECK (correctTag[i] == tag[i]);
     }
 
-    assert(plainTextIn.size() == plainTextOut.size());
+    CHECK(plainTextIn.size() == plainTextOut.size());
     for (int i = 0; i < plainTextIn.size(); i++) {
-        if (plainTextIn[i] != plainTextOut[i]) {
-            return 1; // fail
-        }
+      CHECK (plainTextIn[i] == plainTextOut[i]); 
     }
-    return 0;
 }
+*/
 
-int test3() {
+TEST_CASE("test 3 AES128 GCM IV Mode") {
     ObjCryptoErr err;
 
     ObjCryptor cryptor;
@@ -209,34 +204,19 @@ int test3() {
     printHex("cipherText  ", cipherText.data(), cipherText.size());
     printHex(" correctText", correct.data(), correct.size());
 
-    assert(correct.size() == cipherText.size());
+     CHECK(correct.size() == cipherText.size());
     for (int i = 0; i < correct.size(); i++) {
-        if (correct[i] != cipherText[i]) {
-            return 1; // fail
-        }
+      CHECK (correct[i] == cipherText[i]);
     }
 
-    assert(correctTag.size() == tag.size());
+    CHECK(correctTag.size() == tag.size());
     for (int i = 0; i < correctTag.size(); i++) {
-        if (correctTag[i] != tag[i]) {
-            return 1; // fail
-        }
+      CHECK (correctTag[i] == tag[i]);
     }
 
-    assert(plainTextIn.size() == plainTextOut.size());
+    CHECK(plainTextIn.size() == plainTextOut.size());
     for (int i = 0; i < plainTextIn.size(); i++) {
-        if (plainTextIn[i] != plainTextOut[i]) {
-            return 1; // fail
-        }
+      CHECK (plainTextIn[i] == plainTextOut[i]); 
     }
-    return 0;
 }
 
-int main(int argc, char *argv[]) {
-    // if ( test1() != 0 ) { return 1; } // TODO - fail apple no data
-    // if ( test2() != 0 ) { return 1; } // TODO - fails booring no auth data
-    if (test3() != 0) {
-        return 1;
-    }
-    return 0;
-}
