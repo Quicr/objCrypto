@@ -1,0 +1,14 @@
+FROM ubuntu:latest as base
+LABEL description="Tools to build ObjCrypto Library "
+
+# Build tools
+RUN apt update 
+RUN apt upgrade -y 
+RUN apt install -y build-essential
+RUN apt install -y cmake
+RUN apt install -y tcsh
+
+RUN mkdir /src
+WORKDIR /src
+CMD /bin/tcsh
+
