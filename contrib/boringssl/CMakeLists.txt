@@ -10,6 +10,10 @@ project(BoringSSL LANGUAGES C CXX)
 
 set( BUILD_SHARED_LIB TRUE )
 
+if ( WIN32 )
+   set(  OPENSSL_NO_ASM TRUE )
+endif()
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(CLANG 1)
 endif()
