@@ -120,7 +120,7 @@ if(BUILD_SHARED_LIBS)
   add_definitions(-DBORINGSSL_SHARED_LIBRARY)
   # Enable position-independent code globally. This is needed because
   # some library targets are OBJECT libraries.
-  set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+  set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 endif()
 
 include_directories(src/include)
@@ -358,7 +358,7 @@ endif()
 
 add_library(
   crypto
-
+  OBJECT
   ${CRYPTO_ARCH_SOURCES}
   err_data.c
   src/crypto/asn1/a_bitstr.c

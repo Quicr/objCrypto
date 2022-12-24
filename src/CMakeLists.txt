@@ -11,11 +11,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-common -fno-exc
 
 add_library(
   objCrypto
-  SHARED
+  STATIC
   objCrypto.cc
   aes-ctr.cc 
   aes-gcm.cc 
 )
+
+set_property(TARGET objCrypto PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
    target_link_libraries( objCrypto PRIVATE crypto )
