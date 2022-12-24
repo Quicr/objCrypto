@@ -1,6 +1,9 @@
 #include <cassert>
 #include <cstring>
 
+#include <objCrypto/objCrypto.h>
+#include <objCrypto/objCryptoVersion.h>
+
 #include "aes-ctr.h"
 #include "aes-gcm.h"
 
@@ -9,6 +12,12 @@ using namespace ObjCrypto;
 __attribute__((visibility("default"))) ObjCryptor::ObjCryptor() {}
 
 __attribute__((visibility("default"))) ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
+
+__attribute__((visibility("default"))) 
+float ObjCryptor::version() {
+  return ObjCrypto::objCryptoVersion; 
+}
+
 
 __attribute__((visibility("default"))) ObjCryptoErr ObjCryptor::removeKey(KeyID keyID) {
     assert(haveKey(keyID));

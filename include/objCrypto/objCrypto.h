@@ -44,6 +44,8 @@ class ObjCryptor {
 
     ~ObjCryptor();
 
+    static float version();
+
     ObjCryptoErr addKey(const KeyID keyID, const KeyInfo &key);
 
     ObjCryptoErr removeKey(KeyID keyID);

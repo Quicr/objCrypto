@@ -1,11 +1,10 @@
+cmake_minimum_required( VERSION 3.13..3.25 )
 
-cmake_minimum_required( VERSION 3.20 )
-
-project( playCrypto
-         VERSION 0.1.1
-         DESCRIPTION "C++ Libraary to encrypt and decrypt objects"
-         HOMEPAGE_URL "https://github.com/fluffy/TODO"
-                 LANGUAGES C CXX)
+project( objCrypto
+            VERSION 0.1.1
+            DESCRIPTION "C++ Libraary to encrypt and decrypt objects"
+            HOMEPAGE_URL "https://github.com/fluffy/objCrypto"
+            LANGUAGES C CXX)
 
 
 if ( ${APPLE} )
@@ -30,9 +29,30 @@ message( "BUILD_TESTS  is set to ${BUILD_TESTS} " )
 
 include(CTest)
 
+
+find_package(Git QUIET)
+
+if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+    execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    RESULT_VARIABLE GIT_SUBMOD_RESULT)
+    if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+        message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+    endif()
+endif()
+
+configure_file(objCrypto.pc.in objCrypto.pc @ONLY)
+
 add_subdirectory( contrib )
 add_subdirectory( src )
 
 if( BUILD_TESTS )
     add_subdirectory( test ) 
 endif()
+
+include(GNUInstallDirs)
+
+install(FILES ${CMAKE_BINARY_DIR}/objCrypto.pc
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+
+
