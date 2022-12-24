@@ -17,6 +17,8 @@ add_library(
   aes-gcm.cc 
 )
 
+set_property(TARGET objCrypto PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
    target_link_libraries( objCrypto PRIVATE crypto )
 endif ()
