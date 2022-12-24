@@ -13,6 +13,13 @@ else ()
    set( OBJ_CRYPTO_USE_BORINGSSL True CACHE BOOL "use boring SSL for crypto"  )
 endif ()
 
+if ( WIN32 )
+   set( BUILD_TESTS False CACHE BOOL "build tests"  )
+else ()
+   set( BUILD_TESTS True CACHE BOOL "butild tests"  )
+endif ()
+
+
 option( BUILD_TESTS "Build test programs" ON)
 option( OBJ_CRYPTO_USE_BORINGSSL "Use Booringssl for crypto" )
 
