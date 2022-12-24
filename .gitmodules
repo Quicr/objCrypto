@@ -1,6 +1,6 @@
 [submodule "contrib/boringssl"]
 	path = contrib/boringssl/src
-	url = git@github.com:google/boringssl.git
+	url = git@github.com:fluffy/boringssl-crypto.git
 [submodule "contrib/doctest"]
 	path = contrib/doctest
 	url = git@github.com:doctest/doctest.git
