@@ -31,7 +31,7 @@ jobs:
     - name: Install Missing things
       run: |
          if [ "$RUNNER_OS" == "Windows" ]; then
-              #choco install yasm
+              choco install yasm
               #vcpkg install openssl 
          fi
       shell: bash 
