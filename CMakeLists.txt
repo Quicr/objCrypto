@@ -1,10 +1,16 @@
 cmake_minimum_required( VERSION 3.13..3.25 )
 
+
+if ( ${APPLE} )
+   set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX arch to compile")
+endif ()
+
 project( objCrypto
             VERSION 0.1.1
             DESCRIPTION "C++ Libraary to encrypt and decrypt objects"
             HOMEPAGE_URL "https://github.com/fluffy/objCrypto"
             LANGUAGES C CXX)
+
 
 
 if ( ${APPLE} )
@@ -19,9 +25,11 @@ else ()
    set( BUILD_TESTS True CACHE BOOL "butild tests"  )
 endif ()
 
+set( BUILD_SHARED_LIBS True CACHE BOOL "build as shared library"  )
 
 option( BUILD_TESTS "Build test programs" ON)
 option( OBJ_CRYPTO_USE_BORINGSSL "Use Booringssl for crypto" )
+option( BUILD_SHARED_LIBS "Build as shared library" )
 
 
 set( CMAKE_CXX_STANDARD 17 )
@@ -32,7 +40,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 message( "OBJ_CRYPTO_USE_BORINGSSL is set to ${OBJ_CRYPTO_USE_BORINGSSL} " )
-message( "BUILD_TESTS  is set to ${BUILD_TESTS} " )
+message( "BUILD_TESTS  is set to ${BUILD_TESTS} " ) 
+message( "BUILD_SHARED_LIBS is set to ${BUILD_SHARED_LIBS} " ) 
 
 include(CTest)
 
