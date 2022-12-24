@@ -14,14 +14,17 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/include/objCrypto/objCryptoVersion.h"
 )
 
+# controll static shared with BUILD_SHARED_LIBS=ON.
 add_library(
   objCrypto
-  STATIC
-  objCrypto.cc
-  aes-ctr.cc 
-  aes-gcm.cc 
 )
 
+target_sources( objCrypto 
+  PRIVATE
+  objCrypto.cc
+  aes-ctr.cc 
+  aes-gcm.cc )
+ 
 set_target_properties( objCrypto PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties( objCrypto PROPERTIES SOVERSION 0)
 set_target_properties( objCrypto PROPERTIES POSITION_INDEPENDENT_CODE ON)
