@@ -16,7 +16,7 @@ configure_file (
 
 add_library(
   objCrypto
-  SHARED
+  STATIC
   objCrypto.cc
   aes-ctr.cc 
   aes-gcm.cc 
