@@ -10,11 +10,7 @@
 
 using namespace ObjCrypto;
 
-/*
- * Test vectors are from RFC3686 Test Vector #2
- */
-
-TEST_CASE("test AES128 Ctr Nonce Mode") {
+TEST_CASE("test NUL Crypto Mode") {
     ObjCryptoErr err;
 
     ObjCryptor cryptor;
@@ -32,12 +28,24 @@ TEST_CASE("test AES128 Ctr Nonce Mode") {
 
     Key128 key128 = {0x7E, 0x24, 0x06, 0x78, 0x17, 0xFA, 0xE0, 0xD7,
                      0x43, 0xD6, 0xCE, 0x1F, 0x32, 0x53, 0x91, 0x63};
-    KeyInfo keyInfo(ObjCryptoAlg::AES_128_CTR_0, key128);
+    
+    SUBCASE("NUl_128_NUL_0") {
+      std::cout << "Run for NUl_128_NUL_0 " << std::endl;
+      
+      KeyInfo keyInfo(ObjCryptoAlg::NUL_128_NUL_0, key128);
+      err = cryptor.addKey(keyId, keyInfo);
+      assert(err == ObjCryptoErr::None);
+    }
+    SUBCASE("NUl_128_NUL_128") {
+      std::cout << "Run for NUl_128_NUL_128 " << std::endl;
 
+      tag.resize( 128/8 );
+      KeyInfo keyInfo(ObjCryptoAlg::NUL_128_NUL_128, key128);
+      err = cryptor.addKey(keyId, keyInfo);
+      assert(err == ObjCryptoErr::None);
+    }
+   
     Nonce nonce = {0x00, 0x6C, 0xB6, 0xDB, 0xC0, 0x54, 0x3B, 0x59, 0xDA, 0x48, 0xD9, 0x0B};
-
-    err = cryptor.addKey(keyId, keyInfo);
-    assert(err == ObjCryptoErr::None);
 
     err = cryptor.seal(keyId, nonce, plainTextIn, auth, tag, cipherText);
     assert(err == ObjCryptoErr::None);
@@ -45,10 +53,7 @@ TEST_CASE("test AES128 Ctr Nonce Mode") {
     err = cryptor.unseal(keyId, nonce, cipherText, auth, tag, plainTextOut);
     assert(err == ObjCryptoErr::None);
 
-    std::vector<uint8_t> correct = {0x51, 0x04, 0xA1, 0x06, 0x16, 0x8A, 0x72, 0xD9,
-                                    0x79, 0x0D, 0x41, 0xEE, 0x8E, 0xDA, 0xD3, 0x88,
-                                    0xEB, 0x2E, 0x1E, 0xFC, 0x46, 0xDA, 0x57, 0xC8,
-                                    0xFC, 0xE6, 0x30, 0xDF, 0x91, 0x41, 0xBE, 0x28};
+    std::vector<uint8_t> correct = plainTextIn;
 
     printHex("plainTextIn ", plainTextIn.data(), plainTextIn.size());
     printHex("plainTextOut", plainTextOut.data(), plainTextOut.size());

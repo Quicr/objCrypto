@@ -21,34 +21,48 @@ add_test( NAME testVersion
 
 
 
-
-add_executable ( testAes128Ctr
-    testAes128Ctr.cc
+add_executable ( testNulNul
+    testNulNul.cc
 )
-target_link_libraries( testAes128Ctr PRIVATE objCrypto doctest::doctest  )
-add_test( NAME testAes128Ctr
-               COMMAND testAes128Ctr  )
+target_link_libraries( testNulNul PRIVATE objCrypto doctest::doctest  )
+add_test( NAME testNulNul
+               COMMAND testNulNul  )
 
 
 
-add_executable ( testAes128Gcm
-    testAes128Gcm.cc
+add_executable ( testAesCtr
+    testAesCtr.cc
 )
-target_link_libraries( testAes128Gcm PRIVATE objCrypto doctest::doctest  )
-add_test( NAME testAes128Gcm
-               COMMAND testAes128Gcm  )
+target_link_libraries( testAesCtr PRIVATE objCrypto doctest::doctest  )
+add_test( NAME testAesCtr
+               COMMAND testAesCtr  )
 
 
 
-
-add_executable ( testSpeedCtr
-    testSpeedCtr.cc
+add_executable ( testAesGcm
+    testAesGcm.cc
 )
-target_link_libraries( testSpeedCtr PRIVATE objCrypto  doctest::doctest )
+target_link_libraries( testAesGcm PRIVATE objCrypto doctest::doctest  )
+add_test( NAME testAesGcm
+               COMMAND testAesGcm  )
 
 
-add_executable ( testSpeedGcm
-    testSpeedGcm.cc
+
+
+add_executable ( speedNul 
+    speedNul.cc 
+) 
+target_link_libraries( speedNul PRIVATE objCrypto ) 
+
+
+add_executable ( speedCtr 
+    speedCtr.cc 
+) 
+target_link_libraries( speedCtr PRIVATE objCrypto ) 
+
+
+add_executable ( speedGcm
+    speedGcm.cc
 )
-target_link_libraries( testSpeedGcm PRIVATE objCrypto doctest::doctest  )
+target_link_libraries( speedGcm PRIVATE objCrypto )
 
