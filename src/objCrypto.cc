@@ -79,22 +79,20 @@ __attribute__((visibility("default"))) ObjCryptoErr ObjCryptor::addKey(const Key
     return ObjCryptoErr::None;
 }
 
-static void formIV(const std::variant<Nonce, IV> &nonceOrIV, IV &iv) {
-    if (std::holds_alternative<IV>(nonceOrIV)) {
-        iv = std::get<IV>(nonceOrIV);
-    } else {
-        const Nonce& nonce = std::get<Nonce>(nonceOrIV);
-        
-        assert(sizeof(iv) > sizeof(nonce));
-        std::memcpy(iv.data(), nonce.data(), sizeof(nonce));
-        
-        assert( iv.size() == 16);
-        assert(sizeof(nonce) == 12);
-        iv[12] = 0;
-        iv[13] = 0;
-        iv[14] = 0;
-        iv[15] = 1; // This 1 is specified in RFC 3686
-    }
+IV ObjCryptor::formIV(const Nonce &nonce) const
+{
+  IV iv;
+  assert(sizeof(IV) > sizeof(Nonce));
+  std::memcpy(iv.data(), nonce.data(), sizeof(nonce));
+  
+  assert( iv.size() == 16);
+  assert( nonce.size() == 12);
+  iv[12] = 0;
+  iv[13] = 0;
+  iv[14] = 0;
+  iv[15] = 1; // This 1 is specified in RFC 3686
+  
+  return iv;
 }
 
 __attribute__((visibility("default"))) ObjCryptoErr
@@ -132,14 +130,14 @@ ObjCryptor::seal(KeyID keyID,  const Nonce  &nonce,
 
     switch (keyInfo.first) {
     case ObjCryptoAlg::AES_128_CTR_0: {
-      IV iv;    formIV(nonce, iv);
+      IV iv = formIV(nonce);
       const Key128& key = std::get<Key128>(keyInfo.second);
       aes_ctr_encrypt(key, iv, plainText, cipherText);
     }
       break;
       
     case ObjCryptoAlg::AES_256_CTR_0: {
-      IV iv;    formIV(nonce, iv);
+      IV iv =  formIV(nonce );
       const Key256& key = std::get<Key256>(keyInfo.second);
       aes_ctr_encrypt(key, iv, plainText, cipherText);
     }
@@ -182,14 +180,14 @@ ObjCryptor::unseal(KeyID keyID,  const Nonce  &nonce,
       
     case ObjCryptoAlg::AES_128_CTR_0: {
       Key128 key128 = std::get<Key128>(keyInfo.second);
-      IV iv;  formIV(nonce, iv);
+      IV iv = formIV(nonce);
       ret = aes_ctr_decrypt(key128, iv, cipherText, plainText);
     }
       break;
       
    case ObjCryptoAlg::AES_256_CTR_0: {
       Key256 key256 = std::get<Key256>(keyInfo.second);
-      IV iv;  formIV(nonce, iv);
+      IV iv=formIV(nonce);
       ret = aes_ctr_decrypt(key256, iv, cipherText, plainText);
     }
       break;

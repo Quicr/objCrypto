@@ -43,6 +43,8 @@ class ObjCryptor {
   private:
     std::map<KeyID, const KeyInfo> keyInfoMap;
 
+    IV formIV(const Nonce &nonce) const;
+ 
   public:
     ObjCryptor();
 
