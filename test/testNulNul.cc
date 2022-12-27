@@ -10,10 +10,6 @@
 
 using namespace ObjCrypto;
 
-/*
- * Test vectors are from RFC3686 Test Vector #2
- */
-
 TEST_CASE("test NUL Crypto Mode") {
     ObjCryptoErr err;
 
