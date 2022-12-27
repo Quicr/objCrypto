@@ -47,13 +47,23 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
     CCCryptorStatus status = kCCSuccess;
 
     switch (key.index()) {
+      
     case 0: {
         Key128 key128 = std::get<Key128>(key);
-        status = CCCryptorGCMOneshotEncrypt(kCCAlgorithmAES128, key128.data(), key128.size(),
+        status = CCCryptorGCMOneshotEncrypt(kCCAlgorithmAES, key128.data(), key128.size(),
                                             nonce.data(), nonce.size(), authData.data(),
                                             authData.size(), plainText.data(), plainText.size(),
                                             cipherText.data(), tag.data(), tag.size());
     } break;
+      
+   case 1: {
+        Key256 key256 = std::get<Key256>(key);
+        status = CCCryptorGCMOneshotEncrypt(kCCAlgorithmAES, key256.data(), key256.size(),
+                                            nonce.data(), nonce.size(), authData.data(),
+                                            authData.size(), plainText.data(), plainText.size(),
+                                            cipherText.data(), tag.data(), tag.size());
+    } break;
+      
     default:
         assert(0);
         break;
@@ -78,7 +88,14 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
     switch (key.index()) {
     case 0: {
         Key128 key128 = std::get<Key128>(key);
-        status = CCCryptorGCMOneshotDecrypt(kCCAlgorithmAES128, key128.data(), key128.size(),
+        status = CCCryptorGCMOneshotDecrypt(kCCAlgorithmAES, key128.data(), key128.size(),
+                                            nonce.data(), nonce.size(), authData.data(),
+                                            authData.size(), cipherText.data(), cipherText.size(),
+                                            plainText.data(), tag.data(), tag.size());
+    } break;
+    case 1: {
+        Key256 key256 = std::get<Key256>(key);
+        status = CCCryptorGCMOneshotDecrypt(kCCAlgorithmAES, key256.data(), key256.size(),
                                             nonce.data(), nonce.size(), authData.data(),
                                             authData.size(), cipherText.data(), cipherText.size(),
                                             plainText.data(), tag.data(), tag.size());
@@ -128,6 +145,19 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
         assert(ret == 1);
 
         ret = EVP_EncryptInit_ex(ctx, NULL, NULL, key128.data(), nonce.data());
+        assert(ret == 1);
+    } break;
+    case 1: {
+        Key256 key256 = std::get<Key256>(key);
+
+        ret = EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+        assert(ret == 1);
+
+        // set IV length ( default is 96 )
+        ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, nonce.size(), NULL);
+        assert(ret == 1);
+
+        ret = EVP_EncryptInit_ex(ctx, NULL, NULL, key256.data(), nonce.data());
         assert(ret == 1);
     } break;
     default:
@@ -188,6 +218,19 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
         assert(ret == 1);
 
         ret = EVP_DecryptInit_ex(ctx, NULL, NULL, key128.data(), nonce.data());
+        assert(ret == 1);
+    } break;
+   case 1: {
+        Key256 key256 = std::get<Key256>(key);
+
+        ret = EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+        assert(ret == 1);
+
+        // set IV length ( default is 96 )
+        ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, nonce.size(), NULL);
+        assert(ret == 1);
+
+        ret = EVP_DecryptInit_ex(ctx, NULL, NULL, key256.data(), nonce.data());
         assert(ret == 1);
     } break;
     default:
