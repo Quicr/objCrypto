@@ -3,12 +3,12 @@
 # find_package(doctest REQUIRED)
 
 
-add_executable( testTest1
-    testTest1.cc
+add_executable( testTest
+    testTest.cc
 )
-target_link_libraries( testTest1 PRIVATE doctest::doctest )
-add_test( NAME testTest1a
-               COMMAND testTest1 )
+target_link_libraries( testTest PRIVATE doctest::doctest )
+add_test( NAME testTest
+               COMMAND testTest )
 
 
 
@@ -21,29 +21,24 @@ add_test( NAME testVersion
 
 
 
-add_executable ( testAes128CtrIv
-    testAes128CtrIv.cc
+
+add_executable ( testAes128Ctr
+    testAes128Ctr.cc
 )
-target_link_libraries( testAes128CtrIv PRIVATE objCrypto doctest::doctest )  
-add_test( NAME testAes128CtrIv
-               COMMAND testAes128CtrIv  )
+target_link_libraries( testAes128Ctr PRIVATE objCrypto doctest::doctest  )
+add_test( NAME testAes128Ctr
+               COMMAND testAes128Ctr  )
 
 
-add_executable ( testAes128CtrNonce
-    testAes128CtrNonce.cc
+
+add_executable ( testAes128Gcm
+    testAes128Gcm.cc
 )
-target_link_libraries( testAes128CtrNonce PRIVATE objCrypto doctest::doctest  )
-add_test( NAME testAes128CtrNonce
-               COMMAND testAes128CtrNonce  )
+target_link_libraries( testAes128Gcm PRIVATE objCrypto doctest::doctest  )
+add_test( NAME testAes128Gcm
+               COMMAND testAes128Gcm  )
 
 
-
-add_executable ( testAes128GcmIv
-    testAes128GcmIv.cc
-)
-target_link_libraries( testAes128GcmIv PRIVATE objCrypto doctest::doctest  )
-add_test( NAME testAes128GcmIv
-               COMMAND testAes128GcmIv  )
 
 
 add_executable ( testSpeedCtr
