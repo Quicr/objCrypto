@@ -42,6 +42,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 message( "OBJ_CRYPTO_USE_BORINGSSL is set to ${OBJ_CRYPTO_USE_BORINGSSL} " )
 message( "BUILD_TESTS  is set to ${BUILD_TESTS} " ) 
 message( "BUILD_SHARED_LIBS is set to ${BUILD_SHARED_LIBS} " ) 
+message( "CMAKE_OSX_ARCHITECTURES is set to ${CMAKE_OSX_ARCHITECTURES} " )
 
 include(CTest)
 
