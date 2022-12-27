@@ -21,6 +21,14 @@ add_test( NAME testVersion
 
 
 
+add_executable ( testNulNul
+    testNulNul.cc
+)
+target_link_libraries( testNulNul PRIVATE objCrypto doctest::doctest  )
+add_test( NAME testNulNul
+               COMMAND testNulNul  )
+
+
 
 add_executable ( testAes128Ctr
     testAes128Ctr.cc
