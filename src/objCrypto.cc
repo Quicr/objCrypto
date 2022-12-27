@@ -133,7 +133,7 @@ ObjCryptor::seal(KeyID keyID,  const Nonce  &nonce,
     case ObjCryptoAlg::AES_256_CTR_0: {
       IV iv =  formIV(nonce );
       const Key& key = keyInfo.second;
-      aes_ctr_encrypt(key, iv, plainText, cipherText);
+      ret = aes_ctr_encrypt(key, iv, plainText, cipherText);
     }
       break;
       
