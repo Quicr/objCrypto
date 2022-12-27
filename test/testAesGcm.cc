@@ -209,11 +209,12 @@ TEST_CASE("test 4 AES 128 GCM Mode") {
     err = cryptor.seal(keyId, nonce, plainTextIn, authData, tag, cipherText);
     assert(err == ObjCryptoErr::None);
 
-#if 0
     SUBCASE("bad tag" ) {
       tag[0]++;  // break tag
+      err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
+      assert(err == ObjCryptoErr::DecryptAuthFail);
+      return;
     }
-#endif
     
     err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
     assert(err != ObjCryptoErr::DecryptAuthFail);
