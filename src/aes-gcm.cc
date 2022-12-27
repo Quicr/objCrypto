@@ -102,7 +102,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
 #endif
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes128_gcm_encrypt(const Key128 &key, const IV &iv,
+ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
                                            const std::vector<uint8_t> &plainText,
                                            const std::vector<uint8_t> &authData,
                                            std::vector<uint8_t> &tag,
@@ -116,16 +116,28 @@ ObjCryptoErr ObjCrypto::aes128_gcm_encrypt(const Key128 &key, const IV &iv,
     assert(ctx);
 
     int ret;
+
+     int status;
+    switch ( key.index() ) {
+    case 0: {
+      Key128 key128 = std::get<Key128>(key);
+      
     ret = EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
     assert(ret == 1);
 
     // set IV length ( default is 96 )
-    ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv.size(), NULL);
+    ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, nonce.size(), NULL);
     assert(ret == 1);
 
-    ret = EVP_EncryptInit_ex(ctx, NULL, NULL, key.data(), iv.data());
+    ret = EVP_EncryptInit_ex(ctx, NULL, NULL, key128.data(), nonce.data());
     assert(ret == 1);
-
+  }
+      break;
+    default:
+      assert(0);
+      break;
+    }
+    
     // do the AAD Data
     ret = EVP_EncryptUpdate(ctx, NULL, &moved, authData.data(),
                             authData.size()); // what is moved here
@@ -153,7 +165,7 @@ ObjCryptoErr ObjCrypto::aes128_gcm_encrypt(const Key128 &key, const IV &iv,
 #endif
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes128_gcm_decrypt(const Key128 &key, const IV &iv,
+ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
                                            const std::vector<uint8_t> &cipherText,
                                            const std::vector<uint8_t> &authData,
                                            const std::vector<uint8_t> &tag,
@@ -166,17 +178,29 @@ ObjCryptoErr ObjCrypto::aes128_gcm_decrypt(const Key128 &key, const IV &iv,
     ctx = EVP_CIPHER_CTX_new();
     assert(ctx);
 
-    int ret;
-    ret = EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
-    assert(ret == 1);
+       int ret;
+    switch ( key.index() ) {
+    case 0: {
+      Key128 key128 = std::get<Key128>(key);
+      
+   
+      ret = EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
+      assert(ret == 1);
+      
+      // set IV length ( default is 96 )
+      ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, nonce.size(), NULL);
+      assert(ret == 1);
+      
+      ret = EVP_DecryptInit_ex(ctx, NULL, NULL, key128.data(), nonce.data());
+      assert(ret == 1);
+    }
+      break;
+    default:
+      assert(0);
+      break;
+    }
 
-    // set IV length ( default is 96 )
-    ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv.size(), NULL);
-    assert(ret == 1);
-
-    ret = EVP_DecryptInit_ex(ctx, NULL, NULL, key.data(), iv.data());
-    assert(ret == 1);
-
+      
     // do the AAD Data
     ret = EVP_DecryptUpdate(ctx, NULL, &moved, authData.data(),
                             authData.size()); // what is moved here

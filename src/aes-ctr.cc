@@ -147,13 +147,24 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
     assert(ctx);
 
     int status;
-    status = EVP_EncryptInit_ex(ctx, EVP_aes_128_ctr(), NULL, NULL, NULL);
-    assert(status == 1);
 
-    status = EVP_EncryptInit_ex(ctx, NULL, NULL, (const uint8_t *)key.data(),
-                                (const uint8_t *)iv.data());
-    assert(status == 1);
-
+    switch ( key.index() ) {
+    case 0: {
+      Key128 key128 = std::get<Key128>(key);
+      
+      status = EVP_EncryptInit_ex(ctx, EVP_aes_128_ctr(), NULL, NULL, NULL);
+      assert(status == 1);
+      
+      status = EVP_EncryptInit_ex(ctx, NULL, NULL, (const uint8_t *)key128.data(),
+                                  (const uint8_t *)iv.data());
+      assert(status == 1);
+    }
+      break;
+    default:
+      assert(0);
+      break;
+    }
+      
     int moved = 0;
     int cipherTextLen = 0;
     status = EVP_EncryptUpdate(ctx, (uint8_t *)cipherText.data(), &moved,
@@ -180,21 +191,29 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                            std::vector<uint8_t> &plainText) {
     EVP_CIPHER_CTX *ctx;
 
-    assert(sizeof(key) == 128 / 8);
     assert(sizeof(iv) == 128 / 8);
-    assert(plainText.size() == cipherText.size());
 
     ctx = EVP_CIPHER_CTX_new();
     assert(ctx);
 
     int status;
-    status = EVP_DecryptInit_ex(ctx, EVP_aes_128_ctr(), NULL, NULL, NULL);
-    assert(status == 1);
-
-    status = EVP_DecryptInit_ex(ctx, NULL, NULL, (const uint8_t *)key.data(),
-                                (const uint8_t *)iv.data());
-    assert(status == 1);
-
+    switch ( key.index() ) {
+    case 0: {
+      Key128 key128 = std::get<Key128>(key);
+      
+      status = EVP_DecryptInit_ex(ctx, EVP_aes_128_ctr(), NULL, NULL, NULL);
+      assert(status == 1);
+      
+      status = EVP_DecryptInit_ex(ctx, NULL, NULL, (const uint8_t *)key128.data(),
+                                  (const uint8_t *)iv.data());
+      assert(status == 1);
+    }
+      break;
+    default:
+      assert(0);
+      break;
+    }
+      
     int moved = 0;
     int plainTextLen = 0;
     status = EVP_DecryptUpdate(ctx, (uint8_t *)plainText.data(), &moved,
