@@ -149,7 +149,7 @@ TEST_CASE("test 2 AES128 GCM IV Mode")  {
 }
 */
 
-TEST_CASE("test 3 AES128 GCM Mode") {
+TEST_CASE("test 3 AES 128 GCM Mode") {
     ObjCryptoErr err;
 
     ObjCryptor cryptor;
@@ -180,12 +180,19 @@ TEST_CASE("test 3 AES128 GCM Mode") {
     err = cryptor.seal(keyId, nonce, plainTextIn, authData, tag, cipherText);
     assert(err == ObjCryptoErr::None);
 
-    // tag[0]++;  // break tag
+    SUBCASE("good tag" ) {
+      err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
+      assert(err != ObjCryptoErr::DecryptAuthFail);
+      assert(err == ObjCryptoErr::None);
+    }
+    SUBCASE("bad tag" ) {
+      tag[0]++;  // break tag
 
-    err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
-    assert(err != ObjCryptoErr::DecryptAuthFail);
-    assert(err == ObjCryptoErr::None);
-
+      err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
+      assert(err == ObjCryptoErr::DecryptAuthFail);
+      return;
+    }
+    
     printHex("plainTextIn  ", plainTextIn.data(), plainTextIn.size());
     printHex(" plainTextOut", plainTextOut.data(), plainTextOut.size());
     printHex("       key128", key128.data(), key128.size());
