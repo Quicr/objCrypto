@@ -5,6 +5,8 @@
 #include <map>
 #include <utility>
 #include <vector>
+#include <variant>
+
 
 namespace ObjCrypto {
 
