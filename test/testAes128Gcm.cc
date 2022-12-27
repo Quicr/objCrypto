@@ -79,7 +79,7 @@ TEST_CASE("test 1 AES128 GCM IV Mode") {
 
     CHECK(plainTextIn.size() == plainTextOut.size());
     for (int i = 0; i < plainTextIn.size(); i++) {
-      CHECK (plainTextIn[i] == plainTextOut[i]); 
+      CHECK (plainTextIn[i] == plainTextOut[i]);
     }
 }
 */
@@ -144,7 +144,7 @@ TEST_CASE("test 2 AES128 GCM IV Mode")  {
 
     CHECK(plainTextIn.size() == plainTextOut.size());
     for (int i = 0; i < plainTextIn.size(); i++) {
-      CHECK (plainTextIn[i] == plainTextOut[i]); 
+      CHECK (plainTextIn[i] == plainTextOut[i]);
     }
 }
 */
@@ -158,9 +158,9 @@ TEST_CASE("test 3 AES128 GCM Mode") {
     // These test vectors are not valid - I just made them TODO
     std::vector<uint8_t> plainTextIn = {0x0A, 0x0B, 0x0C, 0x0D};
     std::vector<uint8_t> authData = {0x01, 0x02, 0x03};
-    std::vector<uint8_t> correct = {   0x09, 0x83, 0xD6, 0xC3 };
-    std::vector<uint8_t> correctTag = {
-      0x90, 0x19, 0x53, 0x96, 0x98, 0x91, 0x25, 0xE0, 0xC2, 0x3A, 0xD9, 0xA8, 0x68, 0x94, 0x2B, 0xA5 };
+    std::vector<uint8_t> correct = {0x09, 0x83, 0xD6, 0xC3};
+    std::vector<uint8_t> correctTag = {0x90, 0x19, 0x53, 0x96, 0x98, 0x91, 0x25, 0xE0,
+                                       0xC2, 0x3A, 0xD9, 0xA8, 0x68, 0x94, 0x2B, 0xA5};
 
     std::vector<uint8_t> cipherText(plainTextIn.size());
     std::vector<uint8_t> plainTextOut(plainTextIn.size());
@@ -195,19 +195,18 @@ TEST_CASE("test 3 AES128 GCM Mode") {
     printHex("cipherText   ", cipherText.data(), cipherText.size());
     printHex(" correctText ", correct.data(), correct.size());
 
-     CHECK(correct.size() == cipherText.size());
+    CHECK(correct.size() == cipherText.size());
     for (int i = 0; i < correct.size(); i++) {
-      CHECK (correct[i] == cipherText[i]);
+        CHECK(correct[i] == cipherText[i]);
     }
 
     CHECK(correctTag.size() == tag.size());
     for (int i = 0; i < correctTag.size(); i++) {
-      CHECK (correctTag[i] == tag[i]);
+        CHECK(correctTag[i] == tag[i]);
     }
 
     CHECK(plainTextIn.size() == plainTextOut.size());
     for (int i = 0; i < plainTextIn.size(); i++) {
-      CHECK (plainTextIn[i] == plainTextOut[i]); 
+        CHECK(plainTextIn[i] == plainTextOut[i]);
     }
 }
-
