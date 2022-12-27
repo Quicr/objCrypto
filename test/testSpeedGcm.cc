@@ -24,7 +24,7 @@ int test3() {
 
     KeyInfo keyInfo(ObjCryptoAlg::AES_128_GCM_128, key128);
 
-    IV iv = {0};
+    Nonce nonce = {0};
 
     std::vector<uint8_t> tag(128 / 8);
     assert(tag.size() == 128 / 8);
@@ -36,7 +36,7 @@ int test3() {
 
     const long loops = 1 * 1000 * 1000;
     for (int i = 0; i < loops; i++) {
-        err = cryptor.seal(keyId, iv, plainTextIn, authData, tag, cipherText);
+        err = cryptor.seal(keyId, nonce, plainTextIn, authData, tag, cipherText);
         assert(err == ObjCryptoErr::None);
     }
 
@@ -48,7 +48,7 @@ int test3() {
               << std::endl;
     std::cout << "Kbytes of AES128-GCM: " << (float)(bytesProcessed) / seconds / 1.0e3 << std::endl;
 
-    // err = cryptor.unseal( keyId, iv, cipherText, authData, tag, plainTextOut );
+    // err = cryptor.unseal( keyId, nonce, cipherText, authData, tag, plainTextOut );
     // assert( err == ObjCryptoErr::None);
 
     return 0;

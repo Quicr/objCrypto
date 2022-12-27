@@ -16,29 +16,37 @@
 using namespace ObjCrypto;
 
 #if defined(__APPLE__) && !defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes128_ctr_encrypt(const Key128 &key, const IV &iv,
+ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
                                            const std::vector<uint8_t> &plainText,
                                            std::vector<uint8_t> &cipherText) {
     CCCryptorRef cryptorRef;
 
-    assert(plainText.size() == cipherText.size());
-    assert(sizeof(iv) == sizeof(key));
-    assert(sizeof(key) == 128 / 8);
+    assert(sizeof(iv) == 128 / 8); // weird that apple call does not take a siz
 
     CCCryptorStatus status;
+    switch ( key.index() ) {
+    case 0: {
+      Key128 key128 = std::get<Key128>(key);
+
     status = CCCryptorCreateWithMode(kCCEncrypt,              // CCOperation
                                      kCCModeCTR,              // CCMode
                                      kCCAlgorithmAES128,      // CCAlgorithm
                                      ccNoPadding,             // CCPadding
                                      iv.data(),               // const void *iv,
-                                     key.data(), sizeof(key), // const void *key, size_t keyLength
+                                     key128.data(), key128.size(), // const void *key, size_t keyLength
                                      0,                       // const void *tweak,
                                      0,                       // size_t tweakLength,
                                      0,                       // int numRounds,
                                      kCCModeOptionCTR_BE,     // CCModeOptions
                                      &cryptorRef);
-    assert(status == kCCSuccess);
-
+    }
+      break;
+    default:
+      assert(0);
+      break;
+    }
+   assert(status == kCCSuccess);
+     
     size_t cipherTextLen = 0;
     size_t moved = 0;
 
@@ -69,28 +77,38 @@ ObjCryptoErr ObjCrypto::aes128_ctr_encrypt(const Key128 &key, const IV &iv,
 #endif
 
 #if defined(__APPLE__) && !defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes128_ctr_decrypt(const Key128 &key, const IV &iv,
+ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                            const std::vector<uint8_t> &cipherText,
                                            std::vector<uint8_t> &plainText) {
     CCCryptorRef cryptorRef;
 
-    assert(plainText.size() == cipherText.size());
-    assert(sizeof(iv) == sizeof(key));
+      assert(sizeof(iv) == 128 / 8); // weird that apple call does not take a siz
 
+      
     CCCryptorStatus status;
-    status = CCCryptorCreateWithMode(kCCDecrypt,              // CCOperation
-                                     kCCModeCTR,              // CCMode
-                                     kCCAlgorithmAES128,      // CCAlgorithm
-                                     ccNoPadding,             // CCPadding
-                                     iv.data(),               // const void *iv,
-                                     key.data(), sizeof(key), // const void *key, size_t keyLength
-                                     0,                       // const void *tweak,
-                                     0,                       // size_t tweakLength,
-                                     0,                       // int numRounds,
-                                     kCCModeOptionCTR_BE,     // CCModeOptions
-                                     &cryptorRef);
+    switch ( key.index() ) {
+    case 0: {
+      Key128 key128 = std::get<Key128>(key);
+      
+      status = CCCryptorCreateWithMode(kCCDecrypt,              // CCOperation
+                                       kCCModeCTR,              // CCMode
+                                       kCCAlgorithmAES128,      // CCAlgorithm
+                                       ccNoPadding,             // CCPadding
+                                       iv.data(),               // const void *iv,
+                                       key128.data(), key128.size(), // const void *key, size_t keyLength
+                                       0,                       // const void *tweak,
+                                       0,                       // size_t tweakLength,
+                                       0,                       // int numRounds,
+                                       kCCModeOptionCTR_BE,     // CCModeOptions
+                                       &cryptorRef);
+    }
+      break;
+    default:
+      assert(0);
+      break;
+    }
     assert(status == kCCSuccess);
-
+    
     size_t plainTextLen = 0;
     size_t moved = 0;
     status = CCCryptorUpdate(cryptorRef, cipherText.data(),
@@ -120,14 +138,10 @@ ObjCryptoErr ObjCrypto::aes128_ctr_decrypt(const Key128 &key, const IV &iv,
 #endif
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes128_ctr_encrypt(const Key128 &key, const IV &iv,
+ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
                                            const std::vector<uint8_t> &plainText,
                                            std::vector<uint8_t> &cipherText) {
     EVP_CIPHER_CTX *ctx;
-
-    assert(sizeof(key) == 128 / 8);
-    assert(sizeof(iv) == 128 / 8);
-    assert(plainText.size() == cipherText.size());
 
     ctx = EVP_CIPHER_CTX_new();
     assert(ctx);
@@ -161,7 +175,7 @@ ObjCryptoErr ObjCrypto::aes128_ctr_encrypt(const Key128 &key, const IV &iv,
 #endif
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes128_ctr_decrypt(const Key128 &key, const IV &iv,
+ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                            const std::vector<uint8_t> &cipherText,
                                            std::vector<uint8_t> &plainText) {
     EVP_CIPHER_CTX *ctx;
