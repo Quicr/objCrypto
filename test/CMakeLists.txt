@@ -49,14 +49,20 @@ add_test( NAME testAesGcm
 
 
 
-add_executable ( testSpeedCtr
-    testSpeedCtr.cc
-)
-target_link_libraries( testSpeedCtr PRIVATE objCrypto  doctest::doctest )
+add_executable ( speedNul 
+    speedNul.cc 
+) 
+target_link_libraries( speedNul PRIVATE objCrypto ) 
 
 
-add_executable ( testSpeedGcm
-    testSpeedGcm.cc
+add_executable ( speedCtr 
+    speedCtr.cc 
+) 
+target_link_libraries( speedCtr PRIVATE objCrypto ) 
+
+
+add_executable ( speedGcm
+    speedGcm.cc
 )
-target_link_libraries( testSpeedGcm PRIVATE objCrypto doctest::doctest  )
+target_link_libraries( speedGcm PRIVATE objCrypto )
 
