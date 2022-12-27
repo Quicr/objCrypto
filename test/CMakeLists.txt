@@ -30,21 +30,21 @@ add_test( NAME testNulNul
 
 
 
-add_executable ( testAes128Ctr
-    testAes128Ctr.cc
+add_executable ( testAesCtr
+    testAesCtr.cc
 )
-target_link_libraries( testAes128Ctr PRIVATE objCrypto doctest::doctest  )
-add_test( NAME testAes128Ctr
-               COMMAND testAes128Ctr  )
+target_link_libraries( testAesCtr PRIVATE objCrypto doctest::doctest  )
+add_test( NAME testAesCtr
+               COMMAND testAesCtr  )
 
 
 
-add_executable ( testAes128Gcm
-    testAes128Gcm.cc
+add_executable ( testAesGcm
+    testAesGcm.cc
 )
-target_link_libraries( testAes128Gcm PRIVATE objCrypto doctest::doctest  )
-add_test( NAME testAes128Gcm
-               COMMAND testAes128Gcm  )
+target_link_libraries( testAesGcm PRIVATE objCrypto doctest::doctest  )
+add_test( NAME testAesGcm
+               COMMAND testAesGcm  )
 
 
 
