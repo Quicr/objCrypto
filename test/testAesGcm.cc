@@ -2,7 +2,7 @@
  * test vectors from "The Galois/Counter Mode of Operation (GCM)"
  * by David A. McGrew and John Viega
  * https://csrc.nist.rip/groups/ST/toolkit/BCM/documents/proposedmodes/gcm/gcm-spec.pdf
- * Test Case 1 fails on apply Crypto lib ( no plain text )
+ * Test Case 1 fails on Apple Crypto lib ( no plain text )
  * Test case 2 failed on boringssl crypt ( no auth data )
  */
 
