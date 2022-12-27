@@ -188,29 +188,36 @@ TEST_CASE("test 4 AES 128 GCM Mode") {
     std::vector<uint8_t> cipherText(plainTextIn.size());
     std::vector<uint8_t> plainTextOut(plainTextIn.size());
  
-    KeyInfo keyInfo(ObjCryptoAlg::AES_128_GCM_128, key128);
-
     std::vector<uint8_t> tag(128 / 8);
+
+    KeyInfo keyInfo(ObjCryptoAlg::AES_128_GCM_128, key128);
     assert(tag.size() == 128 / 8);
+    
+    SUBCASE("tag size 64 bits" ) {
+      KeyInfo smallKeyInfo(ObjCryptoAlg::AES_128_GCM_64, key128);
+      keyInfo = smallKeyInfo;
+      
+      tag.resize( 64/8 );
+      correctTag.resize(  64/8 );
+      
+      assert(tag.size() == 64 / 8);
+    }
 
     err = cryptor.addKey(keyId, keyInfo);
     assert(err == ObjCryptoErr::None);
-
+        
     err = cryptor.seal(keyId, nonce, plainTextIn, authData, tag, cipherText);
     assert(err == ObjCryptoErr::None);
 
-    SUBCASE("good tag" ) {
-      err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
-      assert(err != ObjCryptoErr::DecryptAuthFail);
-      assert(err == ObjCryptoErr::None);
-    }
+#if 0
     SUBCASE("bad tag" ) {
       tag[0]++;  // break tag
-
-      err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
-      assert(err == ObjCryptoErr::DecryptAuthFail);
-      return;
     }
+#endif
+    
+    err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
+    assert(err != ObjCryptoErr::DecryptAuthFail);
+    assert(err == ObjCryptoErr::None);
     
     printHex("plainTextIn  ", plainTextIn.data(), plainTextIn.size());
     printHex(" plainTextOut", plainTextOut.data(), plainTextOut.size());
