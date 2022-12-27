@@ -129,34 +129,23 @@ ObjCryptor::seal(KeyID keyID,  const Nonce  &nonce,
     ObjCryptoErr ret = ObjCryptoErr::None;
 
     switch (keyInfo.first) {
-    case ObjCryptoAlg::AES_128_CTR_0: {
-      IV iv = formIV(nonce);
-      const Key128& key = std::get<Key128>(keyInfo.second);
-      aes_ctr_encrypt(key, iv, plainText, cipherText);
-    }
-      break;
-      
+    case ObjCryptoAlg::AES_128_CTR_0: 
     case ObjCryptoAlg::AES_256_CTR_0: {
       IV iv =  formIV(nonce );
-      const Key256& key = std::get<Key256>(keyInfo.second);
+      const Key& key = keyInfo.second;
       aes_ctr_encrypt(key, iv, plainText, cipherText);
     }
       break;
       
     case ObjCryptoAlg::AES_128_GCM_64:
-    case ObjCryptoAlg::AES_128_GCM_128: {
-      const Key128& key = std::get<Key128>(keyInfo.second);
-      ret = aes_gcm_encrypt(key, nonce, plainText, authData, tag, cipherText);
-    }
-      break;
-      
+    case ObjCryptoAlg::AES_128_GCM_128: 
     case ObjCryptoAlg::AES_256_GCM_64:
     case ObjCryptoAlg::AES_256_GCM_128: {
-      const Key256& key = std::get<Key256>(keyInfo.second);
+      const Key& key = keyInfo.second;
       ret = aes_gcm_encrypt(key, nonce, plainText, authData, tag, cipherText);
     }
       break;
-      
+        
     default:
       assert(0);
       break;
@@ -178,30 +167,19 @@ ObjCryptor::unseal(KeyID keyID,  const Nonce  &nonce,
     
     switch (keyInfo.first) {
       
-    case ObjCryptoAlg::AES_128_CTR_0: {
-      Key128 key128 = std::get<Key128>(keyInfo.second);
-      IV iv = formIV(nonce);
-      ret = aes_ctr_decrypt(key128, iv, cipherText, plainText);
-    }
-      break;
-      
-   case ObjCryptoAlg::AES_256_CTR_0: {
-      Key256 key256 = std::get<Key256>(keyInfo.second);
+    case ObjCryptoAlg::AES_128_CTR_0: 
+    case ObjCryptoAlg::AES_256_CTR_0: {
       IV iv=formIV(nonce);
-      ret = aes_ctr_decrypt(key256, iv, cipherText, plainText);
+      Key key = keyInfo.second;
+      ret = aes_ctr_decrypt(key, iv, cipherText, plainText);
     }
       break;
       
     case ObjCryptoAlg::AES_128_GCM_64:
-    case ObjCryptoAlg::AES_128_GCM_128:{
-      Key128 key = std::get<Key128>(keyInfo.second);
-      ret = aes_gcm_decrypt(key, nonce, cipherText, authData, tag, plainText);
-    }
-      break;
-      
+    case ObjCryptoAlg::AES_128_GCM_128:
     case ObjCryptoAlg::AES_256_GCM_64:
     case ObjCryptoAlg::AES_256_GCM_128:{
-      Key256 key = std::get<Key256>(keyInfo.second);
+      const Key& key = keyInfo.second;
       ret = aes_gcm_decrypt(key, nonce, cipherText, authData, tag, plainText);
     }
       break;
