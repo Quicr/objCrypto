@@ -40,56 +40,54 @@ using namespace ObjCrypto;
 
 #if defined(__APPLE__) && !defined(OBJ_CRYPTO_USE_BORINGSSL)
 ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
-                                           const std::vector<uint8_t> &plainText,
-                                           const std::vector<uint8_t> &authData,
-                                           std::vector<uint8_t> &tag,
-                                           std::vector<uint8_t> &cipherText) {
-  CCCryptorStatus status=kCCSuccess;
-  
-  switch ( key.index() ) {
-  case 0: {
-    Key128 key128 = std::get<Key128>(key);
-    status =
-      CCCryptorGCMOneshotEncrypt(kCCAlgorithmAES128, key128.data(), key128.size(), nonce.data(), nonce.size(),
-                                 authData.data(), authData.size(), plainText.data(),
-                                 plainText.size(), cipherText.data(), tag.data(), tag.size());
-  }
-    break;
-  default:
-    assert(0);
-    break;
-  }
-  // std::cout << "CCCrypto status = " <<  status << std::endl;
-  
-  assert(status != kCCParamError);
-  assert(status == kCCSuccess);
-  
-  return ObjCryptoErr::None;
+                                        const std::vector<uint8_t> &plainText,
+                                        const std::vector<uint8_t> &authData,
+                                        std::vector<uint8_t> &tag,
+                                        std::vector<uint8_t> &cipherText) {
+    CCCryptorStatus status = kCCSuccess;
+
+    switch (key.index()) {
+    case 0: {
+        Key128 key128 = std::get<Key128>(key);
+        status = CCCryptorGCMOneshotEncrypt(kCCAlgorithmAES128, key128.data(), key128.size(),
+                                            nonce.data(), nonce.size(), authData.data(),
+                                            authData.size(), plainText.data(), plainText.size(),
+                                            cipherText.data(), tag.data(), tag.size());
+    } break;
+    default:
+        assert(0);
+        break;
+    }
+    // std::cout << "CCCrypto status = " <<  status << std::endl;
+
+    assert(status != kCCParamError);
+    assert(status == kCCSuccess);
+
+    return ObjCryptoErr::None;
 }
 #endif
 
 #if defined(__APPLE__) && !defined(OBJ_CRYPTO_USE_BORINGSSL)
 ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
-                                           const std::vector<uint8_t> &cipherText,
-                                           const std::vector<uint8_t> &authData,
-                                           const std::vector<uint8_t> &tag,
-                                           std::vector<uint8_t> &plainText) {
+                                        const std::vector<uint8_t> &cipherText,
+                                        const std::vector<uint8_t> &authData,
+                                        const std::vector<uint8_t> &tag,
+                                        std::vector<uint8_t> &plainText) {
     CCCryptorStatus status;
-    
-    switch ( key.index() ) {
+
+    switch (key.index()) {
     case 0: {
-    Key128 key128 = std::get<Key128>(key);
-    status =
-      CCCryptorGCMOneshotDecrypt(kCCAlgorithmAES128, key128.data(), key128.size(), nonce.data(), nonce.size(),
-                                 authData.data(), authData.size(), cipherText.data(),
-                                 cipherText.size(), plainText.data(), tag.data(), tag.size());
-    }
-      break;
+        Key128 key128 = std::get<Key128>(key);
+        status = CCCryptorGCMOneshotDecrypt(kCCAlgorithmAES128, key128.data(), key128.size(),
+                                            nonce.data(), nonce.size(), authData.data(),
+                                            authData.size(), cipherText.data(), cipherText.size(),
+                                            plainText.data(), tag.data(), tag.size());
+    } break;
     default:
-      assert(0);
-      break;
+        assert(0);
+        break;
     }
-    
+
     // std::cout << "CCCrypto decrypt status = " <<  status << std::endl;
     if (status == kCCUnspecifiedError) {
         return ObjCryptoErr::DecryptAuthFail;
@@ -103,10 +101,10 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
 ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
-                                           const std::vector<uint8_t> &plainText,
-                                           const std::vector<uint8_t> &authData,
-                                           std::vector<uint8_t> &tag,
-                                           std::vector<uint8_t> &cipherText) {
+                                        const std::vector<uint8_t> &plainText,
+                                        const std::vector<uint8_t> &authData,
+                                        std::vector<uint8_t> &tag,
+                                        std::vector<uint8_t> &cipherText) {
     EVP_CIPHER_CTX *ctx;
 
     int moved = 0;
@@ -117,27 +115,26 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
 
     int ret;
 
-     int status;
-    switch ( key.index() ) {
+    int status;
+    switch (key.index()) {
     case 0: {
-      Key128 key128 = std::get<Key128>(key);
-      
-    ret = EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
-    assert(ret == 1);
+        Key128 key128 = std::get<Key128>(key);
 
-    // set IV length ( default is 96 )
-    ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, nonce.size(), NULL);
-    assert(ret == 1);
+        ret = EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
+        assert(ret == 1);
 
-    ret = EVP_EncryptInit_ex(ctx, NULL, NULL, key128.data(), nonce.data());
-    assert(ret == 1);
-  }
-      break;
+        // set IV length ( default is 96 )
+        ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, nonce.size(), NULL);
+        assert(ret == 1);
+
+        ret = EVP_EncryptInit_ex(ctx, NULL, NULL, key128.data(), nonce.data());
+        assert(ret == 1);
+    } break;
     default:
-      assert(0);
-      break;
+        assert(0);
+        break;
     }
-    
+
     // do the AAD Data
     ret = EVP_EncryptUpdate(ctx, NULL, &moved, authData.data(),
                             authData.size()); // what is moved here
@@ -166,10 +163,10 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
 ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
-                                           const std::vector<uint8_t> &cipherText,
-                                           const std::vector<uint8_t> &authData,
-                                           const std::vector<uint8_t> &tag,
-                                           std::vector<uint8_t> &plainText) {
+                                        const std::vector<uint8_t> &cipherText,
+                                        const std::vector<uint8_t> &authData,
+                                        const std::vector<uint8_t> &tag,
+                                        std::vector<uint8_t> &plainText) {
     EVP_CIPHER_CTX *ctx;
 
     int moved = 0;
@@ -178,29 +175,26 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
     ctx = EVP_CIPHER_CTX_new();
     assert(ctx);
 
-       int ret;
-    switch ( key.index() ) {
+    int ret;
+    switch (key.index()) {
     case 0: {
-      Key128 key128 = std::get<Key128>(key);
-      
-   
-      ret = EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
-      assert(ret == 1);
-      
-      // set IV length ( default is 96 )
-      ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, nonce.size(), NULL);
-      assert(ret == 1);
-      
-      ret = EVP_DecryptInit_ex(ctx, NULL, NULL, key128.data(), nonce.data());
-      assert(ret == 1);
-    }
-      break;
+        Key128 key128 = std::get<Key128>(key);
+
+        ret = EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
+        assert(ret == 1);
+
+        // set IV length ( default is 96 )
+        ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, nonce.size(), NULL);
+        assert(ret == 1);
+
+        ret = EVP_DecryptInit_ex(ctx, NULL, NULL, key128.data(), nonce.data());
+        assert(ret == 1);
+    } break;
     default:
-      assert(0);
-      break;
+        assert(0);
+        break;
     }
 
-      
     // do the AAD Data
     ret = EVP_DecryptUpdate(ctx, NULL, &moved, authData.data(),
                             authData.size()); // what is moved here

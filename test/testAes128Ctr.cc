@@ -6,17 +6,13 @@
 
 #include <objCrypto/objCrypto.h>
 
-
 #include "testHelper.h"
-
 
 using namespace ObjCrypto;
 
 /*
  * Test vectors are from RFC3686 Test Vector #2
  */
-
-
 
 TEST_CASE("test AES128 Ctr Nonce Mode") {
     ObjCryptoErr err;
@@ -33,12 +29,12 @@ TEST_CASE("test AES128 Ctr Nonce Mode") {
     std::vector<uint8_t> plainTextOut(plainTextIn.size());
     std::vector<uint8_t> auth;
     std::vector<uint8_t> tag;
-    
+
     Key128 key128 = {0x7E, 0x24, 0x06, 0x78, 0x17, 0xFA, 0xE0, 0xD7,
                      0x43, 0xD6, 0xCE, 0x1F, 0x32, 0x53, 0x91, 0x63};
     KeyInfo keyInfo(ObjCryptoAlg::AES_128_CTR_0, key128);
 
-    Nonce nonce = {0x00, 0x6C, 0xB6, 0xDB, 0xC0, 0x54, 0x3B, 0x59, 0xDA, 0x48, 0xD9, 0x0B };
+    Nonce nonce = {0x00, 0x6C, 0xB6, 0xDB, 0xC0, 0x54, 0x3B, 0x59, 0xDA, 0x48, 0xD9, 0x0B};
 
     err = cryptor.addKey(keyId, keyInfo);
     assert(err == ObjCryptoErr::None);
@@ -63,11 +59,11 @@ TEST_CASE("test AES128 Ctr Nonce Mode") {
 
     CHECK(correct.size() == cipherText.size());
     for (int i = 0; i < correct.size(); i++) {
-      CHECK (correct[i] == cipherText[i]);
+        CHECK(correct[i] == cipherText[i]);
     }
 
     CHECK(plainTextIn.size() == plainTextOut.size());
     for (int i = 0; i < plainTextIn.size(); i++) {
-      CHECK (plainTextIn[i] == plainTextOut[i]); 
+        CHECK(plainTextIn[i] == plainTextOut[i]);
     }
 }
