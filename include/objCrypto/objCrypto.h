@@ -15,10 +15,10 @@ enum class ObjCryptoAlg : uint8_t {
     NUL_128_NUL_128=0x12, // NULL cipher with 128 bit key and 128 bit tag
     AES_128_CTR_0=0x20,   // AES128 counter mode with no authentication
     AES_128_GCM_64=0x21,  // AES128 GCM mode with 64 bit tag
-    AES_128_GCM_128=0x23, // AES128 GCM mode with 128 bit tag
+    AES_128_GCM_128=0x22, // AES128 GCM mode with 128 bit tag
     AES_256_CTR_0=0x30,   // AES128 counter mode with no authentication
     AES_256_GCM_64=0x31,  // AES128 GCM mode with 64 bit tag
-    AES_256_GCM_128=0x33  // AES128 GCM mode with 128 bit tag
+    AES_256_GCM_128=0x32  // AES128 GCM mode with 128 bit tag
 };
 
 typedef std::array<uint8_t, 128 / 8> Key128;
