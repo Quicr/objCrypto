@@ -125,15 +125,13 @@ ObjCryptor::seal(KeyID keyID, const Nonce &nonce, const std::vector<uint8_t> &pl
     switch (keyInfo.first) {
 
     case ObjCryptoAlg::NUL_128_NUL_0: {
-      cipherText = plainText;
-    }
-      break;
+        cipherText = plainText;
+    } break;
     case ObjCryptoAlg::NUL_128_NUL_128: {
-          cipherText = plainText;
-          tag.clear();
-    }
-      break;
-      
+        cipherText = plainText;
+        tag.clear();
+    } break;
+
     case ObjCryptoAlg::AES_128_CTR_0:
     case ObjCryptoAlg::AES_256_CTR_0: {
         IV iv = formIV(nonce);
@@ -171,14 +169,12 @@ ObjCryptor::unseal(KeyID keyID, const Nonce &nonce, const std::vector<uint8_t> &
     switch (keyInfo.first) {
 
     case ObjCryptoAlg::NUL_128_NUL_0: {
-      plainText = cipherText;
-    }
-      break;
+        plainText = cipherText;
+    } break;
     case ObjCryptoAlg::NUL_128_NUL_128: {
-      plainText = cipherText;
-    }
-      break;
-      
+        plainText = cipherText;
+    } break;
+
     case ObjCryptoAlg::AES_128_CTR_0:
     case ObjCryptoAlg::AES_256_CTR_0: {
         IV iv = formIV(nonce);

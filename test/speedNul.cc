@@ -44,8 +44,7 @@ int main(int argc, char *argv[]) {
     float seconds = (float)(elapsedMS.count()) * 1e-6;
 
     const long bytesProcessed = loops * plainTextIn.size();
-    std::cout << "mbps of NUL-NUL: " << (float)(bytesProcessed)*8.0 / seconds / 1.0e6
-              << std::endl;
+    std::cout << "mbps of NUL-NUL: " << (float)(bytesProcessed)*8.0 / seconds / 1.0e6 << std::endl;
     std::cout << "Kbytes of NUL-NUL: " << (float)(bytesProcessed) / seconds / 1.0e3 << std::endl;
 
     // err = cryptor.unseal( keyId, nonce, cipherText, auth, tag, plainTextOut );
