@@ -25,15 +25,15 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
 
     CCCryptorStatus status;
     switch (key.index()) {
-      
+
     case 0: {
         Key128 key128 = std::get<Key128>(key);
 
-        status = CCCryptorCreateWithMode(kCCEncrypt,         // CCOperation
-                                         kCCModeCTR,         // CCMode
+        status = CCCryptorCreateWithMode(kCCEncrypt,      // CCOperation
+                                         kCCModeCTR,      // CCMode
                                          kCCAlgorithmAES, // CCAlgorithm
-                                         ccNoPadding,        // CCPadding
-                                         iv.data(),          // const void *iv,
+                                         ccNoPadding,     // CCPadding
+                                         iv.data(),       // const void *iv,
                                          key128.data(),
                                          key128.size(),       // const void *key, size_t keyLength
                                          0,                   // const void *tweak,
@@ -46,11 +46,11 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
     case 1: {
         Key256 key256 = std::get<Key256>(key);
 
-        status = CCCryptorCreateWithMode(kCCEncrypt,         // CCOperation
-                                         kCCModeCTR,         // CCMode
+        status = CCCryptorCreateWithMode(kCCEncrypt,      // CCOperation
+                                         kCCModeCTR,      // CCMode
                                          kCCAlgorithmAES, // CCAlgorithm
-                                         ccNoPadding,        // CCPadding
-                                         iv.data(),          // const void *iv,
+                                         ccNoPadding,     // CCPadding
+                                         iv.data(),       // const void *iv,
                                          key256.data(),
                                          key256.size(),       // const void *key, size_t keyLength
                                          0,                   // const void *tweak,
@@ -105,15 +105,15 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
 
     CCCryptorStatus status;
     switch (key.index()) {
-      
+
     case 0: {
         Key128 key128 = std::get<Key128>(key);
 
-        status = CCCryptorCreateWithMode(kCCDecrypt,         // CCOperation
-                                         kCCModeCTR,         // CCMode
-                                         kCCAlgorithmAES,    // CCAlgorithm
-                                         ccNoPadding,        // CCPadding
-                                         iv.data(),          // const void *iv,
+        status = CCCryptorCreateWithMode(kCCDecrypt,      // CCOperation
+                                         kCCModeCTR,      // CCMode
+                                         kCCAlgorithmAES, // CCAlgorithm
+                                         ccNoPadding,     // CCPadding
+                                         iv.data(),       // const void *iv,
                                          key128.data(),
                                          key128.size(),       // const void *key, size_t keyLength
                                          0,                   // const void *tweak,
@@ -122,15 +122,15 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                          kCCModeOptionCTR_BE, // CCModeOptions
                                          &cryptorRef);
     } break;
-      
+
     case 1: {
         Key256 key256 = std::get<Key256>(key);
 
-        status = CCCryptorCreateWithMode(kCCDecrypt,         // CCOperation
-                                         kCCModeCTR,         // CCMode
-                                         kCCAlgorithmAES,    // CCAlgorithm
-                                         ccNoPadding,        // CCPadding
-                                         iv.data(),          // const void *iv,
+        status = CCCryptorCreateWithMode(kCCDecrypt,      // CCOperation
+                                         kCCModeCTR,      // CCMode
+                                         kCCAlgorithmAES, // CCAlgorithm
+                                         ccNoPadding,     // CCPadding
+                                         iv.data(),       // const void *iv,
                                          key256.data(),
                                          key256.size(),       // const void *key, size_t keyLength
                                          0,                   // const void *tweak,
@@ -139,7 +139,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                          kCCModeOptionCTR_BE, // CCModeOptions
                                          &cryptorRef);
     } break;
-      
+
     default:
         assert(0);
         break;
@@ -186,7 +186,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
     int status;
 
     switch (key.index()) {
-      
+
     case 0: {
         Key128 key128 = std::get<Key128>(key);
 
@@ -199,16 +199,16 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
     } break;
 
     case 1: {
-      Key256 key256 = std::get<Key256>(key);
-      
-      status = EVP_EncryptInit_ex(ctx, EVP_aes_256_ctr(), NULL, NULL, NULL);
-      assert(status == 1);
-      
-      status = EVP_EncryptInit_ex(ctx, NULL, NULL, (const uint8_t *)key256.data(),
-                                  (const uint8_t *)iv.data());
-      assert(status == 1);
+        Key256 key256 = std::get<Key256>(key);
+
+        status = EVP_EncryptInit_ex(ctx, EVP_aes_256_ctr(), NULL, NULL, NULL);
+        assert(status == 1);
+
+        status = EVP_EncryptInit_ex(ctx, NULL, NULL, (const uint8_t *)key256.data(),
+                                    (const uint8_t *)iv.data());
+        assert(status == 1);
     } break;
-      
+
     default:
         assert(0);
         break;
@@ -247,7 +247,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
 
     int status;
     switch (key.index()) {
-      
+
     case 0: {
         Key128 key128 = std::get<Key128>(key);
 
@@ -258,7 +258,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                     (const uint8_t *)iv.data());
         assert(status == 1);
     } break;
-      
+
     case 1: {
         Key256 key256 = std::get<Key256>(key);
 
@@ -269,7 +269,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                     (const uint8_t *)iv.data());
         assert(status == 1);
     } break;
-          
+
     default:
         assert(0);
         break;
