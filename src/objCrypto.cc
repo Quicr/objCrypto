@@ -1,6 +1,8 @@
 #include <cassert>
 #include <cstring>
 
+#define BUILDING_OBJCRYPTO 1
+
 #include <objCrypto/objCrypto.h>
 #include <objCrypto/objCryptoVersion.h>
 
@@ -9,7 +11,7 @@
 
 using namespace ObjCrypto;
 
- ObjCryptor::ObjCryptor() {
+OBJCRYPTO_EXPORT ObjCryptor::ObjCryptor() {
     IV iv;
     assert(sizeof(iv) == 128 / 8);
     assert(iv.size() == 128 / 8);
@@ -19,13 +21,13 @@ using namespace ObjCrypto;
     assert(nonce.size() == 96 / 8);
 }
 
- ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
+OBJCRYPTO_EXPORT ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
 
- float ObjCryptor::version() {
+ OBJCRYPTO_EXPORT float ObjCryptor::version() {
     return ObjCrypto::objCryptoVersion;
 }
 
- ObjCryptoErr ObjCryptor::removeKey(KeyID keyID) {
+ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::removeKey(KeyID keyID) {
     assert(haveKey(keyID));
 
     keyInfoMap.erase(keyID);
@@ -33,14 +35,14 @@ using namespace ObjCrypto;
     return ObjCryptoErr::None;
 }
 
- bool ObjCryptor::haveKey(KeyID keyID) const {
+ OBJCRYPTO_EXPORT bool ObjCryptor::haveKey(KeyID keyID) const {
     if (keyInfoMap.find(keyID) != keyInfoMap.end()) {
         return true;
     }
     return false;
 }
 
-ObjCryptoErr ObjCryptor::addKey(const KeyID keyID,
+OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::addKey(const KeyID keyID,
                                                                        const KeyInfo &keyInfo) {
 
     switch (keyInfo.first) {
@@ -89,8 +91,7 @@ IV ObjCryptor::formIV(const Nonce &nonce) const {
     return iv;
 }
 
- ObjCryptoErr
-ObjCryptor::seal(KeyID keyID, const Nonce &nonce, const std::vector<uint8_t> &plainText,
+OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::seal(KeyID keyID, const Nonce &nonce, const std::vector<uint8_t> &plainText,
                  const std::vector<uint8_t> &authData, std::vector<uint8_t> &tag,
                  std::vector<uint8_t> &cipherText) const {
     // check have key
@@ -155,8 +156,7 @@ ObjCryptor::seal(KeyID keyID, const Nonce &nonce, const std::vector<uint8_t> &pl
     return ret;
 }
 
-ObjCryptoErr
-ObjCryptor::unseal(KeyID keyID, const Nonce &nonce, const std::vector<uint8_t> &cipherText,
+OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::unseal(KeyID keyID, const Nonce &nonce, const std::vector<uint8_t> &cipherText,
                    const std::vector<uint8_t> &authData, const std::vector<uint8_t> &tag,
                    std::vector<uint8_t> &plainText) const {
     assert(haveKey(keyID));
