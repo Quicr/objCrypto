@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-inline void printHex(const char *name, void *data, int size) {
+inline void printHex(const char *name, void *data, size_t size) {
     uint8_t *ptr = (uint8_t *)data;
 
     std::cout << " " << name << ": ";
