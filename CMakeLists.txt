@@ -1,9 +1,11 @@
 cmake_minimum_required( VERSION 3.13..3.25 )
 
 
-if ( ${APPLE} )
-   set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX arch to compile")
-endif ()
+#if ( ${APPLE} AND NOT DEFINED ANDROID_PLATFORM )
+#  set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX arch to compile")
+#endif ()
+
+
 
 project( objCrypto
             VERSION 0.1.1
