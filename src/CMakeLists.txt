@@ -7,7 +7,10 @@ if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOBJ_CRYPTO_USE_BORINGSSL")
 endif ()
 
+if ( !MSVC )
+# TODO - mst be better way to do this 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-common -fno-exceptions -fno-rtti")
+endif()
 
 configure_file (
     "${PROJECT_SOURCE_DIR}/include/objCrypto/objCryptoVersion.h.in"
