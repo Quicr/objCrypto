@@ -41,9 +41,9 @@ int main(int argc, char *argv[]) {
 
     auto endTime = std::chrono::high_resolution_clock::now();
     auto elapsedMS = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-    float seconds = (float)(elapsedMS.count()) * 1e-6;
+    float seconds = (float)(elapsedMS.count()) * 1e-6f;
 
-    const long bytesProcessed = loops * plainTextIn.size();
+    const long bytesProcessed = loops * (long)plainTextIn.size();
     std::cout << "mbps of NUL-NUL: " << (float)(bytesProcessed)*8.0 / seconds / 1.0e6 << std::endl;
     std::cout << "Kbytes of NUL-NUL: " << (float)(bytesProcessed) / seconds / 1.0e3 << std::endl;
 

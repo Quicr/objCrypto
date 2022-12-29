@@ -32,7 +32,9 @@
 *.app
 
 build
-build-linux
+build-*
 build?
 .DS_Store
 
+# MSVC stuff
+.vs

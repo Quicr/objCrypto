@@ -42,8 +42,8 @@ int test3() {
 
     auto endTime = std::chrono::high_resolution_clock::now();
     auto elapsedMS = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-    float seconds = (float)(elapsedMS.count()) * 1e-6;
-    const long bytesProcessed = loops * plainTextIn.size();
+    float seconds = (float)(elapsedMS.count()) * 1e-6f;
+    const long bytesProcessed = loops * (long)plainTextIn.size();
     std::cout << "mbps of AES128-GCM: " << (float)(bytesProcessed)*8.0 / seconds / 1.0e6
               << std::endl;
     std::cout << "Kbytes of AES128-GCM: " << (float)(bytesProcessed) / seconds / 1.0e3 << std::endl;

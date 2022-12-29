@@ -217,7 +217,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
     int moved = 0;
     int cipherTextLen = 0;
     status = EVP_EncryptUpdate(ctx, (uint8_t *)cipherText.data(), &moved,
-                               (const uint8_t *)plainText.data(), plainText.size());
+                               (const uint8_t *)plainText.data(), (int)plainText.size());
     assert(status == 1);
     cipherTextLen += moved;
 
@@ -278,7 +278,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
     int moved = 0;
     int plainTextLen = 0;
     status = EVP_DecryptUpdate(ctx, (uint8_t *)plainText.data(), &moved,
-                               (const uint8_t *)cipherText.data(), cipherText.size());
+                               (const uint8_t *)cipherText.data(), (int)cipherText.size());
     assert(status == 1);
     plainTextLen += moved;
 
