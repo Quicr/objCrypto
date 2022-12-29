@@ -28,10 +28,19 @@ docker:
 	docker run -v ${PWD}:/src --rm -it obj-crypto-dev /bin/tcsh -c "cd /src; make build-linux"
 
 
+docker-stm32:
+	- docker build -t obj-crypto-dev-stm32 -f Dockerfile.stm32 .
+	docker run -v ${PWD}:/src --rm -it obj-crypto-dev-stm32 /bin/tcsh -c "cd /src; make build-stm32"
+
+
 build-linux:
 	cmake -B build-linux -S . 
 	cmake --build build-linux
-	cmake --build build-linux -t test 
+	cmake --build build-linux -t test
+
+build-stm32:
+	cmake -B build-stm32 -S . 
+	cmake --build build-stm32
 
 
 build-android:

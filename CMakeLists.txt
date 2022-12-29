@@ -1,5 +1,7 @@
 cmake_minimum_required( VERSION 3.13..3.25 )
 
+include ( stm32.cmake )
+
 
 #if ( ${APPLE} AND NOT DEFINED ANDROID_PLATFORM )
 #  set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX arch to compile")
@@ -65,9 +67,9 @@ configure_file(objCrypto.pc.in objCrypto.pc @ONLY)
 add_subdirectory( contrib )
 add_subdirectory( src )
 
-if( BUILD_TESTS )
-    add_subdirectory( test ) 
-endif()
+#if( ${BUILD_TESTS} )
+#    add_subdirectory( test ) 
+#endif()
 
 include(GNUInstallDirs)
 
