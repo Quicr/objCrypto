@@ -36,6 +36,9 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
    target_link_libraries( objCrypto PRIVATE crypto )
+   if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+     target_link_libraries( objCrypto PRIVATE pthread )
+   endif ()
 endif ()
 
 target_include_directories( objCrypto PUBLIC ${PROJECT_SOURCE_DIR}/include )
