@@ -9,7 +9,7 @@
 
 using namespace ObjCrypto;
 
-__attribute__((visibility("default"))) ObjCryptor::ObjCryptor() {
+ ObjCryptor::ObjCryptor() {
     IV iv;
     assert(sizeof(iv) == 128 / 8);
     assert(iv.size() == 128 / 8);
@@ -19,13 +19,13 @@ __attribute__((visibility("default"))) ObjCryptor::ObjCryptor() {
     assert(nonce.size() == 96 / 8);
 }
 
-__attribute__((visibility("default"))) ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
+ ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
 
-__attribute__((visibility("default"))) float ObjCryptor::version() {
+ float ObjCryptor::version() {
     return ObjCrypto::objCryptoVersion;
 }
 
-__attribute__((visibility("default"))) ObjCryptoErr ObjCryptor::removeKey(KeyID keyID) {
+ ObjCryptoErr ObjCryptor::removeKey(KeyID keyID) {
     assert(haveKey(keyID));
 
     keyInfoMap.erase(keyID);
@@ -33,14 +33,14 @@ __attribute__((visibility("default"))) ObjCryptoErr ObjCryptor::removeKey(KeyID 
     return ObjCryptoErr::None;
 }
 
-__attribute__((visibility("default"))) bool ObjCryptor::haveKey(KeyID keyID) const {
+ bool ObjCryptor::haveKey(KeyID keyID) const {
     if (keyInfoMap.find(keyID) != keyInfoMap.end()) {
         return true;
     }
     return false;
 }
 
-__attribute__((visibility("default"))) ObjCryptoErr ObjCryptor::addKey(const KeyID keyID,
+ObjCryptoErr ObjCryptor::addKey(const KeyID keyID,
                                                                        const KeyInfo &keyInfo) {
 
     switch (keyInfo.first) {
@@ -89,7 +89,7 @@ IV ObjCryptor::formIV(const Nonce &nonce) const {
     return iv;
 }
 
-__attribute__((visibility("default"))) ObjCryptoErr
+ ObjCryptoErr
 ObjCryptor::seal(KeyID keyID, const Nonce &nonce, const std::vector<uint8_t> &plainText,
                  const std::vector<uint8_t> &authData, std::vector<uint8_t> &tag,
                  std::vector<uint8_t> &cipherText) const {
@@ -155,7 +155,7 @@ ObjCryptor::seal(KeyID keyID, const Nonce &nonce, const std::vector<uint8_t> &pl
     return ret;
 }
 
-__attribute__((visibility("default"))) ObjCryptoErr
+ObjCryptoErr
 ObjCryptor::unseal(KeyID keyID, const Nonce &nonce, const std::vector<uint8_t> &cipherText,
                    const std::vector<uint8_t> &authData, const std::vector<uint8_t> &tag,
                    std::vector<uint8_t> &plainText) const {
