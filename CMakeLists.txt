@@ -6,6 +6,7 @@ cmake_minimum_required( VERSION 3.13..3.25 )
 #endif ()
 
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20")
 
 project( objCrypto
             VERSION 0.1.1
@@ -34,8 +35,8 @@ option( OBJ_CRYPTO_USE_BORINGSSL "Use Booringssl for crypto" )
 option( BUILD_SHARED_LIBS "Build as shared library" )
 
 
-set( CMAKE_CXX_STANDARD 17 )
-set( CMAKE_C_STANDARD 17 )
+#set( CMAKE_CXX_STANDARD 14 )
+#set( CMAKE_C_STANDARD 14 )
 
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
