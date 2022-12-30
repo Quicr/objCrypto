@@ -132,7 +132,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
 
     int ret;
 
-    //int status; // TODO removr 
+    // int status; // TODO removr
     switch (key.index()) {
     case 0: {
         Key128 key128 = std::get<Key128>(key);
@@ -171,7 +171,8 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
     assert(ret == 1);
     // assert( moved == 0 );
 
-    ret = EVP_EncryptUpdate(ctx, cipherText.data(), &moved, plainText.data(), (int)plainText.size());
+    ret =
+        EVP_EncryptUpdate(ctx, cipherText.data(), &moved, plainText.data(), (int)plainText.size());
     assert(ret == 1);
     cipherTextLen += moved;
 
@@ -244,7 +245,8 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
     assert(ret == 1);
     // assert( moved == 0 );
 
-    ret = EVP_DecryptUpdate(ctx, plainText.data(), &moved, cipherText.data(), (int)cipherText.size());
+    ret =
+        EVP_DecryptUpdate(ctx, plainText.data(), &moved, cipherText.data(), (int)cipherText.size());
     assert(ret == 1);
     plainTextLen += moved;
 

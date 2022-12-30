@@ -7,16 +7,15 @@
 #include <variant>
 #include <vector>
 
-#if (defined _WIN32 && !defined __CYGWIN__) 
-  #if  defined( BUILDING_OBJCRYPTO )
-    #define OBJCRYPTO_EXPORT __declspec(dllexport)
-  #else
-    #define OBJCRYPTO_EXPORT __declspec(dllimport)
-  #endif
+#if (defined _WIN32 && !defined __CYGWIN__)
+#if defined(BUILDING_OBJCRYPTO)
+#define OBJCRYPTO_EXPORT __declspec(dllexport)
 #else
-  #define OBJCRYPTO_EXPORT __attribute__((__visibility__("default")))
+#define OBJCRYPTO_EXPORT __declspec(dllimport)
 #endif
-
+#else
+#define OBJCRYPTO_EXPORT __attribute__((__visibility__("default")))
+#endif
 
 namespace ObjCrypto {
 
@@ -81,14 +80,16 @@ class ObjCryptor {
     */
 
     OBJCRYPTO_EXPORT ObjCryptoErr seal(KeyID keyID, const Nonce &nonce,
-                                      const std::vector<uint8_t> &plainText,
-                      const std::vector<uint8_t> &authData, std::vector<uint8_t> &tag,
-                      std::vector<uint8_t> &cipherText) const;
+                                       const std::vector<uint8_t> &plainText,
+                                       const std::vector<uint8_t> &authData,
+                                       std::vector<uint8_t> &tag,
+                                       std::vector<uint8_t> &cipherText) const;
 
     OBJCRYPTO_EXPORT ObjCryptoErr unseal(KeyID keyID, const Nonce &nonce,
-                                        const std::vector<uint8_t> &cipherText,
-                        const std::vector<uint8_t> &authData, const std::vector<uint8_t> &tag,
-                        std::vector<uint8_t> &plainText) const;
+                                         const std::vector<uint8_t> &cipherText,
+                                         const std::vector<uint8_t> &authData,
+                                         const std::vector<uint8_t> &tag,
+                                         std::vector<uint8_t> &plainText) const;
 };
 
 }; // namespace ObjCrypto
