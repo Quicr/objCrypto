@@ -44,7 +44,8 @@ typedef std::array<uint8_t, 128 / 8> IV;
 enum class ObjCryptoErr : uint8_t {
     None = 0,
     DecryptAuthFail,
-    InvalidKey,
+    InvalidKeyID,
+    UnkownCryptoAlg, 
     WrongKeySize,
     WrongTagSize,
     WrongOutputDataSize

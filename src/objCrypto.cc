@@ -26,8 +26,11 @@ OBJCRYPTO_EXPORT ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
 OBJCRYPTO_EXPORT float ObjCryptor::version() { return ObjCrypto::objCryptoVersion; }
 
 OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::removeKey(KeyID keyID) {
-    assert(haveKey(keyID));
-
+  
+  if ( !haveKey(keyID) ) {
+     return ObjCryptoErr::InvalidKeyID;
+  }
+    
     keyInfoMap.erase(keyID);
 
     return ObjCryptoErr::None;
@@ -47,25 +50,32 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::addKey(const KeyID keyID, const KeyInf
     case ObjCryptoAlg::AES_128_GCM_128:
     case ObjCryptoAlg::AES_128_GCM_64:
     case ObjCryptoAlg::AES_128_CTR_0: {
-        assert(std::holds_alternative<Key128>(keyInfo.second));
+      if ( !std::holds_alternative<Key128>(keyInfo.second)) {
+        return ObjCryptoErr::WrongKeySize;
+      }
         break;
     }
 
     case ObjCryptoAlg::AES_256_GCM_128:
     case ObjCryptoAlg::AES_256_GCM_64:
     case ObjCryptoAlg::AES_256_CTR_0: {
-        assert(std::holds_alternative<Key256>(keyInfo.second));
+      if ( !std::holds_alternative<Key256>(keyInfo.second)) {
+         return ObjCryptoErr::WrongKeySize;
+      }
+                                                               
         break;
     }
 
     case ObjCryptoAlg::NUL_128_NUL_0:
     case ObjCryptoAlg::NUL_128_NUL_128: {
-        assert(std::holds_alternative<Key128>(keyInfo.second));
+      if ( !std::holds_alternative<Key128>(keyInfo.second)) {
+          return ObjCryptoErr::WrongKeySize;
+      }
         break;
     }
 
     default:
-        assert(0);
+      return ObjCryptoErr::UnkownCryptoAlg;
         break;
     }
 
@@ -94,32 +104,42 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::seal(KeyID keyID, const Nonce &nonce,
                                                std::vector<uint8_t> &tag,
                                                std::vector<uint8_t> &cipherText) const {
     // check have key
-    assert(haveKey(keyID));
-    const KeyInfo &keyInfo = keyInfoMap.at(keyID);
+  if ( !haveKey(keyID) ) {
+     return ObjCryptoErr::InvalidKeyID;
+  }
+        const KeyInfo &keyInfo = keyInfoMap.at(keyID);
 
     // check tag size correct
     switch (keyInfo.first) {
     case ObjCryptoAlg::NUL_128_NUL_0:
     case ObjCryptoAlg::AES_128_CTR_0:
     case ObjCryptoAlg::AES_256_CTR_0:
-        assert(tag.size() == 0);
+      if (tag.size() != 0) {
+        return ObjCryptoErr::WrongTagSize;
+      }
         break;
     case ObjCryptoAlg::AES_128_GCM_64:
     case ObjCryptoAlg::AES_256_GCM_64:
-        assert(tag.size() == 64 / 8);
+        if (tag.size() != 64 / 8) {
+        return ObjCryptoErr::WrongTagSize;
+      }
         break;
     case ObjCryptoAlg::AES_128_GCM_128:
     case ObjCryptoAlg::AES_256_GCM_128:
     case ObjCryptoAlg::NUL_128_NUL_128:
-        assert(tag.size() == 128 / 8);
+        if (tag.size() != 128 / 8) {
+        return ObjCryptoErr::WrongTagSize;
+      }
         break;
     default:
-        assert(0);
+         return ObjCryptoErr::UnkownCryptoAlg;
     }
 
     // check output data size correct
-    assert(cipherText.size() == plainText.size());
-
+    if (cipherText.size() != plainText.size()) {
+      return ObjCryptoErr::WrongOutputDataSize;
+    }
+    
     ObjCryptoErr ret = ObjCryptoErr::None;
 
     switch (keyInfo.first) {
@@ -148,7 +168,7 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::seal(KeyID keyID, const Nonce &nonce,
     } break;
 
     default:
-        assert(0);
+        return ObjCryptoErr::UnkownCryptoAlg;
         break;
     }
 
@@ -160,11 +180,15 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::unseal(KeyID keyID, const Nonce &nonce
                                                  const std::vector<uint8_t> &authData,
                                                  const std::vector<uint8_t> &tag,
                                                  std::vector<uint8_t> &plainText) const {
-    assert(haveKey(keyID));
-    const KeyInfo &keyInfo = keyInfoMap.at(keyID);
+   if ( !haveKey(keyID) ) {
+     return ObjCryptoErr::InvalidKeyID;
+  }
+   const KeyInfo &keyInfo = keyInfoMap.at(keyID);
 
-    assert(plainText.size() == cipherText.size());
-
+    if (cipherText.size() != plainText.size()) {
+      return ObjCryptoErr::WrongOutputDataSize;
+    }
+ 
     ObjCryptoErr ret = ObjCryptoErr::None;
 
     switch (keyInfo.first) {
@@ -192,7 +216,7 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::unseal(KeyID keyID, const Nonce &nonce
     } break;
 
     default:
-        assert(0);
+         return ObjCryptoErr::UnkownCryptoAlg;
         break;
     }
 
