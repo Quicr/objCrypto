@@ -25,7 +25,7 @@ OBJCRYPTO_EXPORT ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
 
 OBJCRYPTO_EXPORT float ObjCryptor::version() { return ObjCrypto::objCryptoVersion; }
 
-OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::removeKey(KeyID keyID) {
+OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::eraseKey(KeyID keyID) {
   
   if ( !haveKey(keyID) ) {
      return ObjCryptoErr::InvalidKeyID;
@@ -79,6 +79,11 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::addKey(const KeyID keyID, const KeyInf
         break;
     }
 
+    if ( haveKey( keyID ) ) {
+      ObjCryptoErr err = eraseKey( keyID );
+      assert( err == ObjCryptoErr::None );
+    }
+    
     keyInfoMap.insert(std::make_pair(keyID, keyInfo));
     return ObjCryptoErr::None;
 }

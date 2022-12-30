@@ -66,19 +66,9 @@ class ObjCryptor {
 
     OBJCRYPTO_EXPORT ObjCryptoErr addKey(const KeyID keyID, const KeyInfo &key);
 
-    OBJCRYPTO_EXPORT ObjCryptoErr removeKey(KeyID keyID);
+    OBJCRYPTO_EXPORT ObjCryptoErr eraseKey(KeyID keyID);
 
     OBJCRYPTO_EXPORT bool haveKey(KeyID keyID) const;
-
-    /* TODO remove
-    ObjCryptoErr seal(KeyID keyID, const std::variant<Nonce, IV> &nonceOrIV,
-                      const std::vector<uint8_t> &plainText,
-                      std::vector<uint8_t> &cipherText) const;
-
-    ObjCryptoErr unseal(KeyID keyID, const std::variant<Nonce, IV> &nonceOrIV,
-                        const std::vector<uint8_t> &cipherText,
-                        std::vector<uint8_t> &plainText) const;
-    */
 
     OBJCRYPTO_EXPORT ObjCryptoErr seal(KeyID keyID, const Nonce &nonce,
                                        const std::vector<uint8_t> &plainText,

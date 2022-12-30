@@ -14,13 +14,23 @@ add_test( NAME testTest
 
 add_executable( testVersion
     testVersion.cc
-)
-target_link_libraries( testVersion PRIVATE objCrypto doctest::doctest ) 
+) 
+target_link_libraries( testVersion PRIVATE objCrypto doctest::doctest )  
 add_test( NAME testVersion
                COMMAND testVersion )
 
 
+ 
 
+add_executable( testKeys
+    testKeys.cc
+) 
+target_link_libraries( testKeys PRIVATE objCrypto doctest::doctest )  
+add_test( NAME testKeys
+               COMMAND testKeys )
+
+
+ 
 add_executable ( testNulNul
     testNulNul.cc
 )
