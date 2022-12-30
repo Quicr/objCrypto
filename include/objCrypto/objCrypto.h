@@ -7,16 +7,15 @@
 #include <variant>
 #include <vector>
 
-#if (defined _WIN32 && !defined __CYGWIN__) 
-  #if  defined( BUILDING_OBJCRYPTO )
-    #define OBJCRYPTO_EXPORT __declspec(dllexport)
-  #else
-    #define OBJCRYPTO_EXPORT __declspec(dllimport)
-  #endif
+#if (defined _WIN32 && !defined __CYGWIN__)
+#if defined(BUILDING_OBJCRYPTO)
+#define OBJCRYPTO_EXPORT __declspec(dllexport)
 #else
-  #define OBJCRYPTO_EXPORT __attribute__((__visibility__("default")))
+#define OBJCRYPTO_EXPORT __declspec(dllimport)
 #endif
-
+#else
+#define OBJCRYPTO_EXPORT __attribute__((__visibility__("default")))
+#endif
 
 namespace ObjCrypto {
 
@@ -45,7 +44,8 @@ typedef std::array<uint8_t, 128 / 8> IV;
 enum class ObjCryptoErr : uint8_t {
     None = 0,
     DecryptAuthFail,
-    InvalidKey,
+    InvalidKeyID,
+    UnkownCryptoAlg, 
     WrongKeySize,
     WrongTagSize,
     WrongOutputDataSize
@@ -66,29 +66,21 @@ class ObjCryptor {
 
     OBJCRYPTO_EXPORT ObjCryptoErr addKey(const KeyID keyID, const KeyInfo &key);
 
-    OBJCRYPTO_EXPORT ObjCryptoErr removeKey(KeyID keyID);
+    OBJCRYPTO_EXPORT ObjCryptoErr eraseKey(KeyID keyID);
 
     OBJCRYPTO_EXPORT bool haveKey(KeyID keyID) const;
 
-    /* TODO remove
-    ObjCryptoErr seal(KeyID keyID, const std::variant<Nonce, IV> &nonceOrIV,
-                      const std::vector<uint8_t> &plainText,
-                      std::vector<uint8_t> &cipherText) const;
-
-    ObjCryptoErr unseal(KeyID keyID, const std::variant<Nonce, IV> &nonceOrIV,
-                        const std::vector<uint8_t> &cipherText,
-                        std::vector<uint8_t> &plainText) const;
-    */
-
     OBJCRYPTO_EXPORT ObjCryptoErr seal(KeyID keyID, const Nonce &nonce,
-                                      const std::vector<uint8_t> &plainText,
-                      const std::vector<uint8_t> &authData, std::vector<uint8_t> &tag,
-                      std::vector<uint8_t> &cipherText) const;
+                                       const std::vector<uint8_t> &plainText,
+                                       const std::vector<uint8_t> &authData,
+                                       std::vector<uint8_t> &tag,
+                                       std::vector<uint8_t> &cipherText) const;
 
     OBJCRYPTO_EXPORT ObjCryptoErr unseal(KeyID keyID, const Nonce &nonce,
-                                        const std::vector<uint8_t> &cipherText,
-                        const std::vector<uint8_t> &authData, const std::vector<uint8_t> &tag,
-                        std::vector<uint8_t> &plainText) const;
+                                         const std::vector<uint8_t> &cipherText,
+                                         const std::vector<uint8_t> &authData,
+                                         const std::vector<uint8_t> &tag,
+                                         std::vector<uint8_t> &plainText) const;
 };
 
 }; // namespace ObjCrypto

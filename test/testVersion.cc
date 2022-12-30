@@ -6,7 +6,6 @@
 
 using namespace ObjCrypto;
 
-TEST_CASE("testing that test framework is in place ") {
-    CHECK(1 + 1 == 2);
+TEST_CASE("Test version info") {
     CHECK(ObjCryptor::version() == ObjCrypto::objCryptoVersion);
 }

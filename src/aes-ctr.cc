@@ -21,7 +21,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
                                         std::vector<uint8_t> &cipherText) {
     CCCryptorRef cryptorRef;
 
-    assert(sizeof(iv) == 128 / 8); // weird that apple call does not take a siz
+    assert(sizeof(iv) == 128 / 8); // weird that apple call does not take a size
 
     CCCryptorStatus status;
     switch (key.index()) {
@@ -61,7 +61,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
     } break;
 
     default:
-        assert(0);
+      assert(0);
         break;
     }
     assert(status == kCCSuccess);
@@ -101,7 +101,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                         std::vector<uint8_t> &plainText) {
     CCCryptorRef cryptorRef;
 
-    assert(sizeof(iv) == 128 / 8); // weird that apple call does not take a siz
+    assert(sizeof(iv) == 128 / 8); // weird that apple call does not take a size
 
     CCCryptorStatus status;
     switch (key.index()) {
