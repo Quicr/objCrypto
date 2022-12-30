@@ -1,5 +1,3 @@
-// #include <iostream> // TODO REMOVE
-
 #include <cassert>
 #include <cstring>
 
@@ -132,7 +130,6 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
 
     int ret;
 
-    // int status; // TODO removr
     switch (key.index()) {
     case 0: {
         Key128 key128 = std::get<Key128>(key);
@@ -167,10 +164,9 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
 
     // do the AAD Data
     ret = EVP_EncryptUpdate(ctx, NULL, &moved, authData.data(),
-                            (int)authData.size()); // what is moved here
+                            (int)authData.size()); 
     assert(ret == 1);
-    // assert( moved == 0 );
-
+  
     ret =
         EVP_EncryptUpdate(ctx, cipherText.data(), &moved, plainText.data(), (int)plainText.size());
     assert(ret == 1);
@@ -183,7 +179,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
     assert(cipherTextLen == cipherText.size());
 
     ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, (int)tag.size(),
-                              tag.data()); // TODO - check tag.size is what needed
+                              tag.data()); 
     assert(ret == 1);
 
     EVP_CIPHER_CTX_free(ctx);
@@ -252,7 +248,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
 
     // do tag
     ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, (int)tag.size(),
-                              (void *)tag.data()); // TODO check tag size
+                              (void *)tag.data()); 
     assert(ret == 1);
 
     ret = EVP_DecryptFinal_ex(ctx, &plainText[plainTextLen], &moved);
