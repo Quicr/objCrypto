@@ -1,11 +1,13 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 
 Files: contrib/doctest/*
-Copyright: Copyright (c) 2016-2021 Viktor Kirilov
+Copyright: Copyright (c) 2016 Viktor Kirilov
 License: MIT
 
 Files: contrib/boringssl/*
-Copyright: Copyright (c) 1998-2011 The OpenSSL Project
+Copyright: Copyright (c) 1998 The OpenSSL Project
 License: OpenSSL
 
-
+Files: AUTHORS README.md CMakeSettings.json objCrypto.pc.in
+Copyright: Copyright (c) 2022 The ObjCrypto Project Authors 
+License: BSD-2-Clause

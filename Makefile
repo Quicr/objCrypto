@@ -5,6 +5,10 @@ all: build
 
 .PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows
 
+relase:
+	echo update github version tags
+	reuse spdx -o objCrypto.spdx
+
 build:
 	cmake -B build -S . 
 	cmake --build build
