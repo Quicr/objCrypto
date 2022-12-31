@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
+# SPDX-License-Identifier: BSD-2-Clause
 
 # find_package(OpenSSL 1.1 REQUIRED)
 

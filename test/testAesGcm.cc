@@ -1,4 +1,7 @@
-/*
+// SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
+// SPDX-License-Identifier: BSD-2-Clause
+
+*
  * test vectors from "The Galois/Counter Mode of Operation (GCM)"
  * by David A. McGrew and John Viega
  * https://csrc.nist.rip/groups/ST/toolkit/BCM/documents/proposedmodes/gcm/gcm-spec.pdf
