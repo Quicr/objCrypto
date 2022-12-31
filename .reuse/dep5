@@ -1,0 +1,11 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+
+Files: contrib/doctest/*
+Copyright: Copyright (c) 2016-2021 Viktor Kirilov
+License: MIT
+
+Files: contrib/boringssl/*
+Copyright: Copyright (c) 1998-2011 The OpenSSL Project
+License: OpenSSL
+
+
