@@ -42,7 +42,11 @@ cmake -S . -B build -DOBJ_CRYPTO_USE_BORINGSSL=True
 ``` 
 
 The ```CMAKE_OSX_ARCHITECTURES``` can be used to controll which
-architectures are compiled into universal binaries.
+architectures are compiled into universal binaries:
+```
+cmake -S . -B build -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+```
+
 
 It is possible to see what architectures the library was compiled for  with: 
 ```
