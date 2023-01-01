@@ -55,7 +55,8 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
                                             nonce.data(), nonce.size(), authData.data(),
                                             authData.size(), plainText.data(), plainText.size(),
                                             cipherText.data(), tag.data(), tag.size());
-    } break;
+  break;
+    } 
 
     case 1: {
         Key256 key256 = std::get<Key256>(key);
@@ -63,13 +64,13 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
                                             nonce.data(), nonce.size(), authData.data(),
                                             authData.size(), plainText.data(), plainText.size(),
                                             cipherText.data(), tag.data(), tag.size());
-    } break;
+   break;
+    }
 
     default:
         assert(0);
-        break;
-    }
-    // std::cout << "CCCrypto status = " <<  status << std::endl;
+         return ObjCryptoErr::UnkownCryptoAlg;
+     }
 
     assert(status != kCCParamError);
     assert(status == kCCSuccess);
@@ -93,17 +94,20 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
                                             nonce.data(), nonce.size(), authData.data(),
                                             authData.size(), cipherText.data(), cipherText.size(),
                                             plainText.data(), tag.data(), tag.size());
-    } break;
+        break;
+    }
     case 1: {
         Key256 key256 = std::get<Key256>(key);
         status = CCCryptorGCMOneshotDecrypt(kCCAlgorithmAES, key256.data(), key256.size(),
                                             nonce.data(), nonce.size(), authData.data(),
                                             authData.size(), cipherText.data(), cipherText.size(),
                                             plainText.data(), tag.data(), tag.size());
-    } break;
-    default:
-        assert(0);
         break;
+    } 
+    default: {
+        assert(0);
+         return ObjCryptoErr::UnkownCryptoAlg;
+    }
     }
 
     // std::cout << "CCCrypto decrypt status = " <<  status << std::endl;
@@ -145,7 +149,8 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
 
         ret = EVP_EncryptInit_ex(ctx, NULL, NULL, key128.data(), nonce.data());
         assert(ret == 1);
-    } break;
+        break;
+    } 
     case 1: {
         Key256 key256 = std::get<Key256>(key);
 
@@ -157,10 +162,12 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
 
         ret = EVP_EncryptInit_ex(ctx, NULL, NULL, key256.data(), nonce.data());
         assert(ret == 1);
-    } break;
-    default:
-        assert(0);
         break;
+    } 
+    default: {
+        assert(0);
+         return ObjCryptoErr::UnkownCryptoAlg;
+         }
     }
 
     // do the AAD Data
@@ -168,8 +175,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
                             (int)authData.size()); 
     assert(ret == 1);
   
-    ret =
-        EVP_EncryptUpdate(ctx, cipherText.data(), &moved, plainText.data(), (int)plainText.size());
+    ret = EVP_EncryptUpdate(ctx, cipherText.data(), &moved, plainText.data(), (int)plainText.size());
     assert(ret == 1);
     cipherTextLen += moved;
 
@@ -216,7 +222,9 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
 
         ret = EVP_DecryptInit_ex(ctx, NULL, NULL, key128.data(), nonce.data());
         assert(ret == 1);
-    } break;
+        
+        break;
+    } 
     case 1: {
         Key256 key256 = std::get<Key256>(key);
 
@@ -228,26 +236,26 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
 
         ret = EVP_DecryptInit_ex(ctx, NULL, NULL, key256.data(), nonce.data());
         assert(ret == 1);
-    } break;
-    default:
-        assert(0);
+        
         break;
+    }
+    default: {
+        assert(0);
+         return ObjCryptoErr::UnkownCryptoAlg;
+    }
     }
 
     // do the AAD Data
     ret = EVP_DecryptUpdate(ctx, NULL, &moved, authData.data(),
                             (int)authData.size()); // what is moved here
     assert(ret == 1);
-    // assert( moved == 0 );
 
-    ret =
-        EVP_DecryptUpdate(ctx, plainText.data(), &moved, cipherText.data(), (int)cipherText.size());
+    ret = EVP_DecryptUpdate(ctx, plainText.data(), &moved, cipherText.data(), (int)cipherText.size());
     assert(ret == 1);
     plainTextLen += moved;
 
     // do tag
-    ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, (int)tag.size(),
-                              (void *)tag.data()); 
+    ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, (int)tag.size(),  (void *)tag.data()); 
     assert(ret == 1);
 
     ret = EVP_DecryptFinal_ex(ctx, &plainText[plainTextLen], &moved);

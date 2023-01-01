@@ -44,7 +44,8 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
                                          0,                   // int numRounds,
                                          kCCModeOptionCTR_BE, // CCModeOptions
                                          &cryptorRef);
-    } break;
+    break;
+    }
 
     case 1: {
         Key256 key256 = std::get<Key256>(key);
@@ -61,11 +62,13 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
                                          0,                   // int numRounds,
                                          kCCModeOptionCTR_BE, // CCModeOptions
                                          &cryptorRef);
-    } break;
+    break;
+    }
 
-    default:
+    default: {
       assert(0);
-        break;
+       return ObjCryptoErr::UnkownCryptoAlg;
+    }
     }
     assert(status == kCCSuccess);
 
@@ -143,9 +146,11 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                          &cryptorRef);
     } break;
 
-    default:
+    default: {
         assert(0);
+          return ObjCryptoErr::UnkownCryptoAlg;
         break;
+    }
     }
     assert(status == kCCSuccess);
 
@@ -212,10 +217,11 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
         assert(status == 1);
     } break;
 
-    default:
+    default: {
         assert(0);
-        break;
+          return ObjCryptoErr::UnkownCryptoAlg;
     }
+     }
 
     int moved = 0;
     int cipherTextLen = 0;
@@ -230,7 +236,6 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
 
     assert(cipherTextLen == cipherText.size());
 
-    /* Clean up */
     EVP_CIPHER_CTX_free(ctx);
 
     return ObjCryptoErr::None;
@@ -273,9 +278,10 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
         assert(status == 1);
     } break;
 
-    default:
+    default: {
         assert(0);
-        break;
+        return ObjCryptoErr::UnkownCryptoAlg;
+    }
     }
 
     int moved = 0;
@@ -291,7 +297,6 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
 
     assert(plainTextLen == plainText.size());
 
-    /* Clean up */
     EVP_CIPHER_CTX_free(ctx);
 
     return ObjCryptoErr::None;

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
+// SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <cassert>
@@ -29,11 +29,11 @@ OBJCRYPTO_EXPORT ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
 OBJCRYPTO_EXPORT float ObjCryptor::version() { return ObjCrypto::objCryptoVersion; }
 
 OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::eraseKey(KeyID keyID) {
-  
-  if ( !haveKey(keyID) ) {
-     return ObjCryptoErr::InvalidKeyID;
-  }
-    
+
+    if (!haveKey(keyID)) {
+        return ObjCryptoErr::InvalidKeyID;
+    }
+
     keyInfoMap.erase(keyID);
 
     return ObjCryptoErr::None;
@@ -53,41 +53,42 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::addKey(const KeyID keyID, const KeyInf
     case ObjCryptoAlg::AES_128_GCM_128:
     case ObjCryptoAlg::AES_128_GCM_64:
     case ObjCryptoAlg::AES_128_CTR_0: {
-      if ( !std::holds_alternative<Key128>(keyInfo.second)) {
-        return ObjCryptoErr::WrongKeySize;
-      }
+        if (!std::holds_alternative<Key128>(keyInfo.second)) {
+            return ObjCryptoErr::WrongKeySize;
+        }
         break;
     }
 
     case ObjCryptoAlg::AES_256_GCM_128:
     case ObjCryptoAlg::AES_256_GCM_64:
     case ObjCryptoAlg::AES_256_CTR_0: {
-      if ( !std::holds_alternative<Key256>(keyInfo.second)) {
-         return ObjCryptoErr::WrongKeySize;
-      }
-                                                               
+        if (!std::holds_alternative<Key256>(keyInfo.second)) {
+            return ObjCryptoErr::WrongKeySize;
+        }
+
         break;
     }
 
     case ObjCryptoAlg::NUL_128_NUL_0:
     case ObjCryptoAlg::NUL_128_NUL_128: {
-      if ( !std::holds_alternative<Key128>(keyInfo.second)) {
-          return ObjCryptoErr::WrongKeySize;
-      }
+        if (!std::holds_alternative<Key128>(keyInfo.second)) {
+            return ObjCryptoErr::WrongKeySize;
+        }
         break;
     }
 
-    default:
-      return ObjCryptoErr::UnkownCryptoAlg;
-        break;
+    default: {
+        return ObjCryptoErr::UnkownCryptoAlg;
+    }
     }
 
-    if ( haveKey( keyID ) ) {
-      ObjCryptoErr err = eraseKey( keyID );
-      assert( err == ObjCryptoErr::None );
+    if (haveKey(keyID)) {
+        ObjCryptoErr err = eraseKey(keyID);
+        assert(err == ObjCryptoErr::None);
     }
-    
+
     keyInfoMap.insert(std::make_pair(keyID, keyInfo));
+    
     return ObjCryptoErr::None;
 }
 
@@ -112,60 +113,67 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::seal(KeyID keyID, const Nonce &nonce,
                                                std::vector<uint8_t> &tag,
                                                std::vector<uint8_t> &cipherText) const {
     // check have key
-  if ( !haveKey(keyID) ) {
-     return ObjCryptoErr::InvalidKeyID;
-  }
-        const KeyInfo &keyInfo = keyInfoMap.at(keyID);
+    if (!haveKey(keyID)) {
+        return ObjCryptoErr::InvalidKeyID;
+    }
+    const KeyInfo &keyInfo = keyInfoMap.at(keyID);
 
     // check tag size correct
     switch (keyInfo.first) {
     case ObjCryptoAlg::NUL_128_NUL_0:
     case ObjCryptoAlg::AES_128_CTR_0:
-    case ObjCryptoAlg::AES_256_CTR_0:
-      if (tag.size() != 0) {
-        return ObjCryptoErr::WrongTagSize;
-      }
+    case ObjCryptoAlg::AES_256_CTR_0: {
+        if (tag.size() != 0) {
+            return ObjCryptoErr::WrongTagSize;
+        }
         break;
+    }
     case ObjCryptoAlg::AES_128_GCM_64:
-    case ObjCryptoAlg::AES_256_GCM_64:
+    case ObjCryptoAlg::AES_256_GCM_64: {
         if (tag.size() != 64 / 8) {
-        return ObjCryptoErr::WrongTagSize;
-      }
+            return ObjCryptoErr::WrongTagSize;
+        }
         break;
+    }
     case ObjCryptoAlg::AES_128_GCM_128:
     case ObjCryptoAlg::AES_256_GCM_128:
-    case ObjCryptoAlg::NUL_128_NUL_128:
+    case ObjCryptoAlg::NUL_128_NUL_128: {
         if (tag.size() != 128 / 8) {
-        return ObjCryptoErr::WrongTagSize;
-      }
+            return ObjCryptoErr::WrongTagSize;
+        }
         break;
-    default:
-         return ObjCryptoErr::UnkownCryptoAlg;
+    }
+    default: {
+        return ObjCryptoErr::UnkownCryptoAlg;
+    }
     }
 
     // check output data size correct
     if (cipherText.size() != plainText.size()) {
-      return ObjCryptoErr::WrongOutputDataSize;
+        return ObjCryptoErr::WrongOutputDataSize;
     }
-    
+
     ObjCryptoErr ret = ObjCryptoErr::None;
 
     switch (keyInfo.first) {
 
     case ObjCryptoAlg::NUL_128_NUL_0: {
         cipherText = plainText;
-    } break;
+        break;
+    }
     case ObjCryptoAlg::NUL_128_NUL_128: {
         cipherText = plainText;
         tag.clear();
-    } break;
+        break;
+    }
 
     case ObjCryptoAlg::AES_128_CTR_0:
     case ObjCryptoAlg::AES_256_CTR_0: {
         IV iv = formIV(nonce);
         const Key &key = keyInfo.second;
         ret = aes_ctr_encrypt(key, iv, plainText, cipherText);
-    } break;
+        break;
+    }
 
     case ObjCryptoAlg::AES_128_GCM_64:
     case ObjCryptoAlg::AES_128_GCM_128:
@@ -173,11 +181,11 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::seal(KeyID keyID, const Nonce &nonce,
     case ObjCryptoAlg::AES_256_GCM_128: {
         const Key &key = keyInfo.second;
         ret = aes_gcm_encrypt(key, nonce, plainText, authData, tag, cipherText);
-    } break;
+        break;
+    }
 
     default:
         return ObjCryptoErr::UnkownCryptoAlg;
-        break;
     }
 
     return ret;
@@ -188,32 +196,35 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::unseal(KeyID keyID, const Nonce &nonce
                                                  const std::vector<uint8_t> &authData,
                                                  const std::vector<uint8_t> &tag,
                                                  std::vector<uint8_t> &plainText) const {
-   if ( !haveKey(keyID) ) {
-     return ObjCryptoErr::InvalidKeyID;
-  }
-   const KeyInfo &keyInfo = keyInfoMap.at(keyID);
+    if (!haveKey(keyID)) {
+        return ObjCryptoErr::InvalidKeyID;
+    }
+    const KeyInfo &keyInfo = keyInfoMap.at(keyID);
 
     if (cipherText.size() != plainText.size()) {
-      return ObjCryptoErr::WrongOutputDataSize;
+        return ObjCryptoErr::WrongOutputDataSize;
     }
- 
+
     ObjCryptoErr ret = ObjCryptoErr::None;
 
     switch (keyInfo.first) {
 
     case ObjCryptoAlg::NUL_128_NUL_0: {
         plainText = cipherText;
-    } break;
+        break;
+    }
     case ObjCryptoAlg::NUL_128_NUL_128: {
         plainText = cipherText;
-    } break;
+        break;
+    }
 
     case ObjCryptoAlg::AES_128_CTR_0:
     case ObjCryptoAlg::AES_256_CTR_0: {
         IV iv = formIV(nonce);
         Key key = keyInfo.second;
         ret = aes_ctr_decrypt(key, iv, cipherText, plainText);
-    } break;
+        break;
+    }
 
     case ObjCryptoAlg::AES_128_GCM_64:
     case ObjCryptoAlg::AES_128_GCM_128:
@@ -221,11 +232,12 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::unseal(KeyID keyID, const Nonce &nonce
     case ObjCryptoAlg::AES_256_GCM_128: {
         const Key &key = keyInfo.second;
         ret = aes_gcm_decrypt(key, nonce, cipherText, authData, tag, plainText);
-    } break;
-
-    default:
-         return ObjCryptoErr::UnkownCryptoAlg;
         break;
+    }
+
+    default: {
+        return ObjCryptoErr::UnkownCryptoAlg;
+    }
     }
 
     return ret;
