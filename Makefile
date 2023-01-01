@@ -3,7 +3,10 @@
 
 all: build
 
-.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows
+.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs 
+
+docs:
+	mkdocs serve
 
 relase:
 	echo update github version tags

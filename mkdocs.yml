@@ -1,0 +1,12 @@
+site_name: ObjCrypto 
+site_url: https://todo.com/
+repo_url: https://github.com/todo/todo/
+theme: readthedocs
+nav:
+    - Overview: index.md
+    - API: api.md
+    - Building: building.md
+markdown_extensions:
+    - toc:
+        permalink: "#"
+
