@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>API - ObjCrypto</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "API";
+    var mkdocs_page_input_path = "api.md";
+    var mkdocs_page_url = "/api/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> ObjCrypto</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Overview</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">API</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#key-management">Key management</a></li>
+    
+
+    <li class="toctree-l2"><a href="#encryption-algorithms">Encryption algorithms</a></li>
+    
+
+    <li class="toctree-l2"><a href="#encryption-with-seal">Encryption with seal</a></li>
+    
+
+    <li class="toctree-l2"><a href="#decryption-with-unseal">Decryption with unseal</a></li>
+    
+
+    <li class="toctree-l2"><a href="#error-codes">Error codes</a></li>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../building/">Building</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">ObjCrypto</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>API</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/todo/todo/edit/master/docs/api.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="key-management">Key management<a class="headerlink" href="#key-management" title="Permanent link">#</a></h2>
+<p>Keys are identified by a number ID called a keyID. The addKey method is
+used to add new key along with the encryptions algorithm to the
+ObjCryptor. The eraseKey method can remove a key and haveKey can be used
+to check for the existence of a specific keyID.</p>
+<p>When adding a key, an error is returned if the key is not the correct
+size for the algorithm in use.</p>
+<h2 id="encryption-algorithms">Encryption algorithms<a class="headerlink" href="#encryption-algorithms" title="Permanent link">#</a></h2>
+<p>The algorithms are identified with an enum such as AES_128_GCM_64. This
+indicates the encryption algorithm is AES with 128 keys using the GCM
+mode with a 64 bit authentication tag.  AES with 128 and 256 bits keys
+are supported. A CTR mode is supported with 0 bit authentication tags
+and GCM mode is supported with 64 or 128 bit authentication tags.</p>
+<p>It is also worth noting that forgeries are often trivial when using the
+CTR mode and zero bit tags.</p>
+<h2 id="encryption-with-seal">Encryption with seal<a class="headerlink" href="#encryption-with-seal" title="Permanent link">#</a></h2>
+<p>The seal function is used to encrypt data. The functions is passed:</p>
+<ul>
+<li>keyID: used to find the key and algorithm to encrypt with that was
+  previously set with addKey.</li>
+<li>nonce: 96 bytes data that is unique to this data. See below.</li>
+<li>plainText: The data to be encrypted</li>
+<li>authData: Any additional data that will not be encrypted but is
+  included in the authentication tag</li>
+<li>tag: space to return the authentication tag. This must match the size
+  for the crypto algorithm being used</li>
+<li>cipherText: space to return the encrypted results. This must be the
+  same size as the plain text</li>
+</ul>
+<p>It is critical that the nonce in unique for ever single thing encrypted
+with the same key.  The library does not provide any protection from
+reuse of the same nonce and the application using it must make sure this
+never happens.</p>
+<p>Error codes are returned if one of the input parameters is not the
+correct size for the algorithm and key in use.</p>
+<h2 id="decryption-with-unseal">Decryption with unseal<a class="headerlink" href="#decryption-with-unseal" title="Permanent link">#</a></h2>
+<p>The unseal method takes the following parameters: </p>
+<ul>
+<li>keyID: used to find the key and algorithm to decrypt</li>
+<li>nonce: same 96 bit nonce used in the encrypt </li>
+<li>cipherText: The data to be decrypted</li>
+<li>authData: The same additional data that was passed to the encryption</li>
+<li>tag: the tag that was output by the encryption </li>
+<li>plainText: space to return the decrypted results. This must be the
+  same size as the cipherText</li>
+</ul>
+<p>If using an authentication tag, the error DecryptAuthFail will be
+returned if the authentication does not match.</p>
+<h2 id="error-codes">Error codes<a class="headerlink" href="#error-codes" title="Permanent link">#</a></h2>
+<p>The following error codes are used:</p>
+<ul>
+<li>None: Success, no error </li>
+<li>DecryptAuthFail: The authentication failed in the decryption </li>
+<li>InvalidKeyID: The keyID passed does not exist </li>
+<li>UnkownCryptoAlg: An unknown crypto algorithm was used and the
+  operation failed</li>
+<li>WrongKeySize: The key size does not match the crypto algorithm </li>
+<li>WrongTagSize: The tag size does not match the crypto algorithm </li>
+<li>WrongOutputDataSize: The size of vector for the output is not the same
+  as the input size</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../building/" class="btn btn-neutral float-right" title="Building">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/todo/todo/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../building/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
