@@ -13,7 +13,6 @@ add_test( NAME testTest
                COMMAND testTest )
 
 
-
 add_executable( testVersion
     testVersion.cc
 ) 
@@ -21,8 +20,6 @@ target_link_libraries( testVersion PRIVATE objCrypto doctest::doctest )
 add_test( NAME testVersion
                COMMAND testVersion )
 
-
- 
 
 add_executable( testKeys
     testKeys.cc
@@ -32,14 +29,13 @@ add_test( NAME testKeys
                COMMAND testKeys )
 
 
- 
+
 add_executable ( testNulNul
     testNulNul.cc
 )
 target_link_libraries( testNulNul PRIVATE objCrypto doctest::doctest  )
 add_test( NAME testNulNul
                COMMAND testNulNul  )
-
 
 
 add_executable ( testAesCtr
@@ -50,15 +46,12 @@ add_test( NAME testAesCtr
                COMMAND testAesCtr  )
 
 
-
 add_executable ( testAesGcm
     testAesGcm.cc
 )
 target_link_libraries( testAesGcm PRIVATE objCrypto doctest::doctest  )
 add_test( NAME testAesGcm
                COMMAND testAesGcm  )
-
-
 
 
 add_executable ( speedNul 
