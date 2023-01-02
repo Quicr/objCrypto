@@ -202,6 +202,13 @@ TEST_CASE("test 4 AES 128 GCM Mode") {
     assert(tag.size() == 64 / 8);
   }
 
+  SUBCASE("empty auth data") {
+    authData.clear();
+
+    correctTag = { 0xCC,0x15,0xAB,0xCC,0x19,0x11,0x61,0x50,
+                   0x1A,0xAB,0xAB,0x46,0xB8,0xFB,0xAC,0x85 };
+  }
+   
   err = cryptor.addKey(keyId, keyInfo);
   assert(err == ObjCryptoErr::None);
 
