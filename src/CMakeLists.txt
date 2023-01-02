@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
 # SPDX-License-Identifier: BSD-2-Clause
 
-# find_package(OpenSSL 1.1 REQUIRED)
-
 include_directories(../contrib/boringssl/src/include  )
 
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
@@ -29,7 +27,16 @@ target_sources( objCrypto
   objCrypto.cc
   aes-ctr.cc 
   aes-gcm.cc )
- 
+
+
+# Lots of wwarnings as errors 
+if (MSVC) 
+    add_compile_options(/W4 /WX) 
+else() 
+    add_compile_options(-Wall -Wextra -pedantic -Werror) 
+endif() 
+
+
 set_target_properties( objCrypto PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties( objCrypto PROPERTIES SOVERSION 0)
 set_target_properties( objCrypto PROPERTIES POSITION_INDEPENDENT_CODE ON)
