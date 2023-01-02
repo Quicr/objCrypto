@@ -9,7 +9,7 @@
 
 using namespace ObjCrypto;
 
-int test3() {
+int main(/* int argc, char *argv[] */) {
   ObjCryptoErr err;
 
   ObjCryptor cryptor;
@@ -56,12 +56,5 @@ int test3() {
   // err = cryptor.unseal( keyId, nonce, cipherText, authData, tag, plainTextOut
   // ); assert( err == ObjCryptoErr::None);
 
-  return 0;
-}
-
-int main(int argc, char *argv[]) {
-  if (test3() != 0) {
-    return 1;
-  }
   return 0;
 }

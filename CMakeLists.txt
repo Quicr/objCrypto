@@ -17,6 +17,14 @@ project( objCrypto
             LANGUAGES C CXX)
 
 
+# Lots of wwarnings as errors 
+if (MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif()
+
+
 if ( ${APPLE} )
    set( OBJ_CRYPTO_USE_BORINGSSL False CACHE BOOL "use boring SSL for crypto"  )
 else ()

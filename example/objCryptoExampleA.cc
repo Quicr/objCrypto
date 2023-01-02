@@ -8,7 +8,7 @@
 
 using namespace ObjCrypto;
 
-int main( int argc, char* argv[] ) {
+int main( /*int argc, char* argv[]*/ ) {
   ObjCryptoErr err;
 
   // Set up cryptor object to keep track of keys

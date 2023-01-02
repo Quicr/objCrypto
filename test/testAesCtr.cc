@@ -67,12 +67,12 @@ TEST_CASE("test AES 128 Ctr Mode") {
   printHex("correctText", correct.data(), correct.size());
 
   CHECK(correct.size() == cipherText.size());
-  for (int i = 0; i < correct.size(); i++) {
+  for (size_t i = 0; i < correct.size(); i++) {
     CHECK(correct[i] == cipherText[i]);
   }
 
   CHECK(plainTextIn.size() == plainTextOut.size());
-  for (int i = 0; i < plainTextIn.size(); i++) {
+  for (size_t i = 0; i < plainTextIn.size(); i++) {
     CHECK(plainTextIn[i] == plainTextOut[i]);
   }
 }
@@ -139,12 +139,12 @@ TEST_CASE("test AES 256 Ctr Mode") {
   printHex("correctText", correct.data(), correct.size());
 
   CHECK(correct.size() == cipherText.size());
-  for (int i = 0; i < correct.size(); i++) {
+  for (size_t i = 0; i < correct.size(); i++) {
     CHECK(correct[i] == cipherText[i]);
   }
 
   CHECK(plainTextIn.size() == plainTextOut.size());
-  for (int i = 0; i < plainTextIn.size(); i++) {
+  for (size_t i = 0; i < plainTextIn.size(); i++) {
     CHECK(plainTextIn[i] == plainTextOut[i]);
   }
 }

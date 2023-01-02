@@ -9,7 +9,7 @@
 
 using namespace ObjCrypto;
 
-int main(int argc, char *argv[]) {
+int main( /* int argc, char *argv[] */) {
   ObjCryptoErr err;
 
   ObjCryptor cryptor;
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 
   Key128 key128 = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
                    0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c};
-
+ 
   KeyInfo keyInfo(ObjCryptoAlg::NUL_128_NUL_0, key128);
 
   Nonce nonce = {0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5,
