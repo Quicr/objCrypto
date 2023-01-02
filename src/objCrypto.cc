@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <cassert>
-#include <cstring>
+#include <algorithm>
 
 #define BUILDING_OBJCRYPTO 1
 
@@ -95,8 +95,8 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::addKey(const KeyID keyID,
 IV ObjCryptor::formIV(const Nonce &nonce) const {
   IV iv;
   assert(sizeof(IV) == sizeof(Nonce) +4 );
-  std::memcpy(iv.data(), nonce.data(), sizeof(nonce) ); // Flawfinder: ignore
-
+  std::copy( std::begin(nonce), std::end(nonce), std::begin(iv) );
+    
   assert(iv.size() == 16);
   assert(nonce.size() == 12);
   iv[12] = 0;
