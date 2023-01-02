@@ -7,7 +7,7 @@
 #define BUILDING_OBJCRYPTO 1
 
 #include <objCrypto/objCrypto.h>
-#include <objCrypto/objCryptoVersion.h>
+#include <objCrypto/version.h>
 
 #include "aes-ctr.h"
 #include "aes-gcm.h"
@@ -26,8 +26,8 @@ OBJCRYPTO_EXPORT ObjCryptor::ObjCryptor() {
 
 OBJCRYPTO_EXPORT ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
 
-OBJCRYPTO_EXPORT float ObjCryptor::version() {
-  return ObjCrypto::objCryptoVersion;
+OBJCRYPTO_EXPORT int16_t ObjCryptor::version() {
+  return ObjCrypto::objCryptoVersion();
 }
 
 OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::eraseKey(KeyID keyID) {

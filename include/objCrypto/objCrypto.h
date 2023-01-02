@@ -65,7 +65,7 @@ class ObjCryptor {
 
   OBJCRYPTO_EXPORT ~ObjCryptor();
 
-  OBJCRYPTO_EXPORT static float version();
+  OBJCRYPTO_EXPORT static int16_t version();
 
   OBJCRYPTO_EXPORT ObjCryptoErr addKey(const KeyID keyID, const KeyInfo &key);
 
