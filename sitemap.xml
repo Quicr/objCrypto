@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-     <loc>https://todo.com/</loc>
+     <loc>https://quicr.github.io/objCrypto/</loc>
      <lastmod>2023-01-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://todo.com/api/</loc>
+     <loc>https://quicr.github.io/objCrypto/api/</loc>
      <lastmod>2023-01-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://todo.com/building/</loc>
+     <loc>https://quicr.github.io/objCrypto/building/</loc>
      <lastmod>2023-01-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
