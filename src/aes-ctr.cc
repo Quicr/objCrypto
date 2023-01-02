@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <cassert>
-//#include <cstring>
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
 #include <openssl/cipher.h>
