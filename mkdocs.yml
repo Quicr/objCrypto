@@ -1,6 +1,6 @@
 site_name: ObjCrypto 
-site_url: https://todo.com/
-repo_url: https://github.com/todo/todo/
+site_url: https://quicr.github.io/objCrypto
+repo_url: https://github.com/Quicr/objCrypto
 theme: readthedocs
 nav:
     - Overview: index.md
