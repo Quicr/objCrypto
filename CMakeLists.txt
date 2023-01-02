@@ -69,7 +69,8 @@ add_subdirectory( contrib )
 add_subdirectory( src )
 
 if( BUILD_TESTS )
-    add_subdirectory( test ) 
+    add_subdirectory( test )  
+    add_subdirectory( example )  
 endif()
 
 include(GNUInstallDirs)
