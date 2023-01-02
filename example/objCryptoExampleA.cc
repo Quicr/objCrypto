@@ -16,18 +16,18 @@ int main( int argc, char* argv[] ) {
 
   // Create a key 
   KeyID keyId = 5;
-  // Key size need to match the choosen algorithm 
+  // Key size need to match the chosen algorithm 
   Key128 key128 = {0xFE, 0xFF, 0xE9, 0x92, 0x86, 0x65, 0x73, 0x1C,
                    0x6D, 0x6A, 0x8F, 0x94, 0x67, 0x30, 0x83, 0x08};
   KeyInfo keyInfo(ObjCryptoAlg::AES_128_GCM_64, key128);
-  // tag size needs to match choosen algorithm 
+  // tag size needs to match chosen algorithm 
   std::vector<uint8_t> tag( 64 / 8);
 
-  // crate the key and add it 
+  // Add the key to the cryptor 
   err = cryptor.addKey(keyId, keyInfo);
   assert(err == ObjCryptoErr::None);
 
-  // For the nonce, data to encrypt, and extra data to authenticate 
+  // Form the nonce, data to encrypt, and extra data to authenticate 
   Nonce nonce = {0xCA, 0xFE, 0xBA, 0xBE, 0xFA, 0xCE,
                  0xDB, 0xAD, 0xDE, 0xCA, 0xF8, 0x88};
   std::vector<uint8_t> plainTextIn = {
@@ -46,7 +46,7 @@ int main( int argc, char* argv[] ) {
   err = cryptor.seal(keyId, nonce, plainTextIn, authData, tag, cipherText);
   assert(err == ObjCryptoErr::None);
 
-  // decrypte the cipher text and check the authentication tag 
+  // decrypt the cipher text and check the authentication tag 
   std::vector<uint8_t> plainTextOut(plainTextIn.size());
   err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
   assert(err != ObjCryptoErr::DecryptAuthFail);
