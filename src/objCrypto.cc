@@ -94,7 +94,7 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::addKey(const KeyID keyID,
 
 IV ObjCryptor::formIV(const Nonce &nonce) const {
   IV iv;
-  assert(sizeof(IV) == sizeof(Nonce) +4 );
+  assert( iv.size()  > nonce.size() );
   std::copy( std::begin(nonce), std::end(nonce), std::begin(iv) );
     
   assert(iv.size() == 16);
