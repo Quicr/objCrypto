@@ -11,11 +11,10 @@ cmake_minimum_required( VERSION 3.13..3.25 )
 
 
 project( objCrypto
-            VERSION 0.1.1
+            VERSION 0.1.2
             DESCRIPTION "C++ Libraary to encrypt and decrypt objects"
             HOMEPAGE_URL "https://github.com/fluffy/objCrypto"
             LANGUAGES C CXX)
-
 
 
 if ( ${APPLE} )

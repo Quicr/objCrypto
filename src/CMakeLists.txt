@@ -15,8 +15,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-common -fno-exc
 endif()
 
 configure_file (
-    "${PROJECT_SOURCE_DIR}/include/objCrypto/objCryptoVersion.h.in"
-    "${PROJECT_SOURCE_DIR}/include/objCrypto/objCryptoVersion.h"
+    "${PROJECT_SOURCE_DIR}/include/objCrypto/version.h.in"
+    "${PROJECT_SOURCE_DIR}/include/objCrypto/version.h"
 )
 
 # controll static shared with BUILD_SHARED_LIBS=ON.
