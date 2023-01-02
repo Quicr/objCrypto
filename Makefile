@@ -3,10 +3,14 @@
 
 all: build
 
-.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs 
+.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs lint 
 
 docs:
-	mkdocs gh-deploy 
+	mkdocs gh-deploy
+
+lint:
+	flawfinder -QDS include src
+	cppcheck include src
 
 relase:
 	echo update github version tags
