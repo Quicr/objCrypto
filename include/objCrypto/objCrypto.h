@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
+// SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors
 // SPDX-License-Identifier: BSD-2-Clause
 
 #pragma once
@@ -23,15 +23,15 @@
 namespace ObjCrypto {
 
 enum class ObjCryptoAlg : uint8_t {
-    Invalid = 0,
-    NUL_128_NUL_0 = 0x10,   // NULL cipher wiith 128 bit key and 0 byte tag
-    NUL_128_NUL_128 = 0x12, // NULL cipher with 128 bit key and 128 bit tag
-    AES_128_CTR_0 = 0x20,   // AES128 counter mode with no authentication
-    AES_128_GCM_64 = 0x21,  // AES128 GCM mode with 64 bit tag
-    AES_128_GCM_128 = 0x22, // AES128 GCM mode with 128 bit tag
-    AES_256_CTR_0 = 0x30,   // AES128 counter mode with no authentication
-    AES_256_GCM_64 = 0x31,  // AES128 GCM mode with 64 bit tag
-    AES_256_GCM_128 = 0x32  // AES128 GCM mode with 128 bit tag
+  Invalid = 0,
+  NUL_128_NUL_0 = 0x10,    // NULL cipher wiith 128 bit key and 0 byte tag
+  NUL_128_NUL_128 = 0x12,  // NULL cipher with 128 bit key and 128 bit tag
+  AES_128_CTR_0 = 0x20,    // AES128 counter mode with no authentication
+  AES_128_GCM_64 = 0x21,   // AES128 GCM mode with 64 bit tag
+  AES_128_GCM_128 = 0x22,  // AES128 GCM mode with 128 bit tag
+  AES_256_CTR_0 = 0x30,    // AES128 counter mode with no authentication
+  AES_256_GCM_64 = 0x31,   // AES128 GCM mode with 64 bit tag
+  AES_256_GCM_128 = 0x32   // AES128 GCM mode with 128 bit tag
 };
 
 typedef std::array<uint8_t, 128 / 8> Key128;
@@ -45,45 +45,45 @@ typedef std::array<uint8_t, 96 / 8> Nonce;
 typedef std::array<uint8_t, 128 / 8> IV;
 
 enum class ObjCryptoErr : uint8_t {
-    None = 0,
-    DecryptAuthFail,
-    InvalidKeyID,
-    UnkownCryptoAlg, 
-    WrongKeySize,
-    WrongTagSize,
-    WrongOutputDataSize
+  None = 0,
+  DecryptAuthFail,
+  InvalidKeyID,
+  UnkownCryptoAlg,
+  WrongKeySize,
+  WrongTagSize,
+  WrongOutputDataSize
 };
 
 class ObjCryptor {
-  private:
-    std::map<KeyID, const KeyInfo> keyInfoMap;
+ private:
+  std::map<KeyID, const KeyInfo> keyInfoMap;
 
-    IV formIV(const Nonce &nonce) const;
+  IV formIV(const Nonce &nonce) const;
 
-  public:
-    OBJCRYPTO_EXPORT ObjCryptor();
+ public:
+  OBJCRYPTO_EXPORT ObjCryptor();
 
-    OBJCRYPTO_EXPORT ~ObjCryptor();
+  OBJCRYPTO_EXPORT ~ObjCryptor();
 
-    OBJCRYPTO_EXPORT static float version();
+  OBJCRYPTO_EXPORT static float version();
 
-    OBJCRYPTO_EXPORT ObjCryptoErr addKey(const KeyID keyID, const KeyInfo &key);
+  OBJCRYPTO_EXPORT ObjCryptoErr addKey(const KeyID keyID, const KeyInfo &key);
 
-    OBJCRYPTO_EXPORT ObjCryptoErr eraseKey(KeyID keyID);
+  OBJCRYPTO_EXPORT ObjCryptoErr eraseKey(KeyID keyID);
 
-    OBJCRYPTO_EXPORT bool haveKey(KeyID keyID) const;
+  OBJCRYPTO_EXPORT bool haveKey(KeyID keyID) const;
 
-    OBJCRYPTO_EXPORT ObjCryptoErr seal(KeyID keyID, const Nonce &nonce,
-                                       const std::vector<uint8_t> &plainText,
+  OBJCRYPTO_EXPORT ObjCryptoErr seal(KeyID keyID, const Nonce &nonce,
+                                     const std::vector<uint8_t> &plainText,
+                                     const std::vector<uint8_t> &authData,
+                                     std::vector<uint8_t> &tag,
+                                     std::vector<uint8_t> &cipherText) const;
+
+  OBJCRYPTO_EXPORT ObjCryptoErr unseal(KeyID keyID, const Nonce &nonce,
+                                       const std::vector<uint8_t> &cipherText,
                                        const std::vector<uint8_t> &authData,
-                                       std::vector<uint8_t> &tag,
-                                       std::vector<uint8_t> &cipherText) const;
-
-    OBJCRYPTO_EXPORT ObjCryptoErr unseal(KeyID keyID, const Nonce &nonce,
-                                         const std::vector<uint8_t> &cipherText,
-                                         const std::vector<uint8_t> &authData,
-                                         const std::vector<uint8_t> &tag,
-                                         std::vector<uint8_t> &plainText) const;
+                                       const std::vector<uint8_t> &tag,
+                                       std::vector<uint8_t> &plainText) const;
 };
 
-}; // namespace ObjCrypto
+};  // namespace ObjCrypto

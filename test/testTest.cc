@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
+// SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors
 // SPDX-License-Identifier: BSD-2-Clause
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
