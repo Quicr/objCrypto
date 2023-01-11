@@ -205,13 +205,14 @@ Error ObjCrypto::aes_ctr_decrypt(const Key &key, const Nonce &nonce,
 }
 #endif
 
+#if 0
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
 Error ObjCrypto::aes_ctr_encrypt(const Key &key, const Nonce &nonce,
                                         const std::vector<uint8_t> &plainText,
                                         std::vector<uint8_t> &cipherText) {
   EVP_CIPHER_CTX *ctx;
 
-  auto IV = formIV(nonce);
+  auto iv = formIV(nonce);
 
   ctx = EVP_CIPHER_CTX_new();
   assert(ctx);
@@ -271,12 +272,12 @@ Error ObjCrypto::aes_ctr_encrypt(const Key &key, const Nonce &nonce,
 #endif
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
-Error ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
+Error ObjCrypto::aes_ctr_decrypt(const Key &key, const Nonce &nonce,
                                         const std::vector<uint8_t> &cipherText,
                                         std::vector<uint8_t> &plainText) {
   EVP_CIPHER_CTX *ctx;
 
-  auto IV = formIV(nonce);
+  auto iv = formIV(nonce);
 
   ctx = EVP_CIPHER_CTX_new();
   assert(ctx);
@@ -332,4 +333,5 @@ Error ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
 
   return Error::None;
 }
+#endif
 #endif

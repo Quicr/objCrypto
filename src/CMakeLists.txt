@@ -26,7 +26,9 @@ target_sources( objCrypto
   PRIVATE
   objCrypto.cc
   aes-ctr.cc 
-  aes-gcm.cc )
+  aes-gcm.cc 
+  crypto/openssl.cc
+)
 
 
 # Lots of wwarnings as errors 
@@ -50,7 +52,7 @@ if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
    endif ()
 endif ()
 
-target_include_directories( objCrypto PUBLIC ${PROJECT_SOURCE_DIR}/include )
+target_include_directories( objCrypto PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src )
 
 set_target_properties( objCrypto PROPERTIES PUBLIC_HEADER
  "${PROJECT_SOURCE_DIR}/include/objCrypto/objCrypto.h;${PROJECT_SOURCE_DIR}/include/objCrypto/objCryptoVersion.h" ) 

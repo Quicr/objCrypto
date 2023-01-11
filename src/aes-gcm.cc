@@ -121,6 +121,7 @@ Error ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
 }
 #endif
 
+#if 0
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
 Error ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
                                         const std::vector<uint8_t> &plainText,
@@ -281,4 +282,5 @@ Error ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
 
   return Error::None;
 }
+#endif
 #endif

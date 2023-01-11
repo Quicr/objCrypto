@@ -45,6 +45,7 @@ using Nonce = std::array<uint8_t, 12>;
 
 enum class Error : uint8_t {
   None = 0,
+  CryptoLibraryFail,
   DecryptAuthFail,
   InvalidKeyID,
   UnkownCryptoAlg,
