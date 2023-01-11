@@ -10,7 +10,7 @@
 using namespace ObjCrypto;
 
 int main( /* int argc, char *argv[] */) {
-  ObjCryptoErr err;
+  Error err;
 
   ObjCryptor cryptor;
   KeyID keyId = 1;
@@ -27,21 +27,21 @@ int main( /* int argc, char *argv[] */) {
 
   Key128 key128 = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
                    0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c};
- 
+
   KeyInfo keyInfo(ObjCryptoAlg::NUL_128_NUL_0, key128);
 
   Nonce nonce = {0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5,
                  0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb};
 
   err = cryptor.addKey(keyId, keyInfo);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   auto startTime = std::chrono::high_resolution_clock::now();
 
   const long loops = 1 * 1000 * 1000;
   for (int i = 0; i < loops; i++) {
     err = cryptor.seal(keyId, nonce, plainTextIn, auth, tag, cipherText);
-    assert(err == ObjCryptoErr::None);
+    assert(err == Error::None);
   }
 
   auto endTime = std::chrono::high_resolution_clock::now();
@@ -56,7 +56,7 @@ int main( /* int argc, char *argv[] */) {
             << (float)(bytesProcessed) / seconds / 1.0e3 << std::endl;
 
   // err = cryptor.unseal( keyId, nonce, cipherText, auth, tag, plainTextOut );
-  // assert( err == ObjCryptoErr::None);
+  // assert( err == Error::None);
 
   return 0;
 }

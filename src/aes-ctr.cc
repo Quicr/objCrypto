@@ -17,13 +17,31 @@
 
 using namespace ObjCrypto;
 
+using IV = std::array<uint8_t, 16>;
+
+static IV formIV(const Nonce &nonce) {
+  IV iv;
+  assert( iv.size()  > nonce.size() );
+  std::copy( std::begin(nonce), std::end(nonce), std::begin(iv) );
+
+  assert(iv.size() == 16);
+  assert(nonce.size() == 12);
+  iv[12] = 0;
+  iv[13] = 0;
+  iv[14] = 0;
+  iv[15] = 1;  // This 1 is specified in RFC 3686
+               // XXX(RLB) WTF? This isn't IPsec.
+
+  return iv;
+}
+
 #if defined(__APPLE__) && !defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
+Error ObjCrypto::aes_ctr_encrypt(const Key &key, const Nonce &nonce,
                                         const std::vector<uint8_t> &plainText,
                                         std::vector<uint8_t> &cipherText) {
   CCCryptorRef cryptorRef;
 
-  assert(sizeof(iv) == 128 / 8);  // weird that apple call does not take a size
+  auto iv = formIV(nonce);
 
   CCCryptorStatus status;
   switch (key.index()) {
@@ -67,7 +85,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
 
     default: {
       assert(0);
-      return ObjCryptoErr::UnkownCryptoAlg;
+      return Error::UnkownCryptoAlg;
     }
   }
   assert(status == kCCSuccess);
@@ -99,17 +117,17 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
   status = CCCryptorRelease(cryptorRef);
   assert(status == kCCSuccess);
 
-  return ObjCryptoErr::None;
+  return Error::None;
 }
 #endif
 
 #if defined(__APPLE__) && !defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
+Error ObjCrypto::aes_ctr_decrypt(const Key &key, const Nonce &nonce,
                                         const std::vector<uint8_t> &cipherText,
                                         std::vector<uint8_t> &plainText) {
   CCCryptorRef cryptorRef;
 
-  assert(sizeof(iv) == 128 / 8);  // weird that apple call does not take a size
+  auto iv = formIV(nonce);
 
   CCCryptorStatus status;
   switch (key.index()) {
@@ -151,7 +169,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
 
     default: {
       assert(0);
-      return ObjCryptoErr::UnkownCryptoAlg;
+      return Error::UnkownCryptoAlg;
       break;
     }
   }
@@ -183,15 +201,17 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
   status = CCCryptorRelease(cryptorRef);
   assert(status == kCCSuccess);
 
-  return ObjCryptoErr::None;
+  return Error::None;
 }
 #endif
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
+Error ObjCrypto::aes_ctr_encrypt(const Key &key, const Nonce &nonce,
                                         const std::vector<uint8_t> &plainText,
                                         std::vector<uint8_t> &cipherText) {
   EVP_CIPHER_CTX *ctx;
+
+  auto IV = formIV(nonce);
 
   ctx = EVP_CIPHER_CTX_new();
   assert(ctx);
@@ -225,7 +245,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
 
     default: {
       assert(0);
-      return ObjCryptoErr::UnkownCryptoAlg;
+      return Error::UnkownCryptoAlg;
     }
   }
 
@@ -246,17 +266,17 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
 
   EVP_CIPHER_CTX_free(ctx);
 
-  return ObjCryptoErr::None;
+  return Error::None;
 }
 #endif
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
+Error ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                         const std::vector<uint8_t> &cipherText,
                                         std::vector<uint8_t> &plainText) {
   EVP_CIPHER_CTX *ctx;
 
-  assert(sizeof(iv) == 128 / 8);
+  auto IV = formIV(nonce);
 
   ctx = EVP_CIPHER_CTX_new();
   assert(ctx);
@@ -289,7 +309,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
 
     default: {
       assert(0);
-      return ObjCryptoErr::UnkownCryptoAlg;
+      return Error::UnkownCryptoAlg;
     }
   }
 
@@ -310,6 +330,6 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
 
   EVP_CIPHER_CTX_free(ctx);
 
-  return ObjCryptoErr::None;
+  return Error::None;
 }
 #endif
