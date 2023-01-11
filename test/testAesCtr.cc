@@ -13,7 +13,7 @@
 using namespace ObjCrypto;
 
 TEST_CASE("test AES 128 Ctr Mode") {
-  ObjCryptoErr err;
+  Error err;
 
   ObjCryptor cryptor;
   KeyID keyId = 1;
@@ -51,13 +51,13 @@ TEST_CASE("test AES 128 Ctr Mode") {
   std::vector<uint8_t> tag;
 
   err = cryptor.addKey(keyId, keyInfo);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   err = cryptor.seal(keyId, nonce, plainTextIn, auth, tag, cipherText);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   err = cryptor.unseal(keyId, nonce, cipherText, auth, tag, plainTextOut);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   printHex("plainTextIn ", plainTextIn.data(), plainTextIn.size());
   printHex("plainTextOut", plainTextOut.data(), plainTextOut.size());
@@ -78,7 +78,7 @@ TEST_CASE("test AES 128 Ctr Mode") {
 }
 
 TEST_CASE("test AES 256 Ctr Mode") {
-  ObjCryptoErr err;
+  Error err;
 
   ObjCryptor cryptor;
   KeyID keyId = 1;
@@ -123,13 +123,13 @@ TEST_CASE("test AES 256 Ctr Mode") {
   std::vector<uint8_t> tag;
 
   err = cryptor.addKey(keyId, keyInfo);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   err = cryptor.seal(keyId, nonce, plainTextIn, auth, tag, cipherText);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   err = cryptor.unseal(keyId, nonce, cipherText, auth, tag, plainTextOut);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   printHex("plainTextIn ", plainTextIn.data(), plainTextIn.size());
   printHex("plainTextOut", plainTextOut.data(), plainTextOut.size());

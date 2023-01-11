@@ -22,15 +22,15 @@ TEST_CASE("Test key creation and managment") {
 
   CHECK(!cryptor.haveKey(keyIdBad));
 
-  CHECK(cryptor.addKey(keyId128, keyInfo128) == ObjCryptoErr::None);
+  CHECK(cryptor.addKey(keyId128, keyInfo128) == Error::None);
 
-  CHECK(cryptor.addKey(keyId256, keyInfo256) == ObjCryptoErr::None);
+  CHECK(cryptor.addKey(keyId256, keyInfo256) == Error::None);
 
-  CHECK(cryptor.addKey(keyId128, keyInfo128) == ObjCryptoErr::None);
+  CHECK(cryptor.addKey(keyId128, keyInfo128) == Error::None);
 
   CHECK(cryptor.haveKey(keyId256));
-  CHECK(cryptor.eraseKey(keyId256) == ObjCryptoErr::None);
+  CHECK(cryptor.eraseKey(keyId256) == Error::None);
   CHECK(!cryptor.haveKey(keyId256));
 
-  CHECK(cryptor.eraseKey(keyId256) == ObjCryptoErr::InvalidKeyID);
+  CHECK(cryptor.eraseKey(keyId256) == Error::InvalidKeyID);
 }

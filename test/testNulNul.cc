@@ -13,7 +13,7 @@
 using namespace ObjCrypto;
 
 TEST_CASE("test NUL Crypto Mode") {
-  ObjCryptoErr err;
+  Error err;
 
   ObjCryptor cryptor;
   KeyID keyId = 1;
@@ -36,7 +36,7 @@ TEST_CASE("test NUL Crypto Mode") {
 
     KeyInfo keyInfo(ObjCryptoAlg::NUL_128_NUL_0, key128);
     err = cryptor.addKey(keyId, keyInfo);
-    assert(err == ObjCryptoErr::None);
+    assert(err == Error::None);
   }
   SUBCASE("NUl_128_NUL_128") {
     std::cout << "Run for NUl_128_NUL_128 " << std::endl;
@@ -44,17 +44,17 @@ TEST_CASE("test NUL Crypto Mode") {
     tag.resize(128 / 8);
     KeyInfo keyInfo(ObjCryptoAlg::NUL_128_NUL_128, key128);
     err = cryptor.addKey(keyId, keyInfo);
-    assert(err == ObjCryptoErr::None);
+    assert(err == Error::None);
   }
 
   Nonce nonce = {0x00, 0x6C, 0xB6, 0xDB, 0xC0, 0x54,
                  0x3B, 0x59, 0xDA, 0x48, 0xD9, 0x0B};
 
   err = cryptor.seal(keyId, nonce, plainTextIn, auth, tag, cipherText);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   err = cryptor.unseal(keyId, nonce, cipherText, auth, tag, plainTextOut);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   std::vector<uint8_t> correct = plainTextIn;
 

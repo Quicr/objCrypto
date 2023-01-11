@@ -10,7 +10,7 @@
 using namespace ObjCrypto;
 
 int main(/* int argc, char *argv[] */) {
-  ObjCryptoErr err;
+  Error err;
 
   ObjCryptor cryptor;
   KeyID keyId = 1;
@@ -33,14 +33,14 @@ int main(/* int argc, char *argv[] */) {
   assert(tag.size() == 128 / 8);
 
   err = cryptor.addKey(keyId, keyInfo);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   auto startTime = std::chrono::high_resolution_clock::now();
 
   const long loops = 1 * 1000 * 1000;
   for (int i = 0; i < loops; i++) {
     err = cryptor.seal(keyId, nonce, plainTextIn, authData, tag, cipherText);
-    assert(err == ObjCryptoErr::None);
+    assert(err == Error::None);
   }
 
   auto endTime = std::chrono::high_resolution_clock::now();
@@ -54,7 +54,7 @@ int main(/* int argc, char *argv[] */) {
             << (float)(bytesProcessed) / seconds / 1.0e3 << std::endl;
 
   // err = cryptor.unseal( keyId, nonce, cipherText, authData, tag, plainTextOut
-  // ); assert( err == ObjCryptoErr::None);
+  // ); assert( err == Error::None);
 
   return 0;
 }
