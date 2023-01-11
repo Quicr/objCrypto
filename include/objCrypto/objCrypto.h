@@ -34,15 +34,14 @@ enum class ObjCryptoAlg : uint8_t {
   AES_256_GCM_128 = 0x32   // AES128 GCM mode with 128 bit tag
 };
 
-typedef std::array<uint8_t, 128 / 8> Key128;
-typedef std::array<uint8_t, 256 / 8> Key256;
-typedef std::variant<Key128, Key256> Key;
-typedef std::pair<ObjCryptoAlg, Key> KeyInfo;
+using Key128 = std::array<uint8_t, 16>;
+using Key256 = std::array<uint8_t, 32>;
+using Key = std::variant<Key128, Key256>;
+using KeyInfo = std::pair<ObjCryptoAlg, Key>;
 
-typedef uint32_t KeyID;
-
-typedef std::array<uint8_t, 96 / 8> Nonce;
-typedef std::array<uint8_t, 128 / 8> IV;
+using KeyID = uint32_t;
+using Nonce = std::array<uint8_t, 12>;
+using IV = std::array<uint8_t, 128 / 8>;
 
 enum class ObjCryptoErr : uint8_t {
   None = 0,
