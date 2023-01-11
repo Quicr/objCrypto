@@ -30,7 +30,6 @@ target_sources( objCrypto
   crypto/openssl.cc
 )
 
-
 # Lots of wwarnings as errors 
 if (MSVC) 
     add_compile_options(/W4 /WX) 
@@ -46,10 +45,11 @@ set_target_properties( objCrypto PROPERTIES POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
-   target_link_libraries( objCrypto PRIVATE crypto )
-   if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-     target_link_libraries( objCrypto PRIVATE pthread )
-   endif ()
+    target_sources( objCrypto PRIVATE crypto/openssl.cc )
+    target_link_libraries( objCrypto PRIVATE crypto )
+    if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+        target_link_libraries( objCrypto PRIVATE pthread )
+    endif ()
 endif ()
 
 target_include_directories( objCrypto PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src )
