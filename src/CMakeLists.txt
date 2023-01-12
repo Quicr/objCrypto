@@ -25,9 +25,8 @@ add_library(
 target_sources( objCrypto 
   PRIVATE
   objCrypto.cc
-  aes-ctr.cc 
-  aes-gcm.cc )
-
+  crypto/common.cc
+)
 
 # Lots of wwarnings as errors 
 if (MSVC) 
@@ -44,13 +43,16 @@ set_target_properties( objCrypto PROPERTIES POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
-   target_link_libraries( objCrypto PRIVATE crypto )
-   if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-     target_link_libraries( objCrypto PRIVATE pthread )
-   endif ()
+    target_sources( objCrypto PRIVATE crypto/openssl.cc )
+    target_link_libraries( objCrypto PRIVATE crypto )
+    if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+        target_link_libraries( objCrypto PRIVATE pthread )
+    endif ()
+else ()
+    target_sources( objCrypto PRIVATE crypto/apple.cc )
 endif ()
 
-target_include_directories( objCrypto PUBLIC ${PROJECT_SOURCE_DIR}/include )
+target_include_directories( objCrypto PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src )
 
 set_target_properties( objCrypto PROPERTIES PUBLIC_HEADER
  "${PROJECT_SOURCE_DIR}/include/objCrypto/objCrypto.h;${PROJECT_SOURCE_DIR}/include/objCrypto/objCryptoVersion.h" ) 

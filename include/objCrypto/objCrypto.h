@@ -24,7 +24,8 @@ namespace ObjCrypto {
 
 enum class ObjCryptoAlg : uint8_t {
   Invalid = 0,
-  NUL_128_NUL_0 = 0x10,    // NULL cipher wiith 128 bit key and 0 byte tag
+  NUL_128_NUL_0 = 0x10,    // NULL cipher with 128 bit key and 0 bit tag
+  NUL_128_NUL_64 = 0x11,   // NULL cipher with 128 bit key and 64 bit tag
   NUL_128_NUL_128 = 0x12,  // NULL cipher with 128 bit key and 128 bit tag
   AES_128_CTR_0 = 0x20,    // AES128 counter mode with no authentication
   AES_128_GCM_64 = 0x21,   // AES128 GCM mode with 64 bit tag
@@ -34,18 +35,17 @@ enum class ObjCryptoAlg : uint8_t {
   AES_256_GCM_128 = 0x32   // AES128 GCM mode with 128 bit tag
 };
 
-typedef std::array<uint8_t, 128 / 8> Key128;
-typedef std::array<uint8_t, 256 / 8> Key256;
-typedef std::variant<Key128, Key256> Key;
-typedef std::pair<ObjCryptoAlg, Key> KeyInfo;
+using Key128 = std::array<uint8_t, 16>;
+using Key256 = std::array<uint8_t, 32>;
+using Key = std::variant<Key128, Key256>;
+using KeyInfo = std::pair<ObjCryptoAlg, Key>;
 
-typedef uint32_t KeyID;
+using KeyID = uint32_t;
+using Nonce = std::array<uint8_t, 12>;
 
-typedef std::array<uint8_t, 96 / 8> Nonce;
-typedef std::array<uint8_t, 128 / 8> IV;
-
-enum class ObjCryptoErr : uint8_t {
+enum class Error : uint8_t {
   None = 0,
+  CryptoLibraryFail,
   DecryptAuthFail,
   InvalidKeyID,
   UnkownCryptoAlg,
@@ -56,30 +56,24 @@ enum class ObjCryptoErr : uint8_t {
 
 class ObjCryptor {
  private:
-  std::map<KeyID, const KeyInfo> keyInfoMap;
-
-  IV formIV(const Nonce &nonce) const;
+  std::map<KeyID, KeyInfo> keyInfoMap;
 
  public:
-  OBJCRYPTO_EXPORT ObjCryptor();
-
-  OBJCRYPTO_EXPORT ~ObjCryptor();
-
   OBJCRYPTO_EXPORT static int16_t version();
 
-  OBJCRYPTO_EXPORT ObjCryptoErr addKey(const KeyID keyID, const KeyInfo &key);
+  OBJCRYPTO_EXPORT Error addKey(const KeyID keyID, const KeyInfo &key);
 
-  OBJCRYPTO_EXPORT ObjCryptoErr eraseKey(KeyID keyID);
+  OBJCRYPTO_EXPORT Error eraseKey(KeyID keyID);
 
   OBJCRYPTO_EXPORT bool haveKey(KeyID keyID) const;
 
-  OBJCRYPTO_EXPORT ObjCryptoErr seal(KeyID keyID, const Nonce &nonce,
+  OBJCRYPTO_EXPORT Error seal(KeyID keyID, const Nonce &nonce,
                                      const std::vector<uint8_t> &plainText,
                                      const std::vector<uint8_t> &authData,
                                      std::vector<uint8_t> &tag,
                                      std::vector<uint8_t> &cipherText) const;
 
-  OBJCRYPTO_EXPORT ObjCryptoErr unseal(KeyID keyID, const Nonce &nonce,
+  OBJCRYPTO_EXPORT Error unseal(KeyID keyID, const Nonce &nonce,
                                        const std::vector<uint8_t> &cipherText,
                                        const std::vector<uint8_t> &authData,
                                        const std::vector<uint8_t> &tag,
