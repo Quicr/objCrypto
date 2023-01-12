@@ -25,9 +25,7 @@ add_library(
 target_sources( objCrypto 
   PRIVATE
   objCrypto.cc
-  aes-ctr.cc 
-  aes-gcm.cc 
-  crypto/openssl.cc
+  crypto/common.cc
 )
 
 # Lots of wwarnings as errors 
@@ -50,6 +48,8 @@ if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
     if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         target_link_libraries( objCrypto PRIVATE pthread )
     endif ()
+else ()
+    target_sources( objCrypto PRIVATE crypto/apple.cc )
 endif ()
 
 target_include_directories( objCrypto PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src )
