@@ -9,5 +9,5 @@
 using namespace ObjCrypto;
 
 TEST_CASE("Test version info") {
-  CHECK( ObjCryptor::version() == ObjCrypto::objCryptoVersion() );
+  CHECK(ObjCryptor::version() == ObjCrypto::objCryptoVersion());
 }

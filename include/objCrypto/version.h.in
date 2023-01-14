@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: BSD-2-Clause
 #pragma once
 
-#include <cstdint>
 #include <cassert>
+#include <cstdint>
 
 namespace ObjCrypto {
 
@@ -12,9 +12,7 @@ constexpr int16_t objCryptoVersion() {
   assert(@PROJECT_VERSION_MINOR@ < 1000);
   assert(@PROJECT_VERSION_PATCH@ < 1000);
 
-  return @PROJECT_VERSION_MAJOR@ * 1000 * 1000 +
-         @PROJECT_VERSION_MINOR@ * 1000 +
-         @PROJECT_VERSION_PATCH@;
+  return @PROJECT_VERSION_MAJOR@ * 1000 * 1000 + @PROJECT_VERSION_MINOR@ * 1000 + @PROJECT_VERSION_PATCH@;
 }
 
 }  // namespace ObjCrypto
