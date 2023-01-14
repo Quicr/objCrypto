@@ -32,14 +32,14 @@ int main(/* int argc, char *argv[] */) {
                  0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb};
 
   auto err = cryptor.addKey(keyId, keyInfo);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   auto startTime = std::chrono::high_resolution_clock::now();
 
   const long loops = 1 * 1000 * 1000;
   for (int i = 0; i < loops; i++) {
     err = cryptor.seal(keyId, nonce, plainTextIn, auth, tag, cipherText);
-    assert(err == ObjCryptoErr::None);
+    assert(err == Error::None);
   }
 
   auto endTime = std::chrono::high_resolution_clock::now();
@@ -54,7 +54,7 @@ int main(/* int argc, char *argv[] */) {
             << (float)(bytesProcessed) / seconds / 1.0e3 << std::endl;
 
   // err = cryptor.unseal( keyId, nonce, cipherText, auth, tag, plainTextOut );
-  // assert( err == ObjCryptoErr::None);
+  // assert( err == Error::None);
 
   return 0;
 }

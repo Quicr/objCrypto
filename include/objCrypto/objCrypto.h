@@ -44,7 +44,7 @@ using KeyID = uint32_t;
 using Nonce = std::array<uint8_t, 96 / 8>;
 using IV = std::array<uint8_t, 128 / 8>;
 
-enum class ObjCryptoErr : uint8_t {
+enum class Error : uint8_t {
   None = 0,
   DecryptAuthFail,
   InvalidKeyID,
@@ -67,23 +67,23 @@ class ObjCryptor {
 
   OBJCRYPTO_EXPORT static int16_t version();
 
-  OBJCRYPTO_EXPORT ObjCryptoErr addKey(const KeyID keyID, const KeyInfo &key);
+  OBJCRYPTO_EXPORT Error addKey(const KeyID keyID, const KeyInfo &key);
 
-  OBJCRYPTO_EXPORT ObjCryptoErr eraseKey(KeyID keyID);
+  OBJCRYPTO_EXPORT Error eraseKey(KeyID keyID);
 
   OBJCRYPTO_EXPORT bool haveKey(KeyID keyID) const;
 
-  OBJCRYPTO_EXPORT ObjCryptoErr seal(KeyID keyID, const Nonce &nonce,
-                                     const std::vector<uint8_t> &plainText,
-                                     const std::vector<uint8_t> &authData,
-                                     std::vector<uint8_t> &tag,
-                                     std::vector<uint8_t> &cipherText) const;
+  OBJCRYPTO_EXPORT Error seal(KeyID keyID, const Nonce &nonce,
+                              const std::vector<uint8_t> &plainText,
+                              const std::vector<uint8_t> &authData,
+                              std::vector<uint8_t> &tag,
+                              std::vector<uint8_t> &cipherText) const;
 
-  OBJCRYPTO_EXPORT ObjCryptoErr unseal(KeyID keyID, const Nonce &nonce,
-                                       const std::vector<uint8_t> &cipherText,
-                                       const std::vector<uint8_t> &authData,
-                                       const std::vector<uint8_t> &tag,
-                                       std::vector<uint8_t> &plainText) const;
+  OBJCRYPTO_EXPORT Error unseal(KeyID keyID, const Nonce &nonce,
+                                const std::vector<uint8_t> &cipherText,
+                                const std::vector<uint8_t> &authData,
+                                const std::vector<uint8_t> &tag,
+                                std::vector<uint8_t> &plainText) const;
 };
 
 };  // namespace ObjCrypto
