@@ -1,13 +1,14 @@
 # SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
 # SPDX-License-Identifier: BSD-2-Clause
 
-FROM alpine as base
+FROM alpine:3.17 as base
 LABEL description="Tools to build ObjCrypto Library "
 
 # Build tools
 RUN apk add build-base
 RUN apk add cmake
 RUN apk add tcsh
+
 RUN mkdir /src
 WORKDIR /src
 CMD /bin/tcsh

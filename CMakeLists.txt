@@ -5,41 +5,42 @@
 cmake_minimum_required( VERSION 3.13..3.25 )
 
 
-#if ( ${APPLE} AND NOT DEFINED ANDROID_PLATFORM )
-#  set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX arch to compile")
-#endif ()
+if ( NOT DEFINED ANDROID_PLATFORM )
+  if ( ${APPLE}  )
+    if ( NOT DEFINED CMAKE_OSX_ARCHITECTURES )
+      set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX archs")
+    endif()
+  endif ()
+endif ()
 
 
 project( objCrypto
             VERSION 0.1.2
-            DESCRIPTION "C++ Libraary to encrypt and decrypt objects"
+            DESCRIPTION "C++ Library to encrypt and decrypt objects"
             HOMEPAGE_URL "https://github.com/fluffy/objCrypto"
             LANGUAGES C CXX)
 
 if ( ${APPLE} )
-   set( OBJ_CRYPTO_USE_BORINGSSL False CACHE BOOL "use boring SSL for crypto"  )
+   set( OBJ_CRYPTO_USE_BORINGSSL False CACHE BOOL "use BoringSSL SSL crypto"  )
 else ()
-   set( OBJ_CRYPTO_USE_BORINGSSL True CACHE BOOL "use boring SSL for crypto"  )
+   set( OBJ_CRYPTO_USE_BORINGSSL True CACHE BOOL "use BoringSSL for crypto"  )
 endif ()
 
 if ( WIN32 )
    set( BUILD_TESTS False CACHE BOOL "build tests"  )
 else ()
-   set( BUILD_TESTS True CACHE BOOL "butild tests"  )
+   set( BUILD_TESTS True CACHE BOOL "build tests"  )
 endif ()
 
 set( BUILD_SHARED_LIBS True CACHE BOOL "build as shared library"  )
 
 option( BUILD_TESTS "Build test programs" ON)
-option( OBJ_CRYPTO_USE_BORINGSSL "Use Booringssl for crypto" )
+option( OBJ_CRYPTO_USE_BORINGSSL "Use BoringSSL for crypto" )
 option( BUILD_SHARED_LIBS "Build as shared library" )
 
 
 set( CMAKE_CXX_STANDARD 17 )
-#set( CMAKE_C_STANDARD 17 )
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
-
-
+set( CMAKE_C_STANDARD 17 )
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
