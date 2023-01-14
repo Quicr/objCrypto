@@ -16,26 +16,26 @@ endif ()
 
 project( objCrypto
             VERSION 0.1.2
-            DESCRIPTION "C++ Libraary to encrypt and decrypt objects"
+            DESCRIPTION "C++ Library to encrypt and decrypt objects"
             HOMEPAGE_URL "https://github.com/fluffy/objCrypto"
             LANGUAGES C CXX)
 
 if ( ${APPLE} )
-   set( OBJ_CRYPTO_USE_BORINGSSL False CACHE BOOL "use boring SSL for crypto"  )
+   set( OBJ_CRYPTO_USE_BORINGSSL False CACHE BOOL "use BoringSSL SSL crypto"  )
 else ()
-   set( OBJ_CRYPTO_USE_BORINGSSL True CACHE BOOL "use boring SSL for crypto"  )
+   set( OBJ_CRYPTO_USE_BORINGSSL True CACHE BOOL "use BoringSSL for crypto"  )
 endif ()
 
 if ( WIN32 )
    set( BUILD_TESTS False CACHE BOOL "build tests"  )
 else ()
-   set( BUILD_TESTS True CACHE BOOL "butild tests"  )
+   set( BUILD_TESTS True CACHE BOOL "build tests"  )
 endif ()
 
 set( BUILD_SHARED_LIBS True CACHE BOOL "build as shared library"  )
 
 option( BUILD_TESTS "Build test programs" ON)
-option( OBJ_CRYPTO_USE_BORINGSSL "Use Booringssl for crypto" )
+option( OBJ_CRYPTO_USE_BORINGSSL "Use BoringSSL for crypto" )
 option( BUILD_SHARED_LIBS "Build as shared library" )
 
 
