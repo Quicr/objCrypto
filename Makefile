@@ -3,7 +3,10 @@
 
 all: build
 
-.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs lint 
+.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs lint pull
+
+pull:
+	git submodule update --init --recursive --remote
 
 docs:
 	mkdocs gh-deploy
@@ -37,7 +40,7 @@ build-xcode:
 
 
 docker:
-	- docker build -t obj-crypto-dev -f Dockerfile.ubuntu .
+	- docker build -t obj-crypto-dev -f Dockerfile.alpint .
 	docker run -v ${PWD}:/src --rm -it obj-crypto-dev /bin/tcsh -c "cd /src; make build-linux"
 
 
