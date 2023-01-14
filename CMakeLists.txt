@@ -5,9 +5,9 @@
 cmake_minimum_required( VERSION 3.13..3.25 )
 
 
-#if ( ${APPLE} AND NOT DEFINED ANDROID_PLATFORM )
-#  set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX arch to compile")
-#endif ()
+if ( ${APPLE} AND NOT DEFINED ANDROID_PLATFORM )
+  set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX arch to compile")
+endif ()
 
 
 project( objCrypto
@@ -36,10 +36,7 @@ option( BUILD_SHARED_LIBS "Build as shared library" )
 
 
 set( CMAKE_CXX_STANDARD 17 )
-#set( CMAKE_C_STANDARD 17 )
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
-
-
+set( CMAKE_C_STANDARD 17 )
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
