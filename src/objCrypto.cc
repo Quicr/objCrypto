@@ -17,7 +17,7 @@ using namespace ObjCrypto;
 OBJCRYPTO_EXPORT ObjCryptor::ObjCryptor() {
   IV iv;
   assert(sizeof(iv) == 128 / 8);
-     assert(iv.size() == 128 / 8);
+  assert(iv.size() == 128 / 8);
 
   Nonce nonce;
   assert(sizeof(nonce) == 96 / 8);
