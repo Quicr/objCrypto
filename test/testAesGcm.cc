@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors
 // SPDX-License-Identifier: BSD-2-Clause
 
-
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 #include <objCrypto/objCrypto.h>
@@ -18,7 +17,6 @@ using namespace ObjCrypto;
  * https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf
  * Section 5.1 of NIST 800-38A, 2001 Edition
  */
-
 
 TEST_CASE("test 4 AES 128 GCM Mode") {
   ObjCryptoErr err;
@@ -73,10 +71,10 @@ TEST_CASE("test 4 AES 128 GCM Mode") {
   SUBCASE("empty auth data") {
     authData.clear();
 
-    correctTag = { 0xCC,0x15,0xAB,0xCC,0x19,0x11,0x61,0x50,
-                   0x1A,0xAB,0xAB,0x46,0xB8,0xFB,0xAC,0x85 };
+    correctTag = {0xCC, 0x15, 0xAB, 0xCC, 0x19, 0x11, 0x61, 0x50,
+                  0x1A, 0xAB, 0xAB, 0x46, 0xB8, 0xFB, 0xAC, 0x85};
   }
-   
+
   err = cryptor.addKey(keyId, keyInfo);
   assert(err == ObjCryptoErr::None);
 

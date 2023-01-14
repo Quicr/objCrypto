@@ -9,7 +9,7 @@
 
 using namespace ObjCrypto;
 
-int main( /* int argc, char *argv[] */ ) {
+int main(/* int argc, char *argv[] */) {
   ObjCryptoErr err;
 
   ObjCryptor cryptor;
