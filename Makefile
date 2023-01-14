@@ -37,7 +37,7 @@ build-xcode:
 
 
 docker:
-	- docker build -t obj-crypto-dev -f Dockerfile.ubuntu .
+	- docker build -t obj-crypto-dev -f Dockerfile.alpint .
 	docker run -v ${PWD}:/src --rm -it obj-crypto-dev /bin/tcsh -c "cd /src; make build-linux"
 
 
