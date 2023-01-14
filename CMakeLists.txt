@@ -5,8 +5,12 @@
 cmake_minimum_required( VERSION 3.13..3.25 )
 
 
-if ( ${APPLE} AND NOT DEFINED ANDROID_PLATFORM )
-  set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX arch to compile")
+if ( NOT DEFINED ANDROID_PLATFORM )
+  if ( ${APPLE}  )
+    if ( NOT DEFINED CMAKE_OSX_ARCHITECTURES )
+      set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX archs")
+    endif()
+  endif ()
 endif ()
 
 
