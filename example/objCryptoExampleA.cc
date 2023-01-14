@@ -9,8 +9,6 @@
 using namespace ObjCrypto;
 
 int main(/*int argc, char* argv[]*/) {
-  ObjCryptoErr err;
-
   // Set up cryptor object to keep track of keys
   ObjCryptor cryptor;
 
@@ -24,7 +22,7 @@ int main(/*int argc, char* argv[]*/) {
   std::vector<uint8_t> tag(64 / 8);
 
   // Add the key to the cryptor
-  err = cryptor.addKey(keyId, keyInfo);
+  auto err = cryptor.addKey(keyId, keyInfo);
   assert(err == ObjCryptoErr::None);
 
   // Form the nonce, data to encrypt, and extra data to authenticate

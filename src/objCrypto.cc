@@ -83,7 +83,7 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::addKey(const KeyID keyID,
   }
 
   if (haveKey(keyID)) {
-    ObjCryptoErr err = eraseKey(keyID);
+    auto err = eraseKey(keyID);
     assert(err == ObjCryptoErr::None);
   }
 
@@ -115,7 +115,7 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::seal(
   if (!haveKey(keyID)) {
     return ObjCryptoErr::InvalidKeyID;
   }
-  const KeyInfo &keyInfo = keyInfoMap.at(keyID);
+  const auto keyInfo = keyInfoMap.at(keyID);
 
   // check tag size correct
   switch (keyInfo.first) {
@@ -152,7 +152,7 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::seal(
     return ObjCryptoErr::WrongOutputDataSize;
   }
 
-  ObjCryptoErr ret = ObjCryptoErr::None;
+  auto ret = ObjCryptoErr::None;
 
   switch (keyInfo.first) {
     case ObjCryptoAlg::NUL_128_NUL_0: {
@@ -202,7 +202,7 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::unseal(
     return ObjCryptoErr::WrongOutputDataSize;
   }
 
-  ObjCryptoErr ret = ObjCryptoErr::None;
+  auto ret = ObjCryptoErr::None;
 
   switch (keyInfo.first) {
     case ObjCryptoAlg::NUL_128_NUL_0: {
@@ -226,7 +226,7 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::unseal(
     case ObjCryptoAlg::AES_128_GCM_128:
     case ObjCryptoAlg::AES_256_GCM_64:
     case ObjCryptoAlg::AES_256_GCM_128: {
-      const Key &key = keyInfo.second;
+      const auto key = keyInfo.second;
       ret = aes_gcm_decrypt(key, nonce, cipherText, authData, tag, plainText);
       break;
     }

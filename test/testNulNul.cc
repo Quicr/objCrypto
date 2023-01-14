@@ -56,7 +56,7 @@ TEST_CASE("test NUL Crypto Mode") {
   err = cryptor.unseal(keyId, nonce, cipherText, auth, tag, plainTextOut);
   assert(err == ObjCryptoErr::None);
 
-  std::vector<uint8_t> correct = plainTextIn;
+  auto correct = plainTextIn;
 
   printHex("plainTextIn ", plainTextIn.data(), plainTextIn.size());
   printHex("plainTextOut", plainTextOut.data(), plainTextOut.size());
@@ -66,12 +66,12 @@ TEST_CASE("test NUL Crypto Mode") {
   printHex("correctText", correct.data(), correct.size());
 
   CHECK(correct.size() == cipherText.size());
-  for (size_t i = 0; i < correct.size(); i++) {
+  for (auto i = 0; i < correct.size(); i++) {
     CHECK(correct[i] == cipherText[i]);
   }
 
   CHECK(plainTextIn.size() == plainTextOut.size());
-  for (size_t i = 0; i < plainTextIn.size(); i++) {
+  for (auto i = 0; i < plainTextIn.size(); i++) {
     CHECK(plainTextIn[i] == plainTextOut[i]);
   }
 }
