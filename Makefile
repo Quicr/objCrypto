@@ -3,7 +3,10 @@
 
 all: build
 
-.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs lint 
+.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs lint pull
+
+pull:
+	git submodule update --init --recursive --remote
 
 docs:
 	mkdocs gh-deploy
