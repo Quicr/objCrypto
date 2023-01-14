@@ -41,11 +41,11 @@ CCCryptorStatus CCCryptorGCMOneshotDecrypt(CCAlgorithm alg, const void *key,
 using namespace ObjCrypto;
 
 #if defined(__APPLE__) && !defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
-                                        const std::vector<uint8_t> &plainText,
-                                        const std::vector<uint8_t> &authData,
-                                        std::vector<uint8_t> &tag,
-                                        std::vector<uint8_t> &cipherText) {
+Error ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
+                                 const std::vector<uint8_t> &plainText,
+                                 const std::vector<uint8_t> &authData,
+                                 std::vector<uint8_t> &tag,
+                                 std::vector<uint8_t> &cipherText) {
   CCCryptorStatus status = kCCSuccess;
 
   switch (key.index()) {
@@ -69,22 +69,22 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
 
     default:
       assert(0);
-      return ObjCryptoErr::UnkownCryptoAlg;
+      return Error::UnkownCryptoAlg;
   }
 
   assert(status != kCCParamError);
   assert(status == kCCSuccess);
 
-  return ObjCryptoErr::None;
+  return Error::None;
 }
 #endif
 
 #if defined(__APPLE__) && !defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
-                                        const std::vector<uint8_t> &cipherText,
-                                        const std::vector<uint8_t> &authData,
-                                        const std::vector<uint8_t> &tag,
-                                        std::vector<uint8_t> &plainText) {
+Error ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
+                                 const std::vector<uint8_t> &cipherText,
+                                 const std::vector<uint8_t> &authData,
+                                 const std::vector<uint8_t> &tag,
+                                 std::vector<uint8_t> &plainText) {
   CCCryptorStatus status;
 
   switch (key.index()) {
@@ -106,27 +106,27 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
     }
     default: {
       assert(0);
-      return ObjCryptoErr::UnkownCryptoAlg;
+      return Error::UnkownCryptoAlg;
     }
   }
 
   // std::cout << "CCCrypto decrypt status = " <<  status << std::endl;
   if (status == kCCUnspecifiedError) {
-    return ObjCryptoErr::DecryptAuthFail;
+    return Error::DecryptAuthFail;
   }
 
   assert(status == kCCSuccess);
 
-  return ObjCryptoErr::None;
+  return Error::None;
 }
 #endif
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
-                                        const std::vector<uint8_t> &plainText,
-                                        const std::vector<uint8_t> &authData,
-                                        std::vector<uint8_t> &tag,
-                                        std::vector<uint8_t> &cipherText) {
+Error ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
+                                 const std::vector<uint8_t> &plainText,
+                                 const std::vector<uint8_t> &authData,
+                                 std::vector<uint8_t> &tag,
+                                 std::vector<uint8_t> &cipherText) {
   int moved = 0;
   int cipherTextLen = 0;
 
@@ -166,7 +166,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
     }
     default: {
       assert(0);
-      return ObjCryptoErr::UnkownCryptoAlg;
+      return Error::UnkownCryptoAlg;
     }
   }
 
@@ -192,16 +192,16 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
 
   EVP_CIPHER_CTX_free(ctx);
 
-  return ObjCryptoErr::None;
+  return Error::None;
 }
 #endif
 
 #if defined(OBJ_CRYPTO_USE_BORINGSSL)
-ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
-                                        const std::vector<uint8_t> &cipherText,
-                                        const std::vector<uint8_t> &authData,
-                                        const std::vector<uint8_t> &tag,
-                                        std::vector<uint8_t> &plainText) {
+Error ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
+                                 const std::vector<uint8_t> &cipherText,
+                                 const std::vector<uint8_t> &authData,
+                                 const std::vector<uint8_t> &tag,
+                                 std::vector<uint8_t> &plainText) {
   int moved = 0;
   int plainTextLen = 0;
 
@@ -242,7 +242,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
     }
     default: {
       assert(0);
-      return ObjCryptoErr::UnkownCryptoAlg;
+      return Error::UnkownCryptoAlg;
     }
   }
 
@@ -266,7 +266,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
   EVP_CIPHER_CTX_free(ctx);
 
   if (ret == 0) {
-    return ObjCryptoErr::DecryptAuthFail;
+    return Error::DecryptAuthFail;
     plainText.clear();
   }
 
@@ -275,6 +275,6 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
 
   assert(plainTextLen == plainText.size());
 
-  return ObjCryptoErr::None;
+  return Error::None;
 }
 #endif

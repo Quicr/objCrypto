@@ -23,7 +23,7 @@ int main(/*int argc, char* argv[]*/) {
 
   // Add the key to the cryptor
   auto err = cryptor.addKey(keyId, keyInfo);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   // Form the nonce, data to encrypt, and extra data to authenticate
   Nonce nonce = {0xCA, 0xFE, 0xBA, 0xBE, 0xFA, 0xCE,
@@ -41,13 +41,13 @@ int main(/*int argc, char* argv[]*/) {
   // encrypt plain text and create authentication tag
   std::vector<uint8_t> cipherText(plainTextIn.size());
   err = cryptor.seal(keyId, nonce, plainTextIn, authData, tag, cipherText);
-  assert(err == ObjCryptoErr::None);
+  assert(err == Error::None);
 
   // decrypt the cipher text and check the authentication tag
   std::vector<uint8_t> plainTextOut(plainTextIn.size());
   err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
-  assert(err != ObjCryptoErr::DecryptAuthFail);
-  assert(err == ObjCryptoErr::None);
+  assert(err != Error::DecryptAuthFail);
+  assert(err == Error::None);
 
   return 0;
 }
