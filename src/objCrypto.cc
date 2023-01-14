@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors
 // SPDX-License-Identifier: BSD-2-Clause
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
 
 #define BUILDING_OBJCRYPTO 1
 
@@ -94,9 +94,9 @@ OBJCRYPTO_EXPORT ObjCryptoErr ObjCryptor::addKey(const KeyID keyID,
 
 IV ObjCryptor::formIV(const Nonce &nonce) const {
   IV iv;
-  assert( iv.size()  > nonce.size() );
-  std::copy( std::begin(nonce), std::end(nonce), std::begin(iv) );
-    
+  assert(iv.size() > nonce.size());
+  std::copy(std::begin(nonce), std::end(nonce), std::begin(iv));
+
   assert(iv.size() == 16);
   assert(nonce.size() == 12);
   iv[12] = 0;
