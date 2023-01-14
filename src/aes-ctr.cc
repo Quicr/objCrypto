@@ -28,7 +28,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
   CCCryptorStatus status;
   switch (key.index()) {
     case 0: {
-      Key128 key128 = std::get<Key128>(key);
+      auto key128 = std::get<Key128>(key);
 
       status = CCCryptorCreateWithMode(
           kCCEncrypt,       // CCOperation
@@ -47,7 +47,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
     }
 
     case 1: {
-      Key256 key256 = std::get<Key256>(key);
+      auto key256 = std::get<Key256>(key);
 
       status = CCCryptorCreateWithMode(
           kCCEncrypt,       // CCOperation
@@ -114,7 +114,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
   CCCryptorStatus status;
   switch (key.index()) {
     case 0: {
-      Key128 key128 = std::get<Key128>(key);
+      auto key128 = std::get<Key128>(key);
 
       status = CCCryptorCreateWithMode(
           kCCDecrypt,       // CCOperation
@@ -132,7 +132,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
     } break;
 
     case 1: {
-      Key256 key256 = std::get<Key256>(key);
+      auto key256 = std::get<Key256>(key);
 
       status = CCCryptorCreateWithMode(
           kCCDecrypt,       // CCOperation
@@ -191,16 +191,14 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
 ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
                                         const std::vector<uint8_t> &plainText,
                                         std::vector<uint8_t> &cipherText) {
-  EVP_CIPHER_CTX *ctx;
-
-  ctx = EVP_CIPHER_CTX_new();
+  auto ctx = EVP_CIPHER_CTX_new();
   assert(ctx);
 
   int status;
 
   switch (key.index()) {
     case 0: {
-      Key128 key128 = std::get<Key128>(key);
+      auto key128 = std::get<Key128>(key);
 
       status = EVP_EncryptInit_ex(ctx, EVP_aes_128_ctr(), NULL, NULL, NULL);
       assert(status == 1);
@@ -212,7 +210,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
     } break;
 
     case 1: {
-      Key256 key256 = std::get<Key256>(key);
+      auto key256 = std::get<Key256>(key);
 
       status = EVP_EncryptInit_ex(ctx, EVP_aes_256_ctr(), NULL, NULL, NULL);
       assert(status == 1);
@@ -254,17 +252,15 @@ ObjCryptoErr ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
 ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
                                         const std::vector<uint8_t> &cipherText,
                                         std::vector<uint8_t> &plainText) {
-  EVP_CIPHER_CTX *ctx;
-
   assert(sizeof(iv) == 128 / 8);
 
-  ctx = EVP_CIPHER_CTX_new();
+  auto ctx = EVP_CIPHER_CTX_new();
   assert(ctx);
 
   int status;
   switch (key.index()) {
     case 0: {
-      Key128 key128 = std::get<Key128>(key);
+      auto key128 = std::get<Key128>(key);
 
       status = EVP_DecryptInit_ex(ctx, EVP_aes_128_ctr(), NULL, NULL, NULL);
       assert(status == 1);
@@ -276,7 +272,7 @@ ObjCryptoErr ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
     } break;
 
     case 1: {
-      Key256 key256 = std::get<Key256>(key);
+      auto key256 = std::get<Key256>(key);
 
       status = EVP_DecryptInit_ex(ctx, EVP_aes_256_ctr(), NULL, NULL, NULL);
       assert(status == 1);

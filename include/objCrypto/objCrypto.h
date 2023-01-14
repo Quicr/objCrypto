@@ -39,7 +39,7 @@ using Key256 = std::array<uint8_t, 256 / 8>;
 using Key = std::variant<Key128, Key256>;
 using KeyInfo = std::pair<ObjCryptoAlg, Key>;
 
-using KeyID = uint32_t ;
+using KeyID = uint32_t;
 
 using Nonce = std::array<uint8_t, 96 / 8>;
 using IV = std::array<uint8_t, 128 / 8>;

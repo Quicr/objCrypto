@@ -38,8 +38,8 @@ int main(/* int argc, char *argv[] */) {
 
   auto startTime = std::chrono::high_resolution_clock::now();
 
-  const long loops = 1 * 1000 * 1000;
-  for (int i = 0; i < loops; i++) {
+  const auto loops = 1 * 1000 * 1000;
+  for (auto i = 0; i < loops; i++) {
     err = cryptor.seal(keyId, nonce, plainTextIn, auth, tag, cipherText);
     assert(err == ObjCryptoErr::None);
   }
@@ -47,9 +47,9 @@ int main(/* int argc, char *argv[] */) {
   auto endTime = std::chrono::high_resolution_clock::now();
   auto elapsedMS = std::chrono::duration_cast<std::chrono::microseconds>(
       endTime - startTime);
-  float seconds = (float)(elapsedMS.count()) * 1e-6f;
+  auto seconds = (float)(elapsedMS.count()) * 1e-6f;
 
-  const long bytesProcessed = loops * (long)plainTextIn.size();
+  const auto bytesProcessed = loops * (long)plainTextIn.size();
   std::cout << "mbps of NUL-NUL: "
             << (float)(bytesProcessed)*8.0 / seconds / 1.0e6 << std::endl;
   std::cout << "Kbytes of NUL-NUL: "

@@ -102,17 +102,17 @@ TEST_CASE("test 4 AES 128 GCM Mode") {
   printHex(" correctText ", correct.data(), correct.size());
 
   CHECK(correct.size() == cipherText.size());
-  for (size_t i = 0; i < correct.size(); i++) {
+  for (auto i = 0; i < correct.size(); i++) {
     CHECK(correct[i] == cipherText[i]);
   }
 
   CHECK(correctTag.size() == tag.size());
-  for (size_t i = 0; i < correctTag.size(); i++) {
+  for (auto i = 0; i < correctTag.size(); i++) {
     CHECK(correctTag[i] == tag[i]);
   }
 
   CHECK(plainTextIn.size() == plainTextOut.size());
-  for (size_t i = 0; i < plainTextIn.size(); i++) {
+  for (auto i = 0; i < plainTextIn.size(); i++) {
     CHECK(plainTextIn[i] == plainTextOut[i]);
   }
 }
@@ -197,17 +197,17 @@ TEST_CASE("test 16 AES 256 GCM Mode") {
   printHex(" correctText ", correct.data(), correct.size());
 
   CHECK(correct.size() == cipherText.size());
-  for (size_t i = 0; i < correct.size(); i++) {
+  for (auto i = 0; i < correct.size(); i++) {
     CHECK(correct[i] == cipherText[i]);
   }
 
   CHECK(correctTag.size() == tag.size());
-  for (size_t i = 0; i < correctTag.size(); i++) {
+  for (auto i = 0; i < correctTag.size(); i++) {
     CHECK(correctTag[i] == tag[i]);
   }
 
   CHECK(plainTextIn.size() == plainTextOut.size());
-  for (size_t i = 0; i < plainTextIn.size(); i++) {
+  for (auto i = 0; i < plainTextIn.size(); i++) {
     CHECK(plainTextIn[i] == plainTextOut[i]);
   }
 }

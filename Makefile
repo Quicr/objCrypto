@@ -3,7 +3,10 @@
 
 all: build
 
-.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs lint pull
+.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs lint  format pull
+
+format:
+	clang-format -i src/*.cc src/*.h include/objCrypto/*.h example/*.cc test/*.cc test/*.h
 
 pull:
 	git submodule update --init --recursive --remote

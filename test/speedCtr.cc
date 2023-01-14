@@ -10,8 +10,6 @@
 using namespace ObjCrypto;
 
 int main(/* int argc, char *argv[] */) {
-  ObjCryptoErr err;
-
   ObjCryptor cryptor;
   KeyID keyId = 1;
 
@@ -33,7 +31,7 @@ int main(/* int argc, char *argv[] */) {
   Nonce nonce = {0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5,
                  0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb};
 
-  err = cryptor.addKey(keyId, keyInfo);
+  auto err = cryptor.addKey(keyId, keyInfo);
   assert(err == ObjCryptoErr::None);
 
   auto startTime = std::chrono::high_resolution_clock::now();
@@ -47,9 +45,9 @@ int main(/* int argc, char *argv[] */) {
   auto endTime = std::chrono::high_resolution_clock::now();
   auto elapsedMS = std::chrono::duration_cast<std::chrono::microseconds>(
       endTime - startTime);
-  float seconds = (float)(elapsedMS.count()) * 1e-6f;
+  auto seconds = (float)(elapsedMS.count()) * 1e-6f;
 
-  const long bytesProcessed = loops * (long)plainTextIn.size();
+  const auto bytesProcessed = loops * (long)plainTextIn.size();
   std::cout << "mbps of AES128-CTR: "
             << (float)(bytesProcessed)*8.0 / seconds / 1.0e6 << std::endl;
   std::cout << "Kbytes of AES128-CTR: "

@@ -50,7 +50,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
 
   switch (key.index()) {
     case 0: {
-      Key128 key128 = std::get<Key128>(key);
+      auto key128 = std::get<Key128>(key);
       status = CCCryptorGCMOneshotEncrypt(
           kCCAlgorithmAES, key128.data(), key128.size(), nonce.data(),
           nonce.size(), authData.data(), authData.size(), plainText.data(),
@@ -59,7 +59,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
     }
 
     case 1: {
-      Key256 key256 = std::get<Key256>(key);
+      auto key256 = std::get<Key256>(key);
       status = CCCryptorGCMOneshotEncrypt(
           kCCAlgorithmAES, key256.data(), key256.size(), nonce.data(),
           nonce.size(), authData.data(), authData.size(), plainText.data(),
@@ -89,7 +89,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
 
   switch (key.index()) {
     case 0: {
-      Key128 key128 = std::get<Key128>(key);
+      auto key128 = std::get<Key128>(key);
       status = CCCryptorGCMOneshotDecrypt(
           kCCAlgorithmAES, key128.data(), key128.size(), nonce.data(),
           nonce.size(), authData.data(), authData.size(), cipherText.data(),
@@ -97,7 +97,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
       break;
     }
     case 1: {
-      Key256 key256 = std::get<Key256>(key);
+      auto key256 = std::get<Key256>(key);
       status = CCCryptorGCMOneshotDecrypt(
           kCCAlgorithmAES, key256.data(), key256.size(), nonce.data(),
           nonce.size(), authData.data(), authData.size(), cipherText.data(),
@@ -127,19 +127,17 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
                                         const std::vector<uint8_t> &authData,
                                         std::vector<uint8_t> &tag,
                                         std::vector<uint8_t> &cipherText) {
-  EVP_CIPHER_CTX *ctx;
-
   int moved = 0;
   int cipherTextLen = 0;
 
-  ctx = EVP_CIPHER_CTX_new();
+  auto ctx = EVP_CIPHER_CTX_new();
   assert(ctx);
 
   int ret;
 
   switch (key.index()) {
     case 0: {
-      Key128 key128 = std::get<Key128>(key);
+      auto key128 = std::get<Key128>(key);
 
       ret = EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
       assert(ret == 1);
@@ -153,7 +151,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_encrypt(const Key &key, const Nonce &nonce,
       break;
     }
     case 1: {
-      Key256 key256 = std::get<Key256>(key);
+      auto key256 = std::get<Key256>(key);
 
       ret = EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
       assert(ret == 1);
@@ -204,18 +202,16 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
                                         const std::vector<uint8_t> &authData,
                                         const std::vector<uint8_t> &tag,
                                         std::vector<uint8_t> &plainText) {
-  EVP_CIPHER_CTX *ctx;
-
   int moved = 0;
   int plainTextLen = 0;
 
-  ctx = EVP_CIPHER_CTX_new();
+  auto ctx = EVP_CIPHER_CTX_new();
   assert(ctx);
 
   int ret;
   switch (key.index()) {
     case 0: {
-      Key128 key128 = std::get<Key128>(key);
+      auto key128 = std::get<Key128>(key);
 
       ret = EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL);
       assert(ret == 1);
@@ -230,7 +226,7 @@ ObjCryptoErr ObjCrypto::aes_gcm_decrypt(const Key &key, const Nonce &nonce,
       break;
     }
     case 1: {
-      Key256 key256 = std::get<Key256>(key);
+      auto key256 = std::get<Key256>(key);
 
       ret = EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
       assert(ret == 1);
