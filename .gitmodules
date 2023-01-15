@@ -1,9 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
 # SPDX-License-Identifier: BSD-2-Clause
 
-[submodule "contrib/boringssl"]
-	path = contrib/old-boringssl/src
-	url = git@github.com:fluffy/boringssl-crypto.git
 [submodule "contrib/doctest"]
 	path = contrib/doctest
 	url = git@github.com:doctest/doctest.git
