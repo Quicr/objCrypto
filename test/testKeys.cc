@@ -20,6 +20,16 @@ TEST_CASE("Test key creation and managment") {
 
   KeyID keyIdBad = 99;
 
+  CHECK(keySize(ObjCryptoAlg::NUL_128_NUL_0) == 128 / 8);
+  CHECK(keySize(ObjCryptoAlg::NUL_128_NUL_64) == 128 / 8);
+  CHECK(keySize(ObjCryptoAlg::NUL_128_NUL_128) == 128 / 8);
+  CHECK(keySize(ObjCryptoAlg::AES_256_GCM_128) == 256 / 8);
+
+  CHECK(tagSize(ObjCryptoAlg::NUL_128_NUL_0) == 0 / 8);
+  CHECK(tagSize(ObjCryptoAlg::NUL_128_NUL_64) == 64 / 8);
+  CHECK(tagSize(ObjCryptoAlg::NUL_128_NUL_128) == 128 / 8);
+  CHECK(tagSize(ObjCryptoAlg::AES_256_GCM_128) == 128 / 8);
+
   CHECK(!cryptor.haveKey(keyIdBad));
 
   CHECK(cryptor.addKey(keyId128, keyInfo128) == Error::None);

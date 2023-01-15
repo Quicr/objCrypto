@@ -14,6 +14,55 @@
 
 using namespace ObjCrypto;
 
+OBJCRYPTO_EXPORT int ObjCrypto::keySize(ObjCryptoAlg alg) {
+  switch (alg) {
+    case ObjCryptoAlg::NUL_128_NUL_0:
+    case ObjCryptoAlg::NUL_128_NUL_64:
+    case ObjCryptoAlg::NUL_128_NUL_128:
+    case ObjCryptoAlg::AES_128_CTR_0:
+    case ObjCryptoAlg::AES_128_GCM_64:
+    case ObjCryptoAlg::AES_128_GCM_128: {
+      return 128 / 8;
+    }
+
+    case ObjCryptoAlg::AES_256_CTR_0:
+    case ObjCryptoAlg::AES_256_GCM_64:
+    case ObjCryptoAlg::AES_256_GCM_128: {
+      return 256 / 8;
+    }
+    default: {
+      return -1;
+    }
+  }
+
+  return -1;
+}
+
+OBJCRYPTO_EXPORT int ObjCrypto::tagSize(ObjCryptoAlg alg) {
+  switch (alg) {
+    case ObjCryptoAlg::NUL_128_NUL_0:
+    case ObjCryptoAlg::AES_128_CTR_0:
+    case ObjCryptoAlg::AES_256_CTR_0: {
+      return 0;
+    }
+    case ObjCryptoAlg::NUL_128_NUL_64:
+    case ObjCryptoAlg::AES_128_GCM_64:
+    case ObjCryptoAlg::AES_256_GCM_64: {
+      return 64 / 8;
+    }
+    case ObjCryptoAlg::NUL_128_NUL_128:
+    case ObjCryptoAlg::AES_128_GCM_128:
+    case ObjCryptoAlg::AES_256_GCM_128: {
+      return 128 / 8;
+    }
+    default: {
+      return -1;
+    }
+  }
+
+  return -1;
+}
+
 OBJCRYPTO_EXPORT ObjCryptor::ObjCryptor() {
   IV iv;
   assert(sizeof(iv) == 128 / 8);
@@ -24,9 +73,7 @@ OBJCRYPTO_EXPORT ObjCryptor::ObjCryptor() {
   assert(nonce.size() == 96 / 8);
 }
 
-OBJCRYPTO_EXPORT  ObjCryptor::ObjCryptor( ObjCryptor& ) {
-  assert(0);
-}
+OBJCRYPTO_EXPORT ObjCryptor::ObjCryptor(ObjCryptor &) { assert(0); }
 
 OBJCRYPTO_EXPORT ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
 
@@ -53,37 +100,21 @@ OBJCRYPTO_EXPORT bool ObjCryptor::haveKey(KeyID keyID) const {
 
 OBJCRYPTO_EXPORT Error ObjCryptor::addKey(const KeyID keyID,
                                           const KeyInfo &keyInfo) {
-  switch (keyInfo.first) {
-    case ObjCryptoAlg::AES_128_GCM_128:
-    case ObjCryptoAlg::AES_128_GCM_64:
-    case ObjCryptoAlg::AES_128_CTR_0: {
-      if (!std::holds_alternative<Key128>(keyInfo.second)) {
-        return Error::WrongKeySize;
-      }
-      break;
-    }
+  const auto kSize = keySize(keyInfo.first);
+  if (kSize < 0) {
+    return Error::UnkownCryptoAlg;
+  }
 
-    case ObjCryptoAlg::AES_256_GCM_128:
-    case ObjCryptoAlg::AES_256_GCM_64:
-    case ObjCryptoAlg::AES_256_CTR_0: {
-      if (!std::holds_alternative<Key256>(keyInfo.second)) {
-        return Error::WrongKeySize;
-      }
-
-      break;
+  if (std::holds_alternative<Key128>(keyInfo.second)) {
+    if (kSize != 128 / 8) {
+      return Error::WrongKeySize;
     }
-
-    case ObjCryptoAlg::NUL_128_NUL_0:
-    case ObjCryptoAlg::NUL_128_NUL_128: {
-      if (!std::holds_alternative<Key128>(keyInfo.second)) {
-        return Error::WrongKeySize;
-      }
-      break;
+  } else if (std::holds_alternative<Key256>(keyInfo.second)) {
+    if (kSize != 256 / 8) {
+      return Error::WrongKeySize;
     }
-
-    default: {
-      return Error::UnkownCryptoAlg;
-    }
+  } else {
+    return Error::UnkownCryptoAlg;
   }
 
   if (haveKey(keyID)) {
@@ -121,34 +152,13 @@ OBJCRYPTO_EXPORT Error ObjCryptor::seal(
   }
   const auto keyInfo = keyInfoMap.at(keyID);
 
-  // check tag size correct
-  switch (keyInfo.first) {
-    case ObjCryptoAlg::NUL_128_NUL_0:
-    case ObjCryptoAlg::AES_128_CTR_0:
-    case ObjCryptoAlg::AES_256_CTR_0: {
-      if (tag.size() != 0) {
-        return Error::WrongTagSize;
-      }
-      break;
-    }
-    case ObjCryptoAlg::AES_128_GCM_64:
-    case ObjCryptoAlg::AES_256_GCM_64: {
-      if (tag.size() != 64 / 8) {
-        return Error::WrongTagSize;
-      }
-      break;
-    }
-    case ObjCryptoAlg::AES_128_GCM_128:
-    case ObjCryptoAlg::AES_256_GCM_128:
-    case ObjCryptoAlg::NUL_128_NUL_128: {
-      if (tag.size() != 128 / 8) {
-        return Error::WrongTagSize;
-      }
-      break;
-    }
-    default: {
-      return Error::UnkownCryptoAlg;
-    }
+  // check tag size is correct
+  const auto tSize = tagSize(keyInfo.first);
+  if (tSize < 0) {
+    return Error::UnkownCryptoAlg;
+  }
+  if (tag.size() != tSize) {
+    return Error::WrongTagSize;
   }
 
   // check output data size correct
@@ -159,13 +169,10 @@ OBJCRYPTO_EXPORT Error ObjCryptor::seal(
   auto ret = Error::None;
 
   switch (keyInfo.first) {
-    case ObjCryptoAlg::NUL_128_NUL_0: {
-      cipherText = plainText;
-      break;
-    }
+    case ObjCryptoAlg::NUL_128_NUL_0:
+    case ObjCryptoAlg::NUL_128_NUL_64:
     case ObjCryptoAlg::NUL_128_NUL_128: {
       cipherText = plainText;
-      tag.clear();
       break;
     }
 
@@ -206,13 +213,20 @@ OBJCRYPTO_EXPORT Error ObjCryptor::unseal(
     return Error::WrongOutputDataSize;
   }
 
+  // check tag size is correct
+  const auto tSize = tagSize(keyInfo.first);
+  if (tSize < 0) {
+    return Error::UnkownCryptoAlg;
+  }
+  if (tag.size() != tSize) {
+    return Error::WrongTagSize;
+  }
+
   auto ret = Error::None;
 
   switch (keyInfo.first) {
-    case ObjCryptoAlg::NUL_128_NUL_0: {
-      plainText = cipherText;
-      break;
-    }
+    case ObjCryptoAlg::NUL_128_NUL_0:
+    case ObjCryptoAlg::NUL_128_NUL_64:
     case ObjCryptoAlg::NUL_128_NUL_128: {
       plainText = cipherText;
       break;
