@@ -203,9 +203,9 @@ Error ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
       status = EVP_EncryptInit_ex(ctx, EVP_aes_128_ctr(), NULL, NULL, NULL);
       assert(status == 1);
 
-      status =
-          EVP_EncryptInit_ex(ctx, NULL, NULL, (const uint8_t *)key128.data(),
-                             (const uint8_t *)iv.data());
+      status = EVP_EncryptInit_ex(ctx, NULL, NULL,
+                                  static_cast<const uint8_t *>(key128.data()),
+                                  static_cast<const uint8_t *>(iv.data()));
       assert(status == 1);
     } break;
 
@@ -215,9 +215,9 @@ Error ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
       status = EVP_EncryptInit_ex(ctx, EVP_aes_256_ctr(), NULL, NULL, NULL);
       assert(status == 1);
 
-      status =
-          EVP_EncryptInit_ex(ctx, NULL, NULL, (const uint8_t *)key256.data(),
-                             (const uint8_t *)iv.data());
+      status = EVP_EncryptInit_ex(ctx, NULL, NULL,
+                                  static_cast<const uint8_t *>(key256.data()),
+                                  static_cast<const uint8_t *>(iv.data()));
       assert(status == 1);
     } break;
 
@@ -229,14 +229,14 @@ Error ObjCrypto::aes_ctr_encrypt(const Key &key, const IV &iv,
 
   int moved = 0;
   int cipherTextLen = 0;
-  status = EVP_EncryptUpdate(ctx, (uint8_t *)cipherText.data(), &moved,
-                             (const uint8_t *)plainText.data(),
-                             (int)plainText.size());
+  status = EVP_EncryptUpdate(
+      ctx, static_cast<uint8_t *>(cipherText.data()), &moved,
+      static_cast<const uint8_t *>(plainText.data()), int(plainText.size()));
   assert(status == 1);
   cipherTextLen += moved;
 
-  status =
-      EVP_EncryptFinal_ex(ctx, (uint8_t *)&cipherText[cipherTextLen], &moved);
+  status = EVP_EncryptFinal_ex(
+      ctx, static_cast<uint8_t *>(&cipherText[cipherTextLen]), &moved);
   assert(status == 1);
   cipherTextLen += moved;
 
@@ -265,9 +265,9 @@ Error ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
       status = EVP_DecryptInit_ex(ctx, EVP_aes_128_ctr(), NULL, NULL, NULL);
       assert(status == 1);
 
-      status =
-          EVP_DecryptInit_ex(ctx, NULL, NULL, (const uint8_t *)key128.data(),
-                             (const uint8_t *)iv.data());
+      status = EVP_DecryptInit_ex(ctx, NULL, NULL,
+                                  static_cast<const uint8_t *>(key128.data()),
+                                  static_cast<const uint8_t *>(iv.data()));
       assert(status == 1);
     } break;
 
@@ -277,9 +277,9 @@ Error ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
       status = EVP_DecryptInit_ex(ctx, EVP_aes_256_ctr(), NULL, NULL, NULL);
       assert(status == 1);
 
-      status =
-          EVP_DecryptInit_ex(ctx, NULL, NULL, (const uint8_t *)key256.data(),
-                             (const uint8_t *)iv.data());
+      status = EVP_DecryptInit_ex(ctx, NULL, NULL,
+                                  static_cast<const uint8_t *>(key256.data()),
+                                  static_cast<const uint8_t *>(iv.data()));
       assert(status == 1);
     } break;
 
@@ -291,14 +291,14 @@ Error ObjCrypto::aes_ctr_decrypt(const Key &key, const IV &iv,
 
   int moved = 0;
   int plainTextLen = 0;
-  status = EVP_DecryptUpdate(ctx, (uint8_t *)plainText.data(), &moved,
-                             (const uint8_t *)cipherText.data(),
-                             (int)cipherText.size());
+  status = EVP_DecryptUpdate(
+      ctx, static_cast<uint8_t *>(plainText.data()), &moved,
+      static_cast<const uint8_t *>(cipherText.data()), int(cipherText.size()));
   assert(status == 1);
   plainTextLen += moved;
 
-  status =
-      EVP_DecryptFinal_ex(ctx, (uint8_t *)&plainText[plainTextLen], &moved);
+  status = EVP_DecryptFinal_ex(
+      ctx, static_cast<uint8_t *>(&plainText[plainTextLen]), &moved);
   assert(status == 1);
   plainTextLen += moved;
 
