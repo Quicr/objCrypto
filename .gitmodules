@@ -2,8 +2,11 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 [submodule "contrib/boringssl"]
-	path = contrib/boringssl/src
+	path = contrib/old-boringssl/src
 	url = git@github.com:fluffy/boringssl-crypto.git
 [submodule "contrib/doctest"]
 	path = contrib/doctest
 	url = git@github.com:doctest/doctest.git
+[submodule "contrib/boringssl-crypto"]
+	path = contrib/boringssl-crypto
+	url = git@github.com:Quicr/boringssl-crypto.git
