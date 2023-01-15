@@ -24,7 +24,8 @@ namespace ObjCrypto {
 
 enum class ObjCryptoAlg : uint8_t {
   Invalid = 0,
-  NUL_128_NUL_0 = 0x10,    // NULL cipher wiith 128 bit key and 0 byte tag
+  NUL_128_NUL_0 = 0x10,    // NULL cipher with 128 bit key and 0 byte tag
+  NUL_128_NUL_64 = 0x11,   // NULL cipher with 128 bit key and 64 byte tag
   NUL_128_NUL_128 = 0x12,  // NULL cipher with 128 bit key and 128 bit tag
   AES_128_CTR_0 = 0x20,    // AES128 counter mode with no authentication
   AES_128_GCM_64 = 0x21,   // AES128 GCM mode with 64 bit tag
@@ -54,6 +55,10 @@ enum class Error : uint8_t {
   WrongOutputDataSize
 };
 
+OBJCRYPTO_EXPORT int keySize(ObjCryptoAlg alg);
+
+OBJCRYPTO_EXPORT int tagSize(ObjCryptoAlg alg);
+
 class ObjCryptor {
  private:
   std::map<KeyID, const KeyInfo> keyInfoMap;
@@ -62,6 +67,8 @@ class ObjCryptor {
 
  public:
   OBJCRYPTO_EXPORT ObjCryptor();
+
+  OBJCRYPTO_EXPORT ObjCryptor(ObjCryptor &);
 
   OBJCRYPTO_EXPORT ~ObjCryptor();
 

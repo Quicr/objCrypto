@@ -31,19 +31,22 @@ TEST_CASE("test NUL Crypto Mode") {
   Key128 key128 = {0x7E, 0x24, 0x06, 0x78, 0x17, 0xFA, 0xE0, 0xD7,
                    0x43, 0xD6, 0xCE, 0x1F, 0x32, 0x53, 0x91, 0x63};
 
-  SUBCASE("NUl_128_NUL_0") {
-    std::cout << "Run for NUl_128_NUL_0 " << std::endl;
+  tag.resize(0);
+  KeyInfo keyInfo(ObjCryptoAlg::NUL_128_NUL_0, key128);
+  err = cryptor.addKey(keyId, keyInfo);
+  assert(err == Error::None);
 
-    KeyInfo keyInfo(ObjCryptoAlg::NUL_128_NUL_0, key128);
-    err = cryptor.addKey(keyId, keyInfo);
+  SUBCASE("NUl_128_NUL_64") {
+    tag.resize(64 / 8, 0);
+    KeyInfo keyInfo2(ObjCryptoAlg::NUL_128_NUL_64, key128);
+    err = cryptor.addKey(keyId, keyInfo2);
     assert(err == Error::None);
   }
-  SUBCASE("NUl_128_NUL_128") {
-    std::cout << "Run for NUl_128_NUL_128 " << std::endl;
 
-    tag.resize(128 / 8);
-    KeyInfo keyInfo(ObjCryptoAlg::NUL_128_NUL_128, key128);
-    err = cryptor.addKey(keyId, keyInfo);
+  SUBCASE("NUl_128_NUL_128") {
+    tag.resize(128 / 8, 0);
+    KeyInfo keyInfo2(ObjCryptoAlg::NUL_128_NUL_128, key128);
+    err = cryptor.addKey(keyId, keyInfo2);
     assert(err == Error::None);
   }
 
@@ -51,10 +54,10 @@ TEST_CASE("test NUL Crypto Mode") {
                  0x3B, 0x59, 0xDA, 0x48, 0xD9, 0x0B};
 
   err = cryptor.seal(keyId, nonce, plainTextIn, auth, tag, cipherText);
-  assert(err == Error::None);
+  CHECK(err == Error::None);
 
   err = cryptor.unseal(keyId, nonce, cipherText, auth, tag, plainTextOut);
-  assert(err == Error::None);
+  CHECK(err == Error::None);
 
   auto correct = plainTextIn;
 
