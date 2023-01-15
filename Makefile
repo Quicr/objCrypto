@@ -8,7 +8,6 @@ all: build
 clean:
 	rm -rf build build-*
 
-
 format:
 	clang-format -i src/*.cc src/*.h include/objCrypto/*.h example/*.cc test/*.cc test/*.h
 
