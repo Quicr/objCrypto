@@ -4,7 +4,7 @@ Files: contrib/doctest/*
 Copyright: Copyright (c) 2016 Viktor Kirilov
 License: MIT
 
-Files: contrib/boringssl/*
+Files: contrib/boringssl-crypto/*
 Copyright: Copyright (c) 1998 The OpenSSL Project
 License: OpenSSL
 
