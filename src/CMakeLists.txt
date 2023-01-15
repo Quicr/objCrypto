@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
 # SPDX-License-Identifier: BSD-2-Clause
 
-include_directories(../contrib/boringssl/src/include  )
+include_directories(../contrib/boringssl-crypto/src/include  )
 
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOBJ_CRYPTO_USE_BORINGSSL")
