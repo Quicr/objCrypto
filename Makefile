@@ -3,7 +3,11 @@
 
 all: build
 
-.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs lint  format pull
+.PHONY: build docker build-linux build-xcode build-boring build-mac build-android build-windows docs lint  format pull clean
+
+clean:
+	rm -rf build build-*
+
 
 format:
 	clang-format -i src/*.cc src/*.h include/objCrypto/*.h example/*.cc test/*.cc test/*.h
