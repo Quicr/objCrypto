@@ -62,6 +62,8 @@ class ObjCryptor {
 
  public:
   OBJCRYPTO_EXPORT ObjCryptor();
+  
+  OBJCRYPTO_EXPORT ObjCryptor( ObjCryptor& );
 
   OBJCRYPTO_EXPORT ~ObjCryptor();
 

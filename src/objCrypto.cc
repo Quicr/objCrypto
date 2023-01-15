@@ -24,6 +24,10 @@ OBJCRYPTO_EXPORT ObjCryptor::ObjCryptor() {
   assert(nonce.size() == 96 / 8);
 }
 
+OBJCRYPTO_EXPORT  ObjCryptor::ObjCryptor( ObjCryptor& ) {
+  assert(0);
+}
+
 OBJCRYPTO_EXPORT ObjCryptor::~ObjCryptor() { keyInfoMap.clear(); }
 
 OBJCRYPTO_EXPORT int16_t ObjCryptor::version() {
