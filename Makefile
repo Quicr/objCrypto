@@ -12,7 +12,7 @@ format:
 	clang-format -i src/*.cc src/*.h include/objCrypto/*.h example/*.cc test/*.cc test/*.h
 
 pull:
-	git submodule update --init --recursive --remote
+	git submodule update --init --recursive
 
 docs:
 	mkdocs gh-deploy
