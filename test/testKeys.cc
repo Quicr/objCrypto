@@ -20,6 +20,13 @@ TEST_CASE("Test key creation and managment") {
 
   KeyID keyIdBad = 99;
 
+  CHECK(keySize(ObjCryptoAlg(ObjCryptoAlg::Invalid)) == -1);
+  CHECK(tagSize(ObjCryptoAlg(ObjCryptoAlg::Invalid)) == -1);
+
+  uint8_t badAlg = 0xFF;
+  CHECK(keySize(ObjCryptoAlg(badAlg)) == -1);
+  CHECK(tagSize(ObjCryptoAlg(badAlg)) == -1);
+
   CHECK(keySize(ObjCryptoAlg::NUL_128_NUL_0) == 128 / 8);
   CHECK(keySize(ObjCryptoAlg::NUL_128_NUL_64) == 128 / 8);
   CHECK(keySize(ObjCryptoAlg::NUL_128_NUL_128) == 128 / 8);
