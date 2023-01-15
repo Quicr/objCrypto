@@ -47,13 +47,13 @@ int main(/* int argc, char *argv[] */) {
   auto endTime = std::chrono::high_resolution_clock::now();
   auto elapsedMS = std::chrono::duration_cast<std::chrono::microseconds>(
       endTime - startTime);
-  auto seconds = (float)(elapsedMS.count()) * 1e-6f;
+  auto seconds = float(elapsedMS.count()) * 1e-6f;
 
-  const auto bytesProcessed = loops * (long)plainTextIn.size();
+  const auto bytesProcessed = loops * long(plainTextIn.size());
   std::cout << "mbps of NUL-NUL: "
-            << (float)(bytesProcessed)*8.0 / seconds / 1.0e6 << std::endl;
-  std::cout << "Kbytes of NUL-NUL: "
-            << (float)(bytesProcessed) / seconds / 1.0e3 << std::endl;
+            << float(bytesProcessed) * 8.0f / seconds / 1.0e6f << std::endl;
+  std::cout << "Kbytes of NUL-NUL: " << float(bytesProcessed) / seconds / 1.0e3f
+            << std::endl;
 
   // err = cryptor.unseal( keyId, nonce, cipherText, auth, tag, plainTextOut );
   // assert( err == Error::None);

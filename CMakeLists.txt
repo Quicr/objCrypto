@@ -22,6 +22,7 @@ project( objCrypto
             HOMEPAGE_URL "https://github.com/fluffy/objCrypto"
             LANGUAGES C CXX)
 
+
 if ( ${APPLE} )
    set( OBJ_CRYPTO_USE_BORINGSSL False CACHE BOOL "use BoringSSL SSL crypto"  )
 else ()
