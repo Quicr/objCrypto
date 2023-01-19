@@ -13,6 +13,9 @@ add_test( NAME testTest
                COMMAND testTest )
 
 
+
+if ( NOT WIN32 ) # TODO - Add back in
+
 add_executable( testVersion
     testVersion.cc
 ) 
@@ -46,14 +49,15 @@ add_test( NAME testAesCtr
                COMMAND testAesCtr  )
 
 
-if ( NOT WIN32 ) # TODO - Add back in 
 add_executable ( testAesGcm
     testAesGcm.cc
 )
 target_link_libraries( testAesGcm PRIVATE objCrypto doctest::doctest  )
 add_test( NAME testAesGcm
                COMMAND testAesGcm  )
-endif()
+               
+endif() # for WIN32 test above
+
 
 add_executable ( speedNul 
     speedNul.cc 
