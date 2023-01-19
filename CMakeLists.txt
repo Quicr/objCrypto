@@ -27,22 +27,16 @@ endif()
 
 # ObjCrypto compiler options
 option( OBJ_CRYPTO_USE_BORINGSSL "Use BoringSSL for crypto" )
-option( OBJ_CRYPTO_OSX "Build for OSX Architectures")
 option( OBJ_CRYPTO_BUILD_TESTS "Build test programs" ON )
 option( OBJ_CRYPTO_BUILD_SHARED "Build as dynamic library" ON )
 option( OBJ_CRYPTO_INSTALL "Install library to system" ON )
 
 message( "OBJ_CRYPTO_USE_BORINGSSL is set to ${OBJ_CRYPTO_USE_BORINGSSL}" )
-message( "OBJ_CRYPTO_OSX is set to ${OBJ_CRYPTO_OSX}" )
 message( "OBJ_CRYPTO_BUILD_TESTS  is set to ${OBJ_CRYPTO_BUILD_TESTS}" ) 
 message( "OBJ_CRYPTO_BUILD_SHARED is set to ${OBJ_CRYPTO_BUILD_SHARED}" ) 
 message( "OBJ_CRYPTO_INSTALL is set to ${OBJ_CRYPTO_INSTALL}" )
 
 set(BUILD_SHARED_LIBS ${OBJ_CRYPTO_BUILD_SHARED})
-
-if ( OBJ_CRYPTO_OSX)
-    set( CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "OSX archs")
-endif()
 
 #find_package(Git QUIET)
 #

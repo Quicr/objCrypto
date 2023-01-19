@@ -16,7 +16,8 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/include/objCrypto/version.h"
 )
 
-add_library( objCrypto  aes-ctr.cc aes-ctr.h aes-gcm.cc aes-gcm.h objCrypto.cc )
+add_library( objCrypto )
+target_sources( objCrypto PRIVATE aes-ctr.cc aes-ctr.h aes-gcm.cc aes-gcm.h objCrypto.cc)
 
 # Lots of warnings as errors 
 if (MSVC) 
