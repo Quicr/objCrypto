@@ -22,7 +22,7 @@ else ()
 endif ()
 
 if ( WIN32 )
-   set( BUILD_TESTS False CACHE BOOL "build tests"  )
+   set( OBJ_CRYPTO_BUILD_TESTS False CACHE BOOL "build tests"  )
 endif()
 
 # ObjCrypto compiler options
