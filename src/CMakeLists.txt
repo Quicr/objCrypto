@@ -16,10 +16,7 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/include/objCrypto/version.h"
 )
 
-file(GLOB CRYPTO_SOURCES "*.c" "*.cc")
-file(GLOB CRYPTO_HEADER "*.h" "*.hh")
-
-add_library( objCrypto  ${CRYPTO_SOURCES} ${CRYPTO_HEADERS} )
+add_library( objCrypto  aes-ctr.cc aes-ctr.h aes-gcm.cc aes-gcm.h objCrypto.cc )
 
 # Lots of warnings as errors 
 if (MSVC) 
