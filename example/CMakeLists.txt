@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2023 The ObjCrypto Project Authors 
+# SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
 # SPDX-License-Identifier: BSD-2-Clause
 
 add_executable ( objCryptoExampleA 
