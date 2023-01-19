@@ -62,6 +62,7 @@ add_subdirectory( src )
 
 # Test directories
 if ( OBJ_CRYPTO_BUILD_TESTS )
+    include(CTest)
     add_subdirectory( test )
     add_subdirectory( example )
 endif()
