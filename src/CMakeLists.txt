@@ -1,11 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
 # SPDX-License-Identifier: BSD-2-Clause
 
-include_directories(../contrib/boringssl-crypto/src/include  )
-
 if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
+   include_directories( ../contrib/boringssl-crypto/src/include  )
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOBJ_CRYPTO_USE_BORINGSSL")
-endif ()
+endif()
 
 if ( !MSVC )
 # TODO - mst be better way to do this 
@@ -17,19 +16,10 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/include/objCrypto/version.h"
 )
 
-# controll static shared with BUILD_SHARED_LIBS=ON.
-add_library(
-  objCrypto
-)
+add_library( objCrypto )
+target_sources( objCrypto PRIVATE aes-ctr.cc aes-ctr.h aes-gcm.cc aes-gcm.h objCrypto.cc)
 
-target_sources( objCrypto 
-  PRIVATE
-  objCrypto.cc
-  aes-ctr.cc 
-  aes-gcm.cc )
-
-
-# Lots of wwarnings as errors 
+# Lots of warnings as errors 
 if (MSVC) 
     add_compile_options(/W4 /WX) 
 else() 
@@ -55,8 +45,8 @@ target_include_directories( objCrypto PUBLIC ${PROJECT_SOURCE_DIR}/include )
 set_target_properties( objCrypto PROPERTIES PUBLIC_HEADER
  "${PROJECT_SOURCE_DIR}/include/objCrypto/objCrypto.h;${PROJECT_SOURCE_DIR}/include/objCrypto/objCryptoVersion.h" ) 
 
-install(TARGETS objCrypto 
+if( ${OBJ_CRYPTO_INSTALL})
+    install(TARGETS objCrypto 
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/objCrypto )
-
-
+endif()
