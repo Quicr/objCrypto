@@ -31,7 +31,7 @@ build:
 	cmake --build build -t test 
 
 docker:
-	- docker build -t obj-crypto-dev -f Dockerfile.alpint .
+	- docker build -t obj-crypto-dev -f Dockerfile.alpine .
 	docker run -v ${PWD}:/src --rm -it obj-crypto-dev /bin/tcsh -c "cd /src; make build-linux"
 
 build-boring:
