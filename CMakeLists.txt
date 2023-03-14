@@ -12,7 +12,7 @@ project( objCrypto
             VERSION 0.1.2
             DESCRIPTION "C++ Library to encrypt and decrypt objects"
             HOMEPAGE_URL "https://github.com/Quicr/objCrypto"
-            LANGUAGES C CXX)
+            LANGUAGES C CXX Swift )
 
 
 if ( ${APPLE} )

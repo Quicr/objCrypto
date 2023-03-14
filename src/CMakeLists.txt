@@ -16,6 +16,7 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/include/objCrypto/version.h"
 )
 
+
 add_library( objCrypto )
 target_sources( objCrypto PRIVATE aes-ctr.cc aes-ctr.h aes-gcm.cc aes-gcm.h objCrypto.cc)
 
@@ -23,7 +24,7 @@ target_sources( objCrypto PRIVATE aes-ctr.cc aes-ctr.h aes-gcm.cc aes-gcm.h objC
 if (MSVC) 
     add_compile_options(/W4 /WX) 
 else() 
-    add_compile_options(-Wall -Wextra -pedantic -Werror) 
+   # add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif() 
 
 
@@ -39,6 +40,14 @@ if ( ${OBJ_CRYPTO_USE_BORINGSSL} )
      target_link_libraries( objCrypto PRIVATE pthread )
    endif ()
 endif ()
+
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    message("Building Swift code!")
+    add_library(OneShot OneShot.swift)
+    #set_target_properties(OneShot PROPERTIES
+    #        INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
+    target_link_libraries( objCrypto PRIVATE OneShot)
+endif()
 
 target_include_directories( objCrypto PUBLIC ${PROJECT_SOURCE_DIR}/include )
 

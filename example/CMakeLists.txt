@@ -4,5 +4,5 @@
 add_executable ( objCryptoExampleA 
     objCryptoExampleA.cc 
 ) 
-target_link_libraries( objCryptoExampleA PRIVATE objCrypto ) 
+target_link_libraries( objCryptoExampleA PRIVATE objCrypto OneShot)
 

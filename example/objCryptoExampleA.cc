@@ -8,6 +8,10 @@
 
 using namespace ObjCrypto;
 
+extern "C" void printAPublicKey();
+
+
+
 int main(/*int argc, char* argv[]*/) {
   // Set up cryptor object to keep track of keys
   ObjCryptor cryptor;
@@ -48,6 +52,6 @@ int main(/*int argc, char* argv[]*/) {
   err = cryptor.unseal(keyId, nonce, cipherText, authData, tag, plainTextOut);
   assert(err != Error::DecryptAuthFail);
   assert(err == Error::None);
-
+  printAPublicKey();
   return 0;
 }
