@@ -9,7 +9,7 @@
 using namespace ObjCrypto;
 
 extern "C" void printAPublicKey();
-
+extern "C" void doStuffWithCharBuffer(char* , int);
 
 
 int main(/*int argc, char* argv[]*/) {
@@ -53,5 +53,10 @@ int main(/*int argc, char* argv[]*/) {
   assert(err != Error::DecryptAuthFail);
   assert(err == Error::None);
   printAPublicKey();
+
+
+  char buf[34] = "HeiHvorDetGaarHerTilGards";
+  doStuffWithCharBuffer(buf, 34);
+  printf("Back in c land the buffer is now: %s\n", buf);
   return 0;
 }
