@@ -10,12 +10,21 @@ crypto from boringssl and can be compiled as a shared library that hides
 the internal symbols to avoid conflicts with any other version openssl
 in use by the application.
 
-More infomation can be found at:
+More information can be found at:
 https://quicr.github.io/objCrypto/
 
 There is an example program at:
 https://github.com/Quicr/objCrypto/blob/main/example/objCryptoExampleA.cc
 
 
+# Compiling 
 
+This requires a C++20 compiler and cmake to be installed. 
 
+Generally you can compile it with. 
+
+```
+ cmake -B build -S . 
+ cmake --build build
+ cmake --build build -t test 
+ ```
