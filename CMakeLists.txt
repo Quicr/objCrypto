@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 11)  # to move this to 17, need min CMake 3.21 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -20,10 +20,6 @@ if ( ${APPLE} )
 else ()
    set( OBJ_CRYPTO_USE_BORINGSSL True CACHE BOOL "use BoringSSL for crypto"  )
 endif ()
-
-if ( WIN32 )
-   set( OBJ_CRYPTO_BUILD_TESTS False CACHE BOOL "build tests"  )
-endif()
 
 # ObjCrypto compiler options
 option( OBJ_CRYPTO_USE_BORINGSSL "Use BoringSSL for crypto" )
