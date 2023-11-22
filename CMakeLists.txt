@@ -1,18 +1,18 @@
 # SPDX-FileCopyrightText: Copyright (c) 2022 The ObjCrypto Project Authors 
 # SPDX-License-Identifier: BSD-2-Clause
 
-cmake_minimum_required(VERSION 3.13)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_STANDARD 11)  # to move this to 17, need min CMake 3.21 
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+cmake_minimum_required(VERSION 3.21)
 
 project( objCrypto
             VERSION 0.1.2
             DESCRIPTION "C++ Library to encrypt and decrypt objects"
             HOMEPAGE_URL "https://github.com/Quicr/objCrypto"
             LANGUAGES C CXX)
+
+set( CMAKE_CXX_STANDARD 20 )
+set( CMAKE_C_STANDARD 17 )
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 
 if ( ${APPLE} )

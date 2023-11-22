@@ -14,6 +14,15 @@ add_test( NAME testTest
 
 
 
+add_executable( testSpan
+    testSpan.cc
+)
+target_link_libraries( testSpan PRIVATE doctest::doctest )
+add_test( NAME testSpan
+               COMMAND testSpan )
+
+
+
 if ( NOT WIN32 ) # TODO - Add back in
 
 add_executable( testVersion
