@@ -24,6 +24,8 @@ This requires a C++20 compiler and cmake to be installed.
 Generally you can compile it with. 
 
 ```
+ git clone https://github.com/Quicr/objCrypto
+ cd objCrypto
  git submodule update --init --recursive
  cmake -B build -S . 
  cmake --build build
