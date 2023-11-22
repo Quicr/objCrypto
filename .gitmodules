@@ -3,9 +3,9 @@
 
 [submodule "contrib/doctest"]
 	path = contrib/doctest
-	url = https://github.com/doctest/doctest.git
+	url = https://github.com/doctest/doctest
     branch = main
 [submodule "contrib/boringssl-crypto"]
 	path = contrib/boringssl-crypto
-	url = https://github.com/Quicr/boringssl-crypto.git
+	url = https://github.com/Quicr/boringssl-crypto
     branch = main
